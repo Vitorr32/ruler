@@ -9,9 +9,9 @@ public class WorldCamera : MonoBehaviour
     private Camera m_Camera;
 
     //Velocity in which the camera is moving in the current tick
-    private Vector3 m_CameraVelocity = new Vector3();
+    private Vector3 m_CameraVelocity;
     //Rotation in which the camera is moving in the current tick
-    private Vector3 m_CameraRotation = new Vector3();
+    private Vector3 m_CameraRotation;
 
     //Setters for camera defaults
     [SerializeField] private float m_ZoomSensitivity = 500.0f;
@@ -23,27 +23,35 @@ public class WorldCamera : MonoBehaviour
     //Distance from the border of the terrain that the camera will stop moving
     [SerializeField] private float m_OffsetFromBorder = 30.0f;
     //Distance between the camera and the height of the terrain where the camera is located
-    [SerializeField] private float m_OffsetFromGround = 30.0f;
+    [SerializeField] private float m_OffsetFromGround = 5.0f;
     //Setters for camera maximum moviment in the cartesian X/Y axis, they depend on the terrain size to be calculated
     private Vector3 m_MaxCameraBorders;
     private Vector3 m_MinCameraBorders;
 
+    private Vector3 m_TargetOffset = new Vector3(0, 10, -20);
+
     //The terrain in which this camera is restricted to look, the camera will not go beyond it's borders
-    [SerializeField] private Terrain terrain = null;
+    [SerializeField] private Terrain m_Terrain = null;
     //The gameobject in which the camera is currently following along.
-    [SerializeField] private GameObject target = null;
+    [SerializeField] private GameObject m_focusedObject = null;
 
     // Start is called before the first frame update
     void Start() {
         m_Camera = GetComponent<Camera>();
 
-        if (!terrain) {
+        if (!m_Terrain) {
             Debug.Log("No terrain reference set, search for one in gameobject");
-            terrain = FindObjectOfType<Terrain>();
+            m_Terrain = FindObjectOfType<Terrain>();
         }
 
         startUpTerrainCorners();
-        snapCameraToCenterOfTerrain();
+
+        if (m_focusedObject) {
+            snapCameraToFocusedObject();
+        }
+        else {
+            snapCameraToCenterOfTerrain();
+        }
     }
 
     // Update is called once per frame
@@ -51,15 +59,38 @@ public class WorldCamera : MonoBehaviour
         m_CameraVelocity = Vector3.zero;
         m_CameraRotation = Vector3.zero;
 
-        //Update the camera position and rotation in relation to the Mouse scroll input
-        updateCameraZoom(Input.GetAxis("Mouse ScrollWheel"));
+        if (m_focusedObject) {
+            followTarget();
+        }
         //Use the WASD and Arrow Keys mapping to move the camera
         navigateAxisX(Input.GetAxis("Horizontal"));
         navigateAxisZ(Input.GetAxis("Vertical"));
 
+        //Update the camera position and rotation in relation to the Mouse scroll input
+        updateCameraZoom(Input.GetAxis("Mouse ScrollWheel"));
+
         //After all camera position/rotation processing, assing new values to the transform of the camera
         updateCameraPosition();
         updateCameraRotation();
+    }
+
+    private void followTarget() {
+        if (
+            Math.Abs(Vector2.Distance(
+                ConvertToPlaneVector(transform.position),
+                ConvertToPlaneVector(m_focusedObject.transform.position + m_TargetOffset)
+                )
+            ) >= 1) {
+            m_CameraVelocity = (m_focusedObject.transform.position + m_TargetOffset) - transform.position;
+        }
+        else {
+            Vector3 targetLocation = m_focusedObject.transform.position + m_TargetOffset;
+            transform.position = new Vector3(targetLocation.x, transform.position.y, targetLocation.z);
+        }
+    }
+
+    private void snapCameraToFocusedObject() {
+        transform.position = m_focusedObject.transform.position + m_TargetOffset;
     }
 
     private void snapCameraToCenterOfTerrain() {
@@ -71,26 +102,25 @@ public class WorldCamera : MonoBehaviour
     }
 
     private void startUpTerrainCorners() {
-        m_MinCameraBorders = new Vector3(terrain.transform.position.x, m_MinCameraZoom, terrain.transform.position.z);
-        m_MaxCameraBorders = new Vector3(m_MinCameraBorders.x + terrain.terrainData.size.x, m_MaxCameraZoom, m_MinCameraBorders.z + terrain.terrainData.size.z);
+        m_MinCameraBorders = new Vector3(m_Terrain.transform.position.x, m_MinCameraZoom, m_Terrain.transform.position.z);
+        m_MaxCameraBorders = new Vector3(m_MinCameraBorders.x + m_Terrain.terrainData.size.x, m_MaxCameraZoom, m_MinCameraBorders.z + m_Terrain.terrainData.size.z);
     }
 
     private void updateCameraZoom(float axis) {
         if (axis != 0) {
-            target = null;
             //The axis values is inverted so that mouse scroll up zoom in, and mouse scroll down will zoom out
             m_CameraVelocity.y += -axis * m_ZoomSensitivity;
         }
     }
     private void navigateAxisX(float axis) {
         if (axis != 0) {
-            target = null;
+            m_focusedObject = null;
             m_CameraVelocity.x = m_CameraVelocity.x + (axis * m_CameraSensitivity);
         }
     }
     private void navigateAxisZ(float axis) {
         if (axis != 0) {
-            target = null;
+            m_focusedObject = null;
             m_CameraVelocity.z = m_CameraVelocity.z + (axis * m_CameraSensitivity);
         }
     }
@@ -114,12 +144,16 @@ public class WorldCamera : MonoBehaviour
          */
         newPosition.x = Mathf.Clamp(newPosition.x, m_MinCameraBorders.x + m_OffsetFromBorder, m_MaxCameraBorders.x - m_OffsetFromBorder);
         //Get the Height from the current position in comparation to the terrain sampe height, so the camera does not clip trough the terrain
-        newPosition.y = Mathf.Clamp(newPosition.y, Mathf.Max(m_MinCameraZoom, terrain.SampleHeight(newPosition) + m_OffsetFromGround), m_MaxCameraZoom);
+        newPosition.y = Mathf.Clamp(newPosition.y, Mathf.Max(m_MinCameraZoom, m_Terrain.SampleHeight(newPosition) + m_OffsetFromGround), m_MaxCameraZoom);
         newPosition.z = Mathf.Clamp(newPosition.z, m_MinCameraBorders.z + m_OffsetFromBorder, m_MaxCameraBorders.z - m_OffsetFromBorder);
 
         transform.position = newPosition;
     }
     private void updateCameraRotation() {
+        if (m_focusedObject) {
+            transform.LookAt(m_focusedObject.transform);
+            return;
+        }
         Vector3 newRotation = m_CameraRotation * Time.deltaTime;
 
         if (!IsCameraOnTheGround()) {
@@ -134,6 +168,14 @@ public class WorldCamera : MonoBehaviour
     }
 
     private bool IsCameraOnTheGround() {
-        return m_MinCameraZoom == terrain.SampleHeight(transform.position) + m_OffsetFromGround;
+        return m_MinCameraZoom == m_Terrain.SampleHeight(transform.position) + m_OffsetFromGround;
+    }
+
+    private Vector2 ConvertToPlaneVector(Vector3 vector) {
+        return new Vector2(vector.x, vector.z);
+    }
+
+    public void focusOnObject(GameObject gameObject) {
+        m_focusedObject = gameObject;
     }
 }

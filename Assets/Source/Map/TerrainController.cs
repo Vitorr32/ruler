@@ -5,7 +5,6 @@ using UnityEngine.EventSystems;
 
 public class TerrainController : MonoBehaviour, IPointerClickHandler
 {
-
     public delegate void OnClick(Vector3 worldPoint);
     public static event OnClick onTerrainClicked;
 
@@ -17,13 +16,16 @@ public class TerrainController : MonoBehaviour, IPointerClickHandler
     }
 
     public void OnPointerClick(PointerEventData eventData) {
-        RaycastHit hit;
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (terrain.GetComponent<Collider>().Raycast(ray, out hit, Mathf.Infinity)) {
-            onTerrainClicked?.Invoke(hit.point);
+        if (eventData.button == PointerEventData.InputButton.Right) {
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (terrain.GetComponent<Collider>().Raycast(ray, out hit, Mathf.Infinity)) {
+                onTerrainClicked?.Invoke(hit.point);
+            }
         }
     }
 
+    public
 
     // Update is called once per frame
     void Update() {
