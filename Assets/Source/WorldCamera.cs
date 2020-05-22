@@ -75,6 +75,7 @@ public class WorldCamera : MonoBehaviour
     }
 
     private void followTarget() {
+        //The distance should only be compared in a 3D view using the X and Z axis as a virtual 2D XY cartesian plane
         if (
             Math.Abs(Vector2.Distance(
                 ConvertToPlaneVector(transform.position),

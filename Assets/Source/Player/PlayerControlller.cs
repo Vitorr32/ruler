@@ -18,7 +18,7 @@ public class PlayerControlller : MonoBehaviour
     }
 
     private void onMapClicked(Vector3 worldPoint) {
-        Debug.Log(worldPoint);
+        playerActor.ChangeActorDestination(worldPoint);
     }
 
     // Update is called once per frame

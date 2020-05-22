@@ -32,8 +32,7 @@ public class TickController : MonoBehaviour
 
         MAX_FLAGS
     }
-
-    private Speed currentSpeed = Speed.DOUBLE;
+    public Speed currentSpeed { get; private set; } = Speed.DOUBLE;
 
     //How much time a second in real life is to minutes in the game clock
     [SerializeField] private float secondToMinuteBase = 1f;
@@ -129,7 +128,7 @@ public class TickController : MonoBehaviour
         currentSpeed = newSpeed;
     }
 
-    private float getTickSpeed(Speed speed) {
+    public float getTickSpeed(Speed speed) {
         switch (speed) {
             case Speed.PAUSED:
                 return 0;
@@ -139,9 +138,8 @@ public class TickController : MonoBehaviour
                 return 2.5f;
             case Speed.DOUBLE:
                 return 5.0f;
-            //The real time case will never be called since there's no need to verify the speed
             case Speed.REAL_TIME:
-                return -1;
+                return 60f;
             default:
                 throw new Exception("Unknown speed " + speed);
         }
