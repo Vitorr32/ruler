@@ -299,7 +299,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -91.7, y: 78.5}
+  m_AnchoredPosition: {x: -63, y: 91}
   m_SizeDelta: {x: 368.68842, y: 45.62976}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &227657586
@@ -862,8 +862,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -511.46, y: 217.67}
-  m_SizeDelta: {x: -1022.9209, y: -435.33203}
+  m_AnchoredPosition: {x: -406.1, y: 308.9}
+  m_SizeDelta: {x: -812.06335, y: -617.6084}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &826282826
 MonoBehaviour:
@@ -1187,6 +1187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d00a1827045f38943a5bcc587a19d949, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  jsonFile: {fileID: 4900000, guid: 4c6d1de9341b57445a1a1b4c16d6e3d3, type: 3}
   officers: []
 --- !u!1 &1050412968
 GameObject:
@@ -1222,7 +1223,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -126.3, y: 138.5}
+  m_AnchoredPosition: {x: -97.59996, y: 150.99998}
   m_SizeDelta: {x: 299.48898, y: 30.922405}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1050412970
@@ -1300,7 +1301,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 68.8, y: 138.5}
+  m_AnchoredPosition: {x: 97.500046, y: 150.99998}
   m_SizeDelta: {x: 47.697006, y: 30.918648}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1185915637

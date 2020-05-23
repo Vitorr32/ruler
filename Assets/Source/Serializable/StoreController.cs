@@ -1,15 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Windows;
 
 //Store will have all the serializable data of the game, including traits, officers and effects
 public class StoreController : MonoBehaviour
 {
     static StoreController instance;
 
-    public Effect[] effects;
-    public Officer[] officers;
-    public Trait[] traits;
+    public List<Effect> effects;
+    public List<Officer> officers;
+    public List<Trait> traits;
 
     private void Awake() {
         if (instance != null && instance != this) {

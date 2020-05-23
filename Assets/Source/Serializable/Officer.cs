@@ -5,14 +5,18 @@ using System.Collections.Generic;
 [Serializable]
 public class Officer
 {
-    public Officer(int pID, string pFirstName, string pFamilytName, DateTime pBirth, DateTime? pDeath, List<int> pTraits) {
-        id = pID;
-        firstName = pFirstName;
-        familyName = pFamilytName;
-        birth = pBirth;
-        death = pDeath;
-        traits = pTraits;
-    }
+    //public Officer(int pID, string pFirstName, string pFamilytName, DateTime pBirth, DateTime? pDeath, List<int> pTraits) {
+    //    id = pID;
+    //    firstName = pFirstName;
+    //    familyName = pFamilytName;
+    //    birth = pBirth;
+    //    death = pDeath;
+    //    traits = pTraits;
+    //}
+
+    public int userId;
+    public string title;
+    public string body;
 
     public int id;
     public string firstName;
