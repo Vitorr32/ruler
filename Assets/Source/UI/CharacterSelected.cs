@@ -27,13 +27,15 @@ public class CharacterSelected : MonoBehaviour
 
     void onCharacterSelection(OfficerController controller) {
         m_selectedOfficer = controller;
-        populateDataFromOfficer(controller.officer);
+        populateDataFromOfficer(controller.baseOfficer);
     }
 
     void populateDataFromOfficer(Officer officer) {
+        /*
         m_name.text = officer.firstName + ' ' + officer.familyName;
         m_age.text = (DateTime.Now.AddYears(18) - officer.birth).ToString();
 
         m_selectedOfficer.serializedTraits.ForEach(trait => m_traits.text.Concat(trait.id.ToString()));
+        */
     }
 }

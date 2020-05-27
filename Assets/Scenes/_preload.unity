@@ -165,7 +165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   officerFiles:
-  - {fileID: 4900000, guid: 71707dd48bdc78b4dba655c880f40cc7, type: 3}
+  - {fileID: 4900000, guid: 4c6d1de9341b57445a1a1b4c16d6e3d3, type: 3}
   effectFiles: []
   traitFiles: []
 --- !u!4 &1664171682
@@ -194,7 +194,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d00a1827045f38943a5bcc587a19d949, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  officers: []
 --- !u!1 &2010621206
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,19 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class OfficerController : MonoBehaviour
+public class OfficerController
 {
-    public Officer officer = new Officer();// new Officer(1, "Yolo", "von Nigga", System.DateTime.Now, null, new List<int> { 1, 2 });
+    public Officer baseOfficer;// new Officer(1, "Yolo", "von Nigga", System.DateTime.Now, null, new List<int> { 1, 2 });
 
     public List<Trait> serializedTraits;
 
-    // Start is called before the first frame update
-    void Start() {
+    public bool onOverworld;
 
-    }
-
-    // Update is called once per frame
-    void Update() {
-
+    public void StartUpController(Officer officer) {
+        baseOfficer = officer;
     }
 }

@@ -1,11 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SceneLoading : MonoBehaviour
 {
     GameManager gameManager;
     StoreController store;
+
+    public Image proguessBar;
+    public Text feedback;
     // Start is called before the first frame update
     void Start() {
         gameManager = FindObjectOfType<GameManager>();
@@ -15,17 +20,26 @@ public class SceneLoading : MonoBehaviour
     }
 
     IEnumerator LoadAsyncDependecies() {
-        Debug.Log("Yolo");
+        feedback.text = "Importing officers JSON";
+
         JSONController<Officer> officerReader = new JSONController<Officer>();
         yield return officerReader.ParseFileListIntoType(gameManager.officerFiles);
-        store.officers = officerReader.resultList;
 
-        Debug.Log(store.officers);
+        for (int i = 0; i < officerReader.resultList.Count; i++) {
+            Officer officer = officerReader.resultList[i];
 
-        //JSONController<Trait> traitReader = new JSONController<Trait>();
-        //yield return traitReader.ParseFileListIntoType(gameManager.officerFiles);
-        //store.traits = traitReader.resultList;
+            OfficerController controller = new OfficerController();
+            controller.StartUpController(officer);
+            store.officers.Add(controller);
 
-        //Debug.Log(store.traits);
+            feedback.text = "Importing Officers : " + (i + 1) + "/" + officerReader.resultList.Count;
+        }
+
+        AsyncOperation levelLoad = SceneManager.LoadSceneAsync(2);
+
+        while (levelLoad.progress < 1) {
+            proguessBar.fillAmount = levelLoad.progress;
+            yield return new WaitForEndOfFrame();
+        }
     }
 }

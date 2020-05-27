@@ -1,0 +1,18 @@
+[
+  {
+    "id": 0,
+    "firstName": "Yolo",
+    "familyName": "von Nigga",
+    "birth": "01/01/990",
+    "traits": [ 5, 4, 3, 2, 1 ],
+    "position": [ 225.54, 318 ]
+  },
+  {
+    "id": 1,
+    "firstName": "Swag",
+    "familyName": "von Nigger",
+    "birth": "01/01/995",
+    "traits": [ 6 ],
+    "position": [ 220.54, 310 ]
+  }
+]

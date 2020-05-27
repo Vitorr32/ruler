@@ -18,7 +18,6 @@ public class JSONController<T>
         List<List<T>> objectList = new List<List<T>>();
 
         foreach (TextAsset textAsset in textAssets) {
-            Debug.Log(textAsset.text);
             JSONUtilityWrapper jsonWrapper = JsonUtility.FromJson<JSONUtilityWrapper>("{\"values\":" + textAsset.text + "}");
 
             objectList.Add(jsonWrapper.values);

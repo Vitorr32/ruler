@@ -491,7 +491,7 @@ GameObject:
   - component: {fileID: 1789844695}
   - component: {fileID: 1789844694}
   m_Layer: 5
-  m_Name: Image
+  m_Name: Loading Fill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -649,3 +649,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e19ea428deffd442b5f2afff59a0c42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  proguessBar: {fileID: 1789844694}
+  feedback: {fileID: 182444409}
