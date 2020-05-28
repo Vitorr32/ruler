@@ -1,27 +1,66 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 
-public enum Trigger
-{
-    NO_TRIGGER,
-    ON_ATTACK,
-    ON_DEFENSE,
-    ON_ENTERING,
-    ON_LEAVING,
-    ON_TILE_TYPE,
-    ON_OVERWORLD,
-    ON_DIALOGUE
-}
-
+[Serializable]
 public class Effect
 {
-    Effect(int pID, Trigger[] pTriggers) {
-        id = pID;
-        triggers = pTriggers;
+    [Serializable]
+    public class Trigger
+    {
+        public ActionType type;
+        public int[] arguments;
+    }
+    [Serializable]
+    public class Restriction
+    {
+        public enum Type
+        {
+            NO_RESTRICTION,
+            AGAINST_GENDER,
+            AGAINST_RACE,
+            AGAINST_FAITH,
+            NOT_AGAINST_GENDER,
+            NOT_AGAINST_RACE,
+            NOT_AGAINST_FAITH
+        }
+
+        public Type type;
+        public int[] arguments;
+    }
+    [Serializable]
+    public class Modifier
+    {
+        public enum Type
+        {
+            MODIFY_ATTRIBUTE_ABSOLUTE,
+            MODIFY_ATTRIBUTE_RELATIVE,
+            MODIFY_RESOURCE_GAIN,
+            MODIFY_HEALTH
+        }
+
+        public Type type;
+        public int[] arguments;
+    }
+    [Serializable]
+    public class Duration
+    {
+        public enum Type
+        {
+            PERMANENT,
+            ON_TURN_END,
+            ON_TURN_START,
+            SPECIFIC_DURATION,
+            SPECIFIC_DATE
+        }
+
+        public Type type;
+        public int[] arguments;
     }
 
-    private int id;
-    private Trigger[] triggers;
-
-
+    public int id;
+    //Source is with item/trait/race is the source of the effect
+    public int sourceID;
+    public Trigger trigger;
+    public Duration duration;
+    public Restriction[] restrictions;
+    public Modifier[] modifiers;
 }

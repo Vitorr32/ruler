@@ -6,7 +6,7 @@ using UnityEngine.Windows;
 //Store will have all the serializable data of the game, including traits, officers and effects
 public class StoreController : MonoBehaviour
 {
-    static StoreController instance;
+    public static StoreController instance;
 
     public List<Effect> effects;
     public List<OfficerController> officers = new List<OfficerController>();

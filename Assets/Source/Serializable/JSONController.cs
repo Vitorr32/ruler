@@ -11,11 +11,15 @@ public class JSONController<T>
 
     private class JSONUtilityWrapper
     {
-        public List<T> values;
+        public List<T> values = new List<T>();
     }
 
     public IEnumerator ParseFileListIntoType(List<TextAsset> textAssets) {
         List<List<T>> objectList = new List<List<T>>();
+
+        if (textAssets.Count == 0) {
+            Debug.Log("No text asset hsa been set for type " + typeof(T).FullName + "!");
+        }
 
         foreach (TextAsset textAsset in textAssets) {
             JSONUtilityWrapper jsonWrapper = JsonUtility.FromJson<JSONUtilityWrapper>("{\"values\":" + textAsset.text + "}");

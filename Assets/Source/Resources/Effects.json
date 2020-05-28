@@ -1,0 +1,22 @@
+[
+  {
+    "id": 0,
+    "trigger": {
+      "type": 1,
+      "arguments": []
+    },
+    "duration": {
+      "type": 0
+    },
+    "modifiers": [
+      {
+        "type": 0,
+        "arguments": [ 20 ]
+      },
+      {
+        "type": 3,
+        "arguments": [ 10 ]
+      }
+    ]
+  }
+]

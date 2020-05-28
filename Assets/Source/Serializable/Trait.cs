@@ -1,27 +1,16 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class Trait
 {
-    Trait(int pID, Type pType, Effect[] pEffects, Trait[] pProguession) {
-        id = pID;
-        type = pType;
-        effects = pEffects;
-        proguession = pProguession;
-    }
-
-    public enum Type
-    {
-        UNKNOWN_TYPE,
-        VALOROUS,
-        SKILLED_HUNTER
-    }
-
     public int id;
-    public Type type;
-    public Effect[] effects;
+    public string name;
+    public string description;
+    public int[] effects;
 
-    public Trait[] proguession;
-
+    [NonSerialized]
+    public List<Effect> uEffects = new List<Effect>();
 }

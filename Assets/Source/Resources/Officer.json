@@ -4,15 +4,25 @@
     "firstName": "Yolo",
     "familyName": "von Nigga",
     "birth": "01/01/990",
-    "traits": [ 5, 4, 3, 2, 1 ],
-    "position": [ 225.54, 318 ]
+    "traits": [ 0 ],
+    "position": [ 225.54, 318 ],
+    "gender": 0,
+    "race": 0,
+    "diplomacy": 80,
+    "martial": 50,
+    "inteligence":  30
   },
   {
     "id": 1,
     "firstName": "Swag",
     "familyName": "von Nigger",
     "birth": "01/01/995",
-    "traits": [ 6 ],
-    "position": [ 220.54, 310 ]
+    "traits": [ 0 ],
+    "position": [ 220.54, 310 ],
+    "gender": 1,
+    "race": 1,
+    "diplomacy": 70,
+    "martial": 56,
+    "inteligence": 80
   }
 ]
