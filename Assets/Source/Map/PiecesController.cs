@@ -26,7 +26,7 @@ public class PiecesController : MonoBehaviour
 
             GameObject actorOfOfficer = Instantiate(officerPrefab, officerPosition, Quaternion.identity);
 
-            actorOfOfficer.GetComponent<ActorController>().associatedOfficer = controller;
+            actorOfOfficer.GetComponent<PieceController>().associatedOfficer = controller;
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.EventSystems;
 
 public class PlayerControlller : MonoBehaviour
 {
-    public ActorController playerActor = null;
+    public PieceController playerActor = null;
     public Terrain gameTerrain = null;
 
     // Start is called before the first frame update

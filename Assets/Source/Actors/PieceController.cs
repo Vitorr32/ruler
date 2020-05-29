@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.EventSystems;
 
-public class ActorController : MonoBehaviour, IPointerClickHandler
+public class PieceController : MonoBehaviour, IPointerClickHandler
 {
     public delegate void OnActorClick(OfficerController officer);
     public static event OnActorClick onActorClicked;
