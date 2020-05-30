@@ -7,19 +7,15 @@ using UnityEngine.EventSystems;
 
 public class PieceController : MonoBehaviour, IPointerClickHandler
 {
-    public delegate void OnActorClick(OfficerController officer);
-    public static event OnActorClick onActorClicked;
+    public delegate void OnPieceClick(OfficerController officer);
+    public static event OnPieceClick onPieceClicked;
 
-    public OfficerController associatedOfficer;
-    private bool isPlayer = false;
+    public delegate void OnActorCollision(OfficerController mainPiece, OfficerController targetPiece);
+    public static event OnActorCollision onPieceCollided;
+
     public Vector3 currentDestination;
-
     private NavMeshAgent navMeshAgent;
-
     private TickController.Speed gameSpeed;
-    private float trueSpeed;
-
-    private float tick = 50;
 
     // Start is called before the first frame update
     void Start() {
@@ -59,7 +55,18 @@ public class PieceController : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData) {
         if (eventData.button == PointerEventData.InputButton.Left) {
-            onActorClicked?.Invoke(associatedOfficer);
+            onPieceClicked?.Invoke(GetComponent<OfficerController>());
+        }
+    }
+
+    private void OnTriggerEnter(Collider other) {
+        PieceController triggeredPiece = other.GetComponent<PieceController>();
+
+        if (!triggeredPiece) {
+            return;
+        }
+        else {
+            onPieceCollided?.Invoke(GetComponent<OfficerController>(), triggeredPiece.GetComponent<OfficerController>());
         }
     }
 }

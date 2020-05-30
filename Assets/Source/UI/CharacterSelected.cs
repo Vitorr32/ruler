@@ -13,11 +13,11 @@ public class CharacterSelected : MonoBehaviour
     public Text m_traits;
     // Start is called before the first frame update
     void Start() {
-        PieceController.onActorClicked += onCharacterSelection;
+        PieceController.onPieceClicked += onCharacterSelection;
     }
 
     void OnDestroy() {
-        PieceController.onActorClicked -= onCharacterSelection;
+        PieceController.onPieceClicked -= onCharacterSelection;
     }
 
     // Update is called once per frame

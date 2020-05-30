@@ -8,9 +8,9 @@ public class StoreController : MonoBehaviour
 {
     public static StoreController instance;
 
-    public List<Effect> effects;
+    public List<Effect> effects = new List<Effect>();
     public List<OfficerController> officers = new List<OfficerController>();
-    public List<Trait> traits;
+    public List<Trait> traits = new List<Trait>();
 
     private void Awake() {
         if (instance != null && instance != this) {

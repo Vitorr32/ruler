@@ -4,18 +4,14 @@ using UnityEngine;
 
 public class PiecesController : MonoBehaviour
 {
-    private StoreController store;
-
     public Terrain terrain;
     public GameObject officerPrefab;
     private void Awake() {
-        store = FindObjectOfType<StoreController>();
-
         SetPiecesOnBoard();
     }
 
-    void SetPiecesOnBoard() {        
-        foreach (OfficerController controller in store.officers) {
+    private void SetPiecesOnBoard() {
+        foreach (OfficerController controller in StoreController.instance.officers) {
             int[] position = controller.baseOfficer.position;
 
             Vector3 officerPosition = new Vector3(position[0], 0, position[1]);
@@ -26,7 +22,7 @@ public class PiecesController : MonoBehaviour
 
             GameObject actorOfOfficer = Instantiate(officerPrefab, officerPosition, Quaternion.identity);
 
-            actorOfOfficer.GetComponent<PieceController>().associatedOfficer = controller;
+            controller.piece = actorOfOfficer.GetComponent<PieceController>();
         }
     }
 }

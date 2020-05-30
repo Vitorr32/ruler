@@ -7,11 +7,13 @@ using UnityEngine;
 public class OfficerController
 {
     public Officer baseOfficer;
+    public PieceController piece;
 
     public List<Trait> serializedTraits = new List<Trait>();
     public List<Effect> activeEffects = new List<Effect>();
 
     public bool onOverworld;
+    public bool isPlayer;
 
     public void StartUpController(Officer officer) {
         baseOfficer = officer;

@@ -49,6 +49,9 @@ public class SceneLoading : MonoBehaviour
             Officer officer = officerReader.resultList[i];
 
             OfficerController controller = new OfficerController();
+            if (i == 0) {
+                controller.isPlayer = true;
+            }
             controller.StartUpController(officer);
             StoreController.instance.officers.Add(controller);
 

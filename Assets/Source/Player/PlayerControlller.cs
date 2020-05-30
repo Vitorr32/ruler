@@ -10,6 +10,7 @@ public class PlayerControlller : MonoBehaviour
 
     // Start is called before the first frame update
     void Start() {
+        playerActor = StoreController.instance.officers[0].piece;
         TerrainController.onTerrainClicked += onMapClicked;
     }
 
