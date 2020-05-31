@@ -10,7 +10,7 @@ public class Effect
         public int[] arguments;
     }
     [Serializable]
-    public class Restriction
+    public struct Restriction
     {
         public enum Type
         {
@@ -27,7 +27,7 @@ public class Effect
         public int[] arguments;
     }
     [Serializable]
-    public class Modifier
+    public struct Modifier
     {
         public enum Type
         {
@@ -41,7 +41,7 @@ public class Effect
         public int[] arguments;
     }
     [Serializable]
-    public class Duration
+    public struct Duration
     {
         public enum Type
         {

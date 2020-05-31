@@ -39,6 +39,8 @@ public class WorldCamera : MonoBehaviour
     void Start() {
         m_Camera = GetComponent<Camera>();
 
+        m_focusedObject = StoreController.instance.officers[0].piece.gameObject;
+
         if (!m_Terrain) {
             Debug.Log("No terrain reference set, search for one in gameobject");
             m_Terrain = FindObjectOfType<Terrain>();

@@ -10,9 +10,10 @@ public class PieceController : MonoBehaviour, IPointerClickHandler
     public delegate void OnPieceClick(OfficerController officer);
     public static event OnPieceClick onPieceClicked;
 
-    public delegate void OnActorCollision(OfficerController mainPiece, OfficerController targetPiece);
-    public static event OnActorCollision onPieceCollided;
+    public delegate void OnPieceCollision(OfficerController mainPiece, OfficerController targetPiece);
+    public static event OnPieceCollision onPieceCollided;
 
+    public OfficerController associatedOfficer;
     public Vector3 currentDestination;
     private NavMeshAgent navMeshAgent;
     private TickController.Speed gameSpeed;
@@ -59,14 +60,16 @@ public class PieceController : MonoBehaviour, IPointerClickHandler
         }
     }
 
-    private void OnTriggerEnter(Collider other) {
+    public void OnTriggerEnter(Collider other) {
+        if (other.tag != "Interactable") { return; }
+
         PieceController triggeredPiece = other.GetComponent<PieceController>();
 
         if (!triggeredPiece) {
             return;
         }
         else {
-            onPieceCollided?.Invoke(GetComponent<OfficerController>(), triggeredPiece.GetComponent<OfficerController>());
+            onPieceCollided?.Invoke(associatedOfficer, triggeredPiece.associatedOfficer);
         }
     }
 }
