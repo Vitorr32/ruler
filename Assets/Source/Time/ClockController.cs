@@ -11,7 +11,7 @@ public class ClockController : MonoBehaviour
     private Text clockDate;
     void Start() {
         clockDate = GetComponent<Text>();
-        clockDate.text = TickController.date.ToString("ddd, dd MMMM yyyy HH:mm", new CultureInfo("en-US"));
+        clockDate.text = TickController.date.ToString(Utils.displayDateFormat, new CultureInfo("en-US"));
 
         TickController.onTimeAdvance += onDateChange;
     }

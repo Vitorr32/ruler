@@ -1,27 +1,35 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+public enum LineType
+{
+    DESCRIPTION, //Simple text description with no associated speaker
+    ANIMATED_LINE, //Line that is a animation or a change in background
+    DEFAULT_LINE, //A line of conversation with a associated speaker and no specific animation
+    PLAYER_CHOICE // A line where the player will be given a list of choices to be made
+}
 public struct ScriptLine
 {
     public string dialogue;
     public List<Choice> playerChoices;
-
     public OfficerController speaker;
-
     public Sprite background;
+    public LineType type;
 }
 public class ConversationController : MonoBehaviour, IPointerClickHandler
 {
     private StageController stageController;
+
+    private List<OfficerController> officersInConversation;
 
     List<ScriptLine> history = new List<ScriptLine>();
     List<Choice> speakerChoices;
 
     private void Awake() {
         PieceController.onPieceCollided += OnPlayerTriggeredConversation;
-               
     }
 
     // Start is called before the first frame update
@@ -41,14 +49,18 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
     }
 
     private void SetUpConversationBetweenOfficers(OfficerController source, OfficerController target) {
+        officersInConversation = new List<OfficerController> { source, target };
+
         Relationship[] relationships = GetRelationshipBetweenCharacters(source.baseOfficer, target.baseOfficer);
 
-        List<ScriptLine> writtenScript = WriteConversationScript(source, target, relationships);
+
+
+        List<ScriptLine> writtenScript = WriteInitialConversationScript(source, target, relationships);
 
         stageController.StartUpStageForScript(writtenScript);
     }
 
-    private List<ScriptLine> WriteConversationScript(OfficerController source, OfficerController target, Relationship[] relationships) {
+    private List<ScriptLine> WriteInitialConversationScript(OfficerController source, OfficerController target, Relationship[] relationships) {
         List<ScriptLine> scriptLines = new List<ScriptLine>();
 
         ScriptLine introduction = new ScriptLine();
@@ -56,6 +68,7 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
         string introductionText = "While walking through the **** you meet your friend " + target.baseOfficer.firstName;
 
         introduction.dialogue = introductionText;
+        introduction.type = LineType.DESCRIPTION;
 
         scriptLines.Add(introduction);
 
@@ -65,6 +78,8 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
             new Choice(){ line= "Yolo" },
             new Choice(){ line= "Swag" }
         };
+
+        initialReponse.type = LineType.PLAYER_CHOICE;
 
         scriptLines.Add(initialReponse);
 

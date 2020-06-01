@@ -3,17 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 [Serializable]
-public class Relationship
-{
-    public int desire;
-    public int trust;
-    public int dominance;
-    public int knowledge;
-
-    public int targetID;
-}
-
-[Serializable]
 public class Officer
 {
     public enum Gender
@@ -39,7 +28,7 @@ public class Officer
         MUSLIM,
         BUDHIST
     }
-    
+
     public Officer(int pID, string pFirstName, string pFamilytName, string pBirth, string pDeath, List<int> pTraits, int[] pPosition) {
         id = pID;
         firstName = pFirstName;
@@ -62,6 +51,8 @@ public class Officer
     public int diplomacy;
     public int martial;
     public int inteligence;
+    //Mood is the emotional state of the officer, from 100 (Very Happy) to 0 (Very Unhappy)
+    public int mood = 50;
 
     public List<int> traits;
     public List<Relationship> relationships;

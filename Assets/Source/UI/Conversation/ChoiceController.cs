@@ -53,9 +53,6 @@ public class ChoiceController : MonoBehaviour
 
     // Start is called before the first frame update
     public GameObject choicePrefab;
-    void Start() {
-        gameObject.SetActive(false);
-    }
 
     public void ShowChoices(List<Choice> choices) {
         gameObject.SetActive(true);
