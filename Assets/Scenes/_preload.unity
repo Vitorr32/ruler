@@ -170,6 +170,8 @@ MonoBehaviour:
   - {fileID: 4900000, guid: de5b765f775b2ee4193dcfcebc9ffeb9, type: 3}
   traitFiles:
   - {fileID: 4900000, guid: 41ccd3ad82cf8874e9359970ae9d740c, type: 3}
+  dialogueFiles:
+  - {fileID: 4900000, guid: ab89114fc023e564f8b818428bc76c73, type: 3}
 --- !u!4 &1664171682
 Transform:
   m_ObjectHideFlags: 0
@@ -198,6 +200,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   effects: []
   traits: []
+  dialogues: []
 --- !u!1 &2010621206
 GameObject:
   m_ObjectHideFlags: 0

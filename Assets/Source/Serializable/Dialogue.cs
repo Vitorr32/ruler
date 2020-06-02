@@ -1,6 +1,23 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+
+[Serializable]
+public struct Restriction
+{
+    public enum Type
+    {
+        HAS_TRAIT,
+        ATTRIBUTE_HIGHER_THAN,
+        ATTRIBUTE_LOWER_THAN,
+        MOOD_HIGHER_THAN,
+        MOOD_LOWER_THAN,
+        SKILL_HIGHER_THAN
+    }
+
+    public Type type;
+    public int[] arguments;
+}
 public enum DialogueType
 {
     INTRODUCTION,
@@ -19,15 +36,17 @@ public class Dialogue
 {
     [Serializable]
     //How much a specific trait has a tendency of chosing this specific dialogue
-    public class TraitPush
+    public struct TraitPush
     {
-        int traitID;
-        int weight;
+        public int traitID;
+        public float weight;
     }
 
     public List<TraitPush> traitPushes;
+    public List<Restriction> restrictions;
     public DialogueType type;
     //Modifier that this dialogue suffers when taking into account the officer mood from Happy (100) to Unhappy(0)
-    public float moodModifier;
+    public float moodModifier = 1;
+    public int weight = 1; //How strong is the tendecy for this dialogue be choosen over the rest, the default is 1
     public string text;
 }

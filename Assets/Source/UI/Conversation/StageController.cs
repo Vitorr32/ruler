@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
+//Stage Controller controls the dialogue proguession and visual, including showing characters, transitioning scenes and playing animations
 public class StageController : MonoBehaviour, IPointerClickHandler
 {
     public GameObject overlay;

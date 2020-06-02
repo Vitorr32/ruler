@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+public struct Context
+{
+}
 public enum LineType
 {
     DESCRIPTION, //Simple text description with no associated speaker
@@ -63,25 +66,35 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
     private List<ScriptLine> WriteInitialConversationScript(OfficerController source, OfficerController target, Relationship[] relationships) {
         List<ScriptLine> scriptLines = new List<ScriptLine>();
 
+        Dialogue chosenIntroduction = DialoguePooler.ObtainDialogueTypeFromSpeaker(DialogueType.INTRODUCTION, target);
+
+        Debug.Log(chosenIntroduction.text);
+
         ScriptLine introduction = new ScriptLine();
 
-        string introductionText = "While walking through the **** you meet your friend " + target.baseOfficer.firstName;
-
-        introduction.dialogue = introductionText;
+        introduction.dialogue = "While walking through the **** you meet your friend " + target.baseOfficer.firstName;
         introduction.type = LineType.DESCRIPTION;
 
         scriptLines.Add(introduction);
 
         ScriptLine initialReponse = new ScriptLine();
 
-        initialReponse.playerChoices = new List<Choice>() {
+        Dialogue targetIntroduction = DialoguePooler.ObtainDialogueTypeFromSpeaker(DialogueType.INTRODUCTION, target);
+
+        initialReponse.dialogue = targetIntroduction.text;
+        initialReponse.type = LineType.DEFAULT_LINE;
+
+        scriptLines.Add(initialReponse);
+
+        ScriptLine initialChoices = new ScriptLine();
+
+        initialChoices.playerChoices = new List<Choice>() {
             new Choice(){ line= "Yolo" },
             new Choice(){ line= "Swag" }
         };
+        initialChoices.type = LineType.PLAYER_CHOICE;
 
-        initialReponse.type = LineType.PLAYER_CHOICE;
-
-        scriptLines.Add(initialReponse);
+        scriptLines.Add(initialChoices);
 
         return scriptLines;
     }

@@ -7,14 +7,10 @@ using UnityEngine.UI;
 
 public class SceneLoading : MonoBehaviour
 {
-    GameManager gameManager;
-
     public Image proguessBar;
     public Text feedback;
     // Start is called before the first frame update
     void Start() {
-        gameManager = FindObjectOfType<GameManager>();
-
         StartCoroutine(LoadAsyncDependecies());
     }
 
@@ -22,13 +18,19 @@ public class SceneLoading : MonoBehaviour
         feedback.text = "Importing effects from JSON";
 
         JSONController<Effect> effectReader = new JSONController<Effect>();
-        yield return effectReader.ParseFileListIntoType(gameManager.effectFiles);
+        yield return effectReader.ParseFileListIntoType(GameManager.instance.effectFiles);
         StoreController.instance.effects = effectReader.resultList;
+
+        feedback.text = "Importing dialogues from JSON";
+
+        JSONController<Dialogue> dialogueReader = new JSONController<Dialogue>();
+        yield return dialogueReader.ParseFileListIntoType(GameManager.instance.dialogueFiles);
+        StoreController.instance.dialogues = dialogueReader.resultList;
 
         feedback.text = "Importing traits from JSON";
 
         JSONController<Trait> traitReader = new JSONController<Trait>();
-        yield return traitReader.ParseFileListIntoType(gameManager.traitFiles);
+        yield return traitReader.ParseFileListIntoType(GameManager.instance.traitFiles);
 
         for (int i = 0; i < traitReader.resultList.Count; i++) {
             Trait trait = traitReader.resultList[i];
@@ -43,7 +45,7 @@ public class SceneLoading : MonoBehaviour
         feedback.text = "Importing officers from JSON";
 
         JSONController<Officer> officerReader = new JSONController<Officer>();
-        yield return officerReader.ParseFileListIntoType(gameManager.officerFiles);
+        yield return officerReader.ParseFileListIntoType(GameManager.instance.officerFiles);
 
         for (int i = 0; i < officerReader.resultList.Count; i++) {
             Officer officer = officerReader.resultList[i];

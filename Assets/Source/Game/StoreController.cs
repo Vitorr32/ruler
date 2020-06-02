@@ -11,6 +11,7 @@ public class StoreController : MonoBehaviour
     public List<Effect> effects = new List<Effect>();
     public List<OfficerController> officers = new List<OfficerController>();
     public List<Trait> traits = new List<Trait>();
+    public List<Dialogue> dialogues = new List<Dialogue>();
 
     private void Awake() {
         if (instance != null && instance != this) {

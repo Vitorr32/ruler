@@ -44,9 +44,10 @@ public struct Relationship
     public int knowledge;
     public Opinion opinion;
 
-    //Check the date where the relationship was estabilshed, also if the Officer know the appearance of the target officer
+    //Check the date where the relationship was estabilshed
     public string establishedDate;
     public string lastInteractionDate;
+    //Check if the officer knows the appearance of the target officer, this can happen when the source officer hears rumours about the target
     public bool knowAppearance;
 
     public int targetID;
