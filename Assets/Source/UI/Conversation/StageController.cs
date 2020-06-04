@@ -13,6 +13,7 @@ public class StageController : MonoBehaviour, IPointerClickHandler
     public ChoiceController choiceController;
     public ResponseController responseController;
 
+    public bool onActing;
     public List<ScriptLine> currentScript;
 
     public void Start() {
@@ -24,6 +25,7 @@ public class StageController : MonoBehaviour, IPointerClickHandler
     public void StartUpStageForScript(List<ScriptLine> script) {
         currentScript = script;
 
+        onActing = true;
         StartCoroutine(PlayLine(script[0]));
     }
 
@@ -72,6 +74,7 @@ public class StageController : MonoBehaviour, IPointerClickHandler
             yield return PlayLine(currentScript[index + 1], index + 1);
         }
 
+        onActing = false;
         yield return null;
     }
 

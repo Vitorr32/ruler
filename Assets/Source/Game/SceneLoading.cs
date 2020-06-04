@@ -15,6 +15,9 @@ public class SceneLoading : MonoBehaviour
     }
 
     IEnumerator LoadAsyncDependecies() {
+        feedback.text = "Importing Officers Sprites";
+        //StoreController.instance.sprites = Resources.LoadAll("Images/Officer", typeof(Sprite)).ToList() as List<Sprite>;
+
         feedback.text = "Importing effects from JSON";
 
         JSONController<Effect> effectReader = new JSONController<Effect>();

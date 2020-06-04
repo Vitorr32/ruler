@@ -18,6 +18,17 @@ public struct Restriction
     public Type type;
     public int[] arguments;
 }
+//Emotion that this dialogue will be representing
+public enum Emotion
+{
+    NEUTRAL,
+    HAPPY,
+    SAD,
+    ANGRY,
+    FURIOUS,
+    SUSPICIOUS,
+    SCARED
+}
 public enum DialogueType
 {
     INTRODUCTION,
@@ -48,5 +59,6 @@ public class Dialogue
     //Modifier that this dialogue suffers when taking into account the officer mood from Happy (100) to Unhappy(0)
     public float moodModifier = 1;
     public int weight = 1; //How strong is the tendecy for this dialogue be choosen over the rest, the default is 1
-    public string text;
+    public List<string> text;
+    public Emotion emotion;
 }

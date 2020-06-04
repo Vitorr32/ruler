@@ -7,12 +7,29 @@ using UnityEngine.EventSystems;
 public struct Context
 {
 }
+
+public enum Actions
+{
+    TALK_ABOUT,
+    INVITE_TO,
+    ASK_ABOUT
+}
 public enum LineType
 {
     DESCRIPTION, //Simple text description with no associated speaker
     ANIMATED_LINE, //Line that is a animation or a change in background
     DEFAULT_LINE, //A line of conversation with a associated speaker and no specific animation
     PLAYER_CHOICE // A line where the player will be given a list of choices to be made
+}
+
+public enum AnimationType
+{
+    FADE_IN,
+    FADE_OUT,
+    MOVE_TO,
+    PACE_AROUND,
+    JUMP,
+    STRUGGLE
 }
 public struct ScriptLine
 {
@@ -56,8 +73,6 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
 
         Relationship[] relationships = GetRelationshipBetweenCharacters(source.baseOfficer, target.baseOfficer);
 
-
-
         List<ScriptLine> writtenScript = WriteInitialConversationScript(source, target, relationships);
 
         stageController.StartUpStageForScript(writtenScript);
@@ -68,8 +83,6 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
 
         Dialogue chosenIntroduction = DialoguePooler.ObtainDialogueTypeFromSpeaker(DialogueType.INTRODUCTION, target);
 
-        Debug.Log(chosenIntroduction.text);
-
         ScriptLine introduction = new ScriptLine();
 
         introduction.dialogue = "While walking through the **** you meet your friend " + target.baseOfficer.firstName;
@@ -77,14 +90,9 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
 
         scriptLines.Add(introduction);
 
-        ScriptLine initialReponse = new ScriptLine();
-
         Dialogue targetIntroduction = DialoguePooler.ObtainDialogueTypeFromSpeaker(DialogueType.INTRODUCTION, target);
 
-        initialReponse.dialogue = targetIntroduction.text;
-        initialReponse.type = LineType.DEFAULT_LINE;
-
-        scriptLines.Add(initialReponse);
+        scriptLines.AddRange(ConvertDialogueToScriptLine(targetIntroduction, target));
 
         ScriptLine initialChoices = new ScriptLine();
 
@@ -116,6 +124,22 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
         gameObject.SetActive(true);
 
         SetUpConversationBetweenOfficers(source, target);
+    }
+
+    private List<ScriptLine> ConvertDialogueToScriptLine(Dialogue dialogue, OfficerController speaker) {
+        List<ScriptLine> linesOfDialogue = new List<ScriptLine>();
+
+        foreach (string text in dialogue.text) {
+
+            ScriptLine textPart = new ScriptLine();
+            textPart.dialogue = text;
+            textPart.type = LineType.DEFAULT_LINE;
+            textPart.speaker = speaker;
+
+            linesOfDialogue.Add(textPart);
+        }
+
+        return linesOfDialogue;
     }
 
     public void OnPointerClick(PointerEventData eventData) {
