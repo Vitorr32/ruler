@@ -9,6 +9,8 @@ public class TickController : MonoBehaviour
     public static TickController instance;
     //Nowhere else should be allowed to change the date value besides this class
     public static DateTime date { get; private set; }
+    public bool gameIsPaused { get; set; }
+    public bool onProgrammedTick { get; set; }
 
     public enum Speed
     {
@@ -61,6 +63,8 @@ public class TickController : MonoBehaviour
 
     // Update is called once per frame
     void Update() {
+        if (gameIsPaused) { return; }
+
         if (currentSpeed != Speed.PAUSED) {
             DateTime previousTime = date;
             updateDate(currentSpeed);
@@ -84,6 +88,34 @@ public class TickController : MonoBehaviour
         }
     }
 
+    public void MoveTickXTimes(int ticks) {
+        if (onProgrammedTick) {
+            Debug.LogError("Programatically tick called before previous one finished");
+            return;
+        }
+
+        onProgrammedTick = true;
+
+        StartCoroutine(TickXTimes(ticks));
+    }
+
+    private IEnumerator TickXTimes(int ticks) {
+        int counter = 0;
+
+        while (ticks > counter) {
+            DateTime previousTime = date;
+            updateDate(1);
+            onFlagTriggered?.Invoke(getFlag(previousTime, date));
+            onTimeAdvance?.Invoke(date, currentSpeed);
+
+            yield return new WaitForSeconds(0.2f);
+        }
+
+        onProgrammedTick = false;
+
+        yield return null;
+    }
+
     private void updateDate(Speed speed = Speed.REAL_TIME) {
         if (speed == Speed.REAL_TIME) {
             //Time.deltaTime is seconds since last frame, so we multiply it by 60 to get how many minutes in-game passed since last frame
@@ -93,6 +125,10 @@ public class TickController : MonoBehaviour
             //Otherwise we use the regular speeds multipliers
             date = date.AddMinutes(Time.deltaTime * secondToMinuteBase * getTickSpeed(currentSpeed));
         }
+    }
+
+    private void updateDate(int minutes) {
+        date = date.AddMinutes(minutes);
     }
 
     private Flag getFlag(DateTime previousTick, DateTime currentDate) {

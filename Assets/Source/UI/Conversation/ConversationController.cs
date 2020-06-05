@@ -22,15 +22,6 @@ public enum LineType
     PLAYER_CHOICE // A line where the player will be given a list of choices to be made
 }
 
-public enum AnimationType
-{
-    FADE_IN,
-    FADE_OUT,
-    MOVE_TO,
-    PACE_AROUND,
-    JUMP,
-    STRUGGLE
-}
 public struct ScriptLine
 {
     public string dialogue;
@@ -38,11 +29,11 @@ public struct ScriptLine
     public OfficerController speaker;
     public Sprite background;
     public LineType type;
+    public ScriptAnimation animation;
 }
 public class ConversationController : MonoBehaviour, IPointerClickHandler
 {
     private StageController stageController;
-
     private List<OfficerController> officersInConversation;
 
     List<ScriptLine> history = new List<ScriptLine>();
@@ -116,16 +107,6 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
         return relationships;
     }
 
-    private void OnPlayerTriggeredConversation(OfficerController source, OfficerController target) {
-        if (!source.isPlayer || gameObject.activeSelf) {
-            return;
-        }
-
-        gameObject.SetActive(true);
-
-        SetUpConversationBetweenOfficers(source, target);
-    }
-
     private List<ScriptLine> ConvertDialogueToScriptLine(Dialogue dialogue, OfficerController speaker) {
         List<ScriptLine> linesOfDialogue = new List<ScriptLine>();
 
@@ -140,6 +121,23 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
         }
 
         return linesOfDialogue;
+    }
+    private void OnPlayerTriggeredConversation(OfficerController source, OfficerController target) {
+        if (!source.isPlayer || gameObject.activeSelf) {
+            return;
+        }
+
+        TickController.instance.gameIsPaused = true;
+
+        gameObject.SetActive(true);
+
+        SetUpConversationBetweenOfficers(source, target);
+    }
+
+    private void OnEndOfConversation() {
+        TickController.instance.gameIsPaused = false;
+
+        gameObject.SetActive(false);
     }
 
     public void OnPointerClick(PointerEventData eventData) {

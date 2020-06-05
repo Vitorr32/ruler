@@ -16,7 +16,7 @@ public class SceneLoading : MonoBehaviour
 
     IEnumerator LoadAsyncDependecies() {
         feedback.text = "Importing Officers Sprites";
-        //StoreController.instance.sprites = Resources.LoadAll("Images/Officer", typeof(Sprite)).ToList() as List<Sprite>;
+        StoreController.instance.sprites = Resources.LoadAll<Sprite>("Images/Officer").ToList();
 
         feedback.text = "Importing effects from JSON";
 
@@ -58,6 +58,9 @@ public class SceneLoading : MonoBehaviour
                 controller.isPlayer = true;
             }
             controller.StartUpController(officer);
+
+            controller.officerSprite = new List<Sprite>() { StoreController.instance.sprites.Find(sprite => sprite.name == ("o_" + officer.id)) };
+
             StoreController.instance.officers.Add(controller);
 
             feedback.text = "Importing Officers : " + (i + 1) + "/" + officerReader.resultList.Count;

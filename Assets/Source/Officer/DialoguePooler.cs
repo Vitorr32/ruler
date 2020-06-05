@@ -16,7 +16,7 @@ public static class DialoguePooler
         }
     }
 
-    private static List<Dialogue> GetPollOfDialogues(DialogueType type) {        
+    private static List<Dialogue> GetPollOfDialogues(DialogueType type) {
         return StoreController.instance.dialogues.Where(dialogue => dialogue.type == type).ToList();
     }
 
@@ -24,9 +24,15 @@ public static class DialoguePooler
         float highestWeigth = 0;
         int indexOfHighestWeigth = 0;
 
-        dialogues.ForEach(dialogue => {
-            CalculateWeigthOfDialogueForSpeaker(dialogue, speaker);
-        });
+        for (int i = 0; i < dialogues.Count; i++) {
+            Dialogue dialogue = dialogues[i];
+
+            float currentDialogueWeight = CalculateWeigthOfDialogueForSpeaker(dialogue, speaker);
+            if (currentDialogueWeight > highestWeigth) {
+                indexOfHighestWeigth = i;
+                highestWeigth = currentDialogueWeight;
+            }
+        }
 
         return dialogues[indexOfHighestWeigth];
     }
