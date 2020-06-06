@@ -10,18 +10,15 @@ public class StageController : MonoBehaviour, IPointerClickHandler
     public GameObject overlay;
     public GameObject background;
     public GameObject description;
-    public GameObject actorPrefab;
-
-    public GameObject actorsStage;
 
     public ChoiceController choiceController;
     public ResponseController responseController;
+    public ActorsController actorsController;
 
     public bool onActing;
     public List<ScriptLine> script;
 
     private List<OfficerController> officers;
-    private List<AnimationController> actors = new List<AnimationController>();
 
     public void Start() {
         choiceController.gameObject.SetActive(false);
@@ -30,20 +27,12 @@ public class StageController : MonoBehaviour, IPointerClickHandler
     }
 
     public void StartUpStageForScript(List<ScriptLine> scriptToSet, List<OfficerController> actorsOfStage) {
+        onActing = true;
+
         script = scriptToSet;
         officers = actorsOfStage;
+        actorsController.StartUpActorsOfStage(actorsOfStage);
 
-        officers.ForEach(controller => {
-
-            AnimationController actorGameObject = Instantiate(actorPrefab, actorsStage.transform).GetComponent<AnimationController>();
-
-            actorGameObject.GetComponent<Image>().sprite = controller.officerSprite.First();
-            actorGameObject.officerId = controller.baseOfficer.id;
-
-            actors.Add(actorGameObject);
-        });
-
-        onActing = true;
         StartCoroutine(PlayLine(script[0]));
     }
 
@@ -79,16 +68,19 @@ public class StageController : MonoBehaviour, IPointerClickHandler
                 responseController.ShowResponse(line.dialogue);
                 break;
             case LineType.ANIMATED_LINE:
-                AnimationController actorToAnimate = actors.Find(controller => controller.officerId == line.speaker.baseOfficer.id);
+                actorsController.ShowAnimation(line.animations);
 
-                actorToAnimate.Animate(line.animation);
+                do {
+                    yield return new WaitForEndOfFrame();
+                } while (actorsController.isAnimatingActors);
+
                 break;
             default:
                 Debug.LogError("Unknown line type: " + line.type);
                 break;
         }
 
-        yield return new WaitForSeconds(5);
+        yield return new WaitForSeconds(1);
 
         if (index + 1 < script.Count) {
             yield return PlayLine(script[index + 1], index + 1);

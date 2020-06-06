@@ -29,7 +29,7 @@ public struct ScriptLine
     public OfficerController speaker;
     public Sprite background;
     public LineType type;
-    public ScriptAnimation animation;
+    public List<ScriptAnimation> animations;
 }
 public class ConversationController : MonoBehaviour, IPointerClickHandler
 {
@@ -73,14 +73,18 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
     private List<ScriptLine> WriteInitialConversationScript(OfficerController source, OfficerController target, Relationship[] relationships) {
         List<ScriptLine> scriptLines = new List<ScriptLine>();
 
-        Dialogue chosenIntroduction = DialoguePooler.ObtainDialogueTypeFromSpeaker(DialogueType.INTRODUCTION, target);
-
         ScriptLine introduction = new ScriptLine();
 
         introduction.dialogue = "While walking through the **** you meet your friend " + target.baseOfficer.firstName;
         introduction.type = LineType.DESCRIPTION;
 
         scriptLines.Add(introduction);
+
+        ScriptLine playerEnterSage = new ScriptLine();
+        playerEnterSage.type = LineType.ANIMATED_LINE;
+        playerEnterSage.animations = new List<ScriptAnimation>() { new ScriptAnimation() { type = AnimationType.ENTER_STAGE, faceTowardsLeft = false, actorID = source.baseOfficer.id } };
+
+        scriptLines.Add(playerEnterSage);
 
         Dialogue targetIntroduction = DialoguePooler.ObtainDialogueTypeFromSpeaker(DialogueType.INTRODUCTION, target);
 
@@ -142,6 +146,5 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
     }
 
     public void OnPointerClick(PointerEventData eventData) {
-        Debug.Log("Yolo");
     }
 }

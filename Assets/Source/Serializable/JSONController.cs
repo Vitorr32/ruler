@@ -22,7 +22,6 @@ public class JSONController<T>
         }
 
         foreach (TextAsset textAsset in textAssets) {
-            Debug.Log(typeof(T).FullName);
             JSONUtilityWrapper jsonWrapper = JsonUtility.FromJson<JSONUtilityWrapper>("{\"values\":" + textAsset.text + "}");
 
             objectList.Add(jsonWrapper.values);
