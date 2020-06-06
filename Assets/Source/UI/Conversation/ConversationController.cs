@@ -36,6 +36,7 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
     private StageController stageController;
     private List<OfficerController> officersInConversation;
 
+
     List<ScriptLine> history = new List<ScriptLine>();
     List<Choice> speakerChoices;
 
@@ -66,7 +67,7 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
 
         List<ScriptLine> writtenScript = WriteInitialConversationScript(source, target, relationships);
 
-        stageController.StartUpStageForScript(writtenScript);
+        stageController.StartUpStageForScript(writtenScript, officersInConversation);
     }
 
     private List<ScriptLine> WriteInitialConversationScript(OfficerController source, OfficerController target, Relationship[] relationships) {

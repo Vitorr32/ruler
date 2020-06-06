@@ -4,6 +4,7 @@ using UnityEngine;
 
 public enum AnimationType
 {
+    ENTER_STAGE,
     FADE_IN,
     FADE_OUT,
     MOVE_TO,
@@ -24,12 +25,15 @@ public class AnimationController : MonoBehaviour
 {
     ScriptAnimation currentAnimation;
 
-    void Start() {
+    public int officerId;
+    public bool onAnimation;
 
+    public void Animate(ScriptAnimation script) {
+        StartCoroutine(PlayAnimation(script));
     }
 
-    // Update is called once per frame
-    void Update() {
+    private IEnumerator PlayAnimation(ScriptAnimation script) {
 
+        yield return null;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -9,12 +10,18 @@ public class StageController : MonoBehaviour, IPointerClickHandler
     public GameObject overlay;
     public GameObject background;
     public GameObject description;
+    public GameObject actorPrefab;
+
+    public GameObject actorsStage;
 
     public ChoiceController choiceController;
     public ResponseController responseController;
 
     public bool onActing;
-    public List<ScriptLine> currentScript;
+    public List<ScriptLine> script;
+
+    private List<OfficerController> officers;
+    private List<AnimationController> actors = new List<AnimationController>();
 
     public void Start() {
         choiceController.gameObject.SetActive(false);
@@ -22,8 +29,19 @@ public class StageController : MonoBehaviour, IPointerClickHandler
         description.gameObject.SetActive(false);
     }
 
-    public void StartUpStageForScript(List<ScriptLine> script) {
-        currentScript = script;
+    public void StartUpStageForScript(List<ScriptLine> scriptToSet, List<OfficerController> actorsOfStage) {
+        script = scriptToSet;
+        officers = actorsOfStage;
+
+        officers.ForEach(controller => {
+
+            AnimationController actorGameObject = Instantiate(actorPrefab, actorsStage.transform).GetComponent<AnimationController>();
+
+            actorGameObject.GetComponent<Image>().sprite = controller.officerSprite.First();
+            actorGameObject.officerId = controller.baseOfficer.id;
+
+            actors.Add(actorGameObject);
+        });
 
         onActing = true;
         StartCoroutine(PlayLine(script[0]));
@@ -32,8 +50,8 @@ public class StageController : MonoBehaviour, IPointerClickHandler
     private void CleanStageForNextLine(int currentLineIndex) {
         if (currentLineIndex == 0) { return; }
 
-        ScriptLine currentLine = currentScript[currentLineIndex];
-        ScriptLine previousLine = currentScript[currentLineIndex - 1];
+        ScriptLine currentLine = script[currentLineIndex];
+        ScriptLine previousLine = script[currentLineIndex - 1];
 
         if (previousLine.type == LineType.DESCRIPTION && currentLine.type != LineType.DESCRIPTION) {
             responseController.ShowResponse(previousLine.dialogue);
@@ -61,7 +79,9 @@ public class StageController : MonoBehaviour, IPointerClickHandler
                 responseController.ShowResponse(line.dialogue);
                 break;
             case LineType.ANIMATED_LINE:
-                //TODO: Animation and transition engine
+                AnimationController actorToAnimate = actors.Find(controller => controller.officerId == line.speaker.baseOfficer.id);
+
+                actorToAnimate.Animate(line.animation);
                 break;
             default:
                 Debug.LogError("Unknown line type: " + line.type);
@@ -70,8 +90,8 @@ public class StageController : MonoBehaviour, IPointerClickHandler
 
         yield return new WaitForSeconds(5);
 
-        if (index + 1 < currentScript.Count) {
-            yield return PlayLine(currentScript[index + 1], index + 1);
+        if (index + 1 < script.Count) {
+            yield return PlayLine(script[index + 1], index + 1);
         }
 
         onActing = false;
