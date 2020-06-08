@@ -87,5 +87,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57233b424cde60b448d9c8badc58ffad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvasRectTransfrom: {fileID: 0}
   officerId: 0
   onAnimation: 0

@@ -23,6 +23,10 @@ public class OfficerController
         activeEffects = StartUpEffectsOnOfficer(serializedTraits);
     }
 
+    public int GetOfficerID() {
+        return baseOfficer.id;
+    }
+
     private List<Trait> GetOfficerTraitsFromStore(Officer officer) {
         List<Trait> traits = new List<Trait>();
 

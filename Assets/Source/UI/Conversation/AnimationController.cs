@@ -1,6 +1,4 @@
-﻿using Boo.Lang;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,19 +26,27 @@ public class ScriptAnimation
 public class AnimationController : MonoBehaviour
 {
     public RectTransform canvasRectTransfrom;
-
     private RectTransform rectTransform;
-    private ScriptAnimation currentAnimation;
     private Image image;
 
-    public int officerId = -1;
+    private ConversationActor actor;
     public bool onAnimation;
 
-    public void Start() {
+    public void Awake() {
         rectTransform = GetComponent<RectTransform>();
         image = GetComponent<Image>();
 
+        ActorsController.OnActorFocusChange += OnChangeOnActorFocus;
+
         gameObject.SetActive(false);
+    }
+
+    public int GetActorID() {
+        return actor.associatedOfficer.baseOfficer.id;
+    }
+
+    public void PrepareAnimationController(ConversationActor toSetActor) {
+        actor = toSetActor;
     }
 
     public void Animate(ScriptAnimation script) {
@@ -50,12 +56,27 @@ public class AnimationController : MonoBehaviour
         StartCoroutine(PlayAnimation(script));
     }
 
+    private void OnChangeOnActorFocus(ConversationActor updatedActor) {
+        if (!gameObject.activeSelf) { return; }
+
+        if (updatedActor.associatedOfficer.GetOfficerID() != actor.associatedOfficer.GetOfficerID()) { return; }
+
+        if (updatedActor.isFocused == actor.isFocused) { return; }
+
+        actor = updatedActor;
+
+        FocusCharacter(updatedActor.isFocused);
+    }
+
     private IEnumerator PlayAnimation(ScriptAnimation script) {
 
 
         switch (script.type) {
             case AnimationType.ENTER_STAGE:
-                PlayEnterStage(script.faceTowardsLeft, 1);
+                PlayerStageState(script.faceTowardsLeft, 1);
+                break;
+            case AnimationType.EXIT_STAGE:
+                PlayerStageState(script.faceTowardsLeft, 1, true);
                 break;
             default:
                 Debug.LogError("Unknown animation type: " + script.type);
@@ -65,35 +86,54 @@ public class AnimationController : MonoBehaviour
         yield return null;
     }
 
-    private void PlayEnterStage(bool faceTowardsLeft, int offsetFromOtherActors) {
-        if (!faceTowardsLeft) {
+    private void PlayerStageState(bool faceTowardsLeft, int offsetFromOtherActors, bool exit = false) {
+        if (faceTowardsLeft || exit) {
             transform.localScale = InvertFaceTowardsDirection(transform.localScale);
         }
 
         float offsetFromBorder = canvasRectTransfrom.rect.width * ActorsController.StageBorderOffset;
 
-        float initialX = faceTowardsLeft
+        float outsideStage = faceTowardsLeft
             ? canvasRectTransfrom.rect.width + (rectTransform.rect.width / 2)
             : (rectTransform.rect.width / 2) * -1;
 
-        float finalX = faceTowardsLeft
+        float insideStage = faceTowardsLeft
             ? canvasRectTransfrom.rect.width - ((rectTransform.rect.width / 2) * (1 + offsetFromOtherActors / 10)) - offsetFromBorder
             : (rectTransform.rect.width / 2) * (1 + offsetFromOtherActors / 10) + offsetFromBorder;
 
-        rectTransform.anchoredPosition = new Vector2(initialX, 0f);
+        //Only need to set the position of the gameObject if it's not currently on stage, therefore only if it's not in the stage yet
+        if (!exit) {
+            rectTransform.anchoredPosition = new Vector2(outsideStage, rectTransform.anchoredPosition.y);
+        }
 
-        LeanTween.value(initialX, finalX, 2).setOnUpdate((value) => {
-            rectTransform.anchoredPosition = new Vector2(value, 0f);
+        Vector2 startPosition = exit ? new Vector2(insideStage, 1) : new Vector2(outsideStage, 0);
+        Vector2 endPosition = exit ? new Vector2(outsideStage, 0) : new Vector2(insideStage, 1);
 
-            Color color = image.color;
-            color.a = value / (finalX + initialX);
-            image.color = color;
+        //Turn the initial X to Final X tween into a vector 2 so we can add the aplha of the gameobject in the same tween logic
+        //So while the tween is going between initalX to finalX, it will go from 0 alpha to 1 alpha at the same time
+        LeanTween.value(gameObject, startPosition, endPosition, 2)
+            .setEase(LeanTweenType.easeInOutQuad)
+            .setOnUpdate((Vector2 value) => {
+                rectTransform.anchoredPosition = new Vector2(value.x, rectTransform.anchoredPosition.y);
 
-        }).setOnComplete(() => onAnimation = false);
+                Color color = image.color;
+                color.a = value.y;
+                image.color = color;
+
+            })
+            .setOnComplete(() => onAnimation = false);
+    }
+
+    private void FocusCharacter(bool inFocus) {
+        Debug.Log("Changing Focus");
+        onAnimation = true;
+
+        LeanTween.color(gameObject, inFocus ? Color.white : Color.grey, 2f);
+        LeanTween.scale(gameObject, inFocus ? Vector3.one : new Vector3(0.8f, 0.8f, 1f), 2f).setOnComplete(() => onAnimation = false); ;
     }
 
     private Vector3 InvertFaceTowardsDirection(Vector3 localScale) {
-        localScale.x = -1;
+        localScale.x = localScale.x == 1 ? -1 : 1;
         return localScale;
     }
 }

@@ -18,7 +18,7 @@ public class StageController : MonoBehaviour, IPointerClickHandler
     public bool onActing;
     public List<ScriptLine> script;
 
-    private List<OfficerController> officers;
+    private List<ConversationActor> actors;
 
     public void Start() {
         choiceController.gameObject.SetActive(false);
@@ -26,11 +26,11 @@ public class StageController : MonoBehaviour, IPointerClickHandler
         description.gameObject.SetActive(false);
     }
 
-    public void StartUpStageForScript(List<ScriptLine> scriptToSet, List<OfficerController> actorsOfStage) {
+    public void StartUpStageForScript(List<ScriptLine> scriptToSet, List<ConversationActor> actorsOfStage) {
         onActing = true;
 
         script = scriptToSet;
-        officers = actorsOfStage;
+        actors = actorsOfStage;
         actorsController.StartUpActorsOfStage(actorsOfStage);
 
         StartCoroutine(PlayLine(script[0]));
@@ -65,6 +65,7 @@ public class StageController : MonoBehaviour, IPointerClickHandler
                 choiceController.ShowChoices(line.playerChoices);
                 break;
             case LineType.DEFAULT_LINE:
+                OnActorDialogue(line);
                 responseController.ShowResponse(line.dialogue);
                 break;
             case LineType.ANIMATED_LINE:
@@ -88,6 +89,14 @@ public class StageController : MonoBehaviour, IPointerClickHandler
 
         onActing = false;
         yield return null;
+    }
+
+    private void OnActorDialogue(ScriptLine line) {
+        for (int i = 0; i < actors.Count; i++) {
+            actors[i].isFocused = line.speakers.Find(speaker => speaker.GetOfficerID() == actors[i].associatedOfficer.GetOfficerID()) != null;
+        }
+
+        actorsController.RefocusActors(actors);
     }
 
     public void OnPointerClick(PointerEventData eventData) {

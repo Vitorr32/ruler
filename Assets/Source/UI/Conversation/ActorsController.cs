@@ -12,24 +12,25 @@ public class ActorsController : MonoBehaviour
 
     public bool isAnimatingActors;
 
+    public delegate void OnActorReshuffle(Vector3 worldPoint);
+    public static event OnActorReshuffle OnActorReshuffleEvent;
 
-    // Start is called before the first frame update
-    void Start() {
+    public delegate void OnActorFocus(ConversationActor updatedActor);
+    public static event OnActorFocus OnActorFocusChange;
 
-    }
 
-    // Update is called once per frame
-    void Update() {
-
-    }
-
-    public void StartUpActorsOfStage(List<OfficerController> officerOnStage) {
-        for (int i = 0; i < officerOnStage.Count; i++) {
+    public void StartUpActorsOfStage(List<ConversationActor> actorsOnStage) {
+        for (int i = 0; i < actorsOnStage.Count; i++) {
             AnimationController animator = animationControllers[i];
-            animator.officerId = officerOnStage[i].baseOfficer.id;
 
-            animator.GetComponent<Image>().sprite = officerOnStage[i].officerSprite.First();
+            animator.PrepareAnimationController(actorsOnStage[i]);
+
+            animator.GetComponent<Image>().sprite = actorsOnStage[i].associatedOfficer.officerSprite.First();
         }
+    }
+
+    public void RefocusActors(List<ConversationActor> updatedActorsOnStage) {
+        updatedActorsOnStage.ForEach(actor => OnActorFocusChange?.Invoke(actor));
     }
 
     public void ShowAnimation(List<ScriptAnimation> animations) {
@@ -39,14 +40,14 @@ public class ActorsController : MonoBehaviour
     }
     private IEnumerator StartAnimations(List<ScriptAnimation> animations) {
         animations.ForEach(animation => {
-            AnimationController actorToAnimate = animationControllers.Find(controller => controller.officerId == animation.actorID);
+            AnimationController actorToAnimate = animationControllers.Find(controller => controller.GetActorID() == animation.actorID);
 
             actorToAnimate.Animate(animation);
         });
 
         do {
             yield return new WaitForEndOfFrame();
-        } while (!animationControllers.Find(controller => controller.onAnimation));
+        } while (animationControllers.Find(controller => controller.onAnimation));
 
         isAnimatingActors = false;
 

@@ -4,6 +4,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+
+public class ConversationActor
+{
+    public OfficerController associatedOfficer;
+    public bool isOnLeftSideOfStage;
+    public bool isFocused;
+    public int slot;
+}
 public struct Context
 {
 }
@@ -26,7 +34,8 @@ public struct ScriptLine
 {
     public string dialogue;
     public List<Choice> playerChoices;
-    public OfficerController speaker;
+    //Who is talking in the current line (Used to know what character will be focused on the screen)
+    public List<OfficerController> speakers;
     public Sprite background;
     public LineType type;
     public List<ScriptAnimation> animations;
@@ -34,7 +43,7 @@ public struct ScriptLine
 public class ConversationController : MonoBehaviour, IPointerClickHandler
 {
     private StageController stageController;
-    private List<OfficerController> officersInConversation;
+    private List<ConversationActor> actorsInConversation;
 
 
     List<ScriptLine> history = new List<ScriptLine>();
@@ -61,17 +70,26 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
     }
 
     private void SetUpConversationBetweenOfficers(OfficerController source, OfficerController target) {
-        officersInConversation = new List<OfficerController> { source, target };
+        actorsInConversation = new List<ConversationActor>() {
+            new ConversationActor(){ associatedOfficer = source, isFocused = true, isOnLeftSideOfStage = true },
+            new ConversationActor(){ associatedOfficer = target, isFocused = true, isOnLeftSideOfStage = false }
+        };
 
         Relationship[] relationships = GetRelationshipBetweenCharacters(source.baseOfficer, target.baseOfficer);
 
         List<ScriptLine> writtenScript = WriteInitialConversationScript(source, target, relationships);
 
-        stageController.StartUpStageForScript(writtenScript, officersInConversation);
+        stageController.StartUpStageForScript(writtenScript, actorsInConversation);
     }
 
     private List<ScriptLine> WriteInitialConversationScript(OfficerController source, OfficerController target, Relationship[] relationships) {
         List<ScriptLine> scriptLines = new List<ScriptLine>();
+
+        ScriptLine playerEnterSage = new ScriptLine();
+        playerEnterSage.type = LineType.ANIMATED_LINE;
+        playerEnterSage.animations = new List<ScriptAnimation>() { new ScriptAnimation() { type = AnimationType.ENTER_STAGE, faceTowardsLeft = false, actorID = source.baseOfficer.id } };
+
+        scriptLines.Add(playerEnterSage);
 
         ScriptLine introduction = new ScriptLine();
 
@@ -80,15 +98,19 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
 
         scriptLines.Add(introduction);
 
-        ScriptLine playerEnterSage = new ScriptLine();
-        playerEnterSage.type = LineType.ANIMATED_LINE;
-        playerEnterSage.animations = new List<ScriptAnimation>() { new ScriptAnimation() { type = AnimationType.ENTER_STAGE, faceTowardsLeft = false, actorID = source.baseOfficer.id } };
+        ScriptLine targetEnterStage = new ScriptLine();
+        targetEnterStage.type = LineType.ANIMATED_LINE;
+        targetEnterStage.animations = new List<ScriptAnimation>() { new ScriptAnimation() { type = AnimationType.ENTER_STAGE, faceTowardsLeft = true, actorID = target.baseOfficer.id } };
 
-        scriptLines.Add(playerEnterSage);
+        scriptLines.Add(targetEnterStage);
 
         Dialogue targetIntroduction = DialoguePooler.ObtainDialogueTypeFromSpeaker(DialogueType.INTRODUCTION, target);
 
-        scriptLines.AddRange(ConvertDialogueToScriptLine(targetIntroduction, target));
+        scriptLines.AddRange(ConvertDialogueToScriptLine(targetIntroduction, new List<OfficerController>() { target }));
+
+        Dialogue secondIntroduction = DialoguePooler.ObtainDialogueTypeFromSpeaker(DialogueType.INTRODUCTION, target);
+
+        scriptLines.AddRange(ConvertDialogueToScriptLine(secondIntroduction, new List<OfficerController>() { target }));
 
         ScriptLine initialChoices = new ScriptLine();
 
@@ -99,6 +121,12 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
         initialChoices.type = LineType.PLAYER_CHOICE;
 
         scriptLines.Add(initialChoices);
+
+        ScriptLine playerExitStage = new ScriptLine();
+        playerExitStage.type = LineType.ANIMATED_LINE;
+        playerExitStage.animations = new List<ScriptAnimation>() { new ScriptAnimation() { type = AnimationType.EXIT_STAGE, faceTowardsLeft = false, actorID = source.baseOfficer.id } };
+
+        scriptLines.Add(playerExitStage);
 
         return scriptLines;
     }
@@ -112,7 +140,7 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
         return relationships;
     }
 
-    private List<ScriptLine> ConvertDialogueToScriptLine(Dialogue dialogue, OfficerController speaker) {
+    private List<ScriptLine> ConvertDialogueToScriptLine(Dialogue dialogue, List<OfficerController> speaker) {
         List<ScriptLine> linesOfDialogue = new List<ScriptLine>();
 
         foreach (string text in dialogue.text) {
@@ -120,7 +148,7 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
             ScriptLine textPart = new ScriptLine();
             textPart.dialogue = text;
             textPart.type = LineType.DEFAULT_LINE;
-            textPart.speaker = speaker;
+            textPart.speakers = speaker;
 
             linesOfDialogue.Add(textPart);
         }
