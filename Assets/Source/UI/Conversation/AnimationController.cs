@@ -30,6 +30,8 @@ public class AnimationController : MonoBehaviour
     private Image image;
 
     private ConversationActor actor;
+    private bool onFocusedState;
+
     public bool onAnimation;
 
     public void Awake() {
@@ -47,6 +49,8 @@ public class AnimationController : MonoBehaviour
 
     public void PrepareAnimationController(ConversationActor toSetActor) {
         actor = toSetActor;
+
+        onFocusedState = toSetActor.isFocused;
     }
 
     public void Animate(ScriptAnimation script) {
@@ -56,16 +60,15 @@ public class AnimationController : MonoBehaviour
         StartCoroutine(PlayAnimation(script));
     }
 
-    private void OnChangeOnActorFocus(ConversationActor updatedActor) {
+    private void OnChangeOnActorFocus(int refocusActorID) {
         if (!gameObject.activeSelf) { return; }
 
-        if (updatedActor.associatedOfficer.GetOfficerID() != actor.associatedOfficer.GetOfficerID()) { return; }
+        if (refocusActorID != actor.associatedOfficer.GetOfficerID()) { return; }
 
-        if (updatedActor.isFocused == actor.isFocused) { return; }
+        if (actor.isFocused == onFocusedState) { return; }
 
-        actor = updatedActor;
-
-        FocusCharacter(updatedActor.isFocused);
+        onFocusedState = actor.isFocused;
+        FocusCharacter(actor.isFocused);
     }
 
     private IEnumerator PlayAnimation(ScriptAnimation script) {
@@ -106,6 +109,10 @@ public class AnimationController : MonoBehaviour
             rectTransform.anchoredPosition = new Vector2(outsideStage, rectTransform.anchoredPosition.y);
         }
 
+        if (exit && !actor.isFocused) {
+            LeanTween.scaleY(gameObject, 1, 0.2f);
+        }
+
         Vector2 startPosition = exit ? new Vector2(insideStage, 1) : new Vector2(outsideStage, 0);
         Vector2 endPosition = exit ? new Vector2(outsideStage, 0) : new Vector2(insideStage, 1);
 
@@ -125,11 +132,16 @@ public class AnimationController : MonoBehaviour
     }
 
     private void FocusCharacter(bool inFocus) {
-        Debug.Log("Changing Focus");
-        onAnimation = true;
+        LeanTween.color(gameObject, inFocus ? Color.white : Color.grey, .5f)
+            .setOnUpdateColor(
+                newColor => image.color = newColor
+            );
 
-        LeanTween.color(gameObject, inFocus ? Color.white : Color.grey, 2f);
-        LeanTween.scale(gameObject, inFocus ? Vector3.one : new Vector3(0.8f, 0.8f, 1f), 2f).setOnComplete(() => onAnimation = false); ;
+        LeanTween.scale(gameObject,
+            inFocus
+                ? actor.isOnLeftSideOfStage ? Vector3.one : new Vector3(-1, 1, 1)
+                : new Vector3(actor.isOnLeftSideOfStage ? 1 : -1, actor.isOnLeftSideOfStage ? 0.8f : -0.8f, 1f), .5f)
+            .setOnComplete(() => onAnimation = false); ;
     }
 
     private Vector3 InvertFaceTowardsDirection(Vector3 localScale) {

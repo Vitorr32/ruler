@@ -70,16 +70,15 @@ public class StageController : MonoBehaviour, IPointerClickHandler
                 break;
             case LineType.ANIMATED_LINE:
                 actorsController.ShowAnimation(line.animations);
-
-                do {
-                    yield return new WaitForEndOfFrame();
-                } while (actorsController.isAnimatingActors);
-
                 break;
             default:
                 Debug.LogError("Unknown line type: " + line.type);
                 break;
         }
+
+        do {
+            yield return new WaitForEndOfFrame();
+        } while (actorsController.isAnimatingActors);
 
         yield return new WaitForSeconds(1);
 
@@ -96,7 +95,7 @@ public class StageController : MonoBehaviour, IPointerClickHandler
             actors[i].isFocused = line.speakers.Find(speaker => speaker.GetOfficerID() == actors[i].associatedOfficer.GetOfficerID()) != null;
         }
 
-        actorsController.RefocusActors(actors);
+        StartCoroutine(actorsController.RefocusActors(actors));
     }
 
     public void OnPointerClick(PointerEventData eventData) {

@@ -15,7 +15,7 @@ public class ActorsController : MonoBehaviour
     public delegate void OnActorReshuffle(Vector3 worldPoint);
     public static event OnActorReshuffle OnActorReshuffleEvent;
 
-    public delegate void OnActorFocus(ConversationActor updatedActor);
+    public delegate void OnActorFocus(int updatedActorID);
     public static event OnActorFocus OnActorFocusChange;
 
 
@@ -28,16 +28,24 @@ public class ActorsController : MonoBehaviour
             animator.GetComponent<Image>().sprite = actorsOnStage[i].associatedOfficer.officerSprite.First();
         }
     }
-
-    public void RefocusActors(List<ConversationActor> updatedActorsOnStage) {
-        updatedActorsOnStage.ForEach(actor => OnActorFocusChange?.Invoke(actor));
-    }
-
     public void ShowAnimation(List<ScriptAnimation> animations) {
         isAnimatingActors = true;
 
         StartCoroutine(StartAnimations(animations));
     }
+
+    public IEnumerator RefocusActors(List<ConversationActor> updatedActorsOnStage) {
+        isAnimatingActors = true;
+
+        updatedActorsOnStage.ForEach(actor => OnActorFocusChange?.Invoke(actor.associatedOfficer.GetOfficerID()));
+
+        yield return WaitForActorAnimationsToEnd();
+
+        isAnimatingActors = false;
+
+        yield return null;
+    }
+
     private IEnumerator StartAnimations(List<ScriptAnimation> animations) {
         animations.ForEach(animation => {
             AnimationController actorToAnimate = animationControllers.Find(controller => controller.GetActorID() == animation.actorID);
@@ -45,12 +53,16 @@ public class ActorsController : MonoBehaviour
             actorToAnimate.Animate(animation);
         });
 
-        do {
-            yield return new WaitForEndOfFrame();
-        } while (animationControllers.Find(controller => controller.onAnimation));
+        yield return WaitForActorAnimationsToEnd();
 
         isAnimatingActors = false;
 
         yield return null;
+    }
+
+    private IEnumerator WaitForActorAnimationsToEnd() {
+        do {
+            yield return new WaitForEndOfFrame();
+        } while (animationControllers.Find(controller => controller.onAnimation));
     }
 }
