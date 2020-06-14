@@ -12,7 +12,8 @@ public struct Restriction
         ATTRIBUTE_LOWER_THAN,
         MOOD_HIGHER_THAN,
         MOOD_LOWER_THAN,
-        SKILL_HIGHER_THAN
+        SKILL_HIGHER_THAN,
+        HAS_RELATIONSHIP_TYPE
     }
 
     public Type type;
@@ -39,6 +40,7 @@ public enum DialogueType
     DISCUSS_HOOBIES,
     DISCUSS_CHARACTER,
     DISCUSS_SKILLS,
+    DISCUSS_HOBBIES,
     DISCUSS_RELIGION,
     DISCUSS_RACE
 }

@@ -4,5 +4,17 @@
     "text": [
       "Hello there, and who are you?"
     ]
+  },
+  {
+    "type": 0,
+    "text": [
+      "Oh hello there %CHAR%! how's you day?"
+    ],
+    "restrictions": [
+      {
+        "type": 6,
+        "arguments": [ 2 ]
+      }
+    ]
   }
 ]

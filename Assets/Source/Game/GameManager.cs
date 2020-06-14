@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
         }
         else {
             instance = this;
-            SceneManager.LoadScene(1);
+            SceneManager.LoadScene(3);
         }
     }
 

@@ -1278,6 +1278,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4436004883662360287, guid: 7876b4db1afd3dd40b08299262618215,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6200277471455131986, guid: 7876b4db1afd3dd40b08299262618215,
         type: 3}
       propertyPath: canvasRectTransfrom
@@ -1747,6 +1752,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4436004883662360287, guid: 7876b4db1afd3dd40b08299262618215,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6200277471455131986, guid: 7876b4db1afd3dd40b08299262618215,
         type: 3}
       propertyPath: canvasRectTransfrom
@@ -2156,6 +2166,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4436004883662360287, guid: 7876b4db1afd3dd40b08299262618215,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6200277471455131986, guid: 7876b4db1afd3dd40b08299262618215,
         type: 3}
       propertyPath: canvasRectTransfrom
@@ -2297,6 +2312,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4436004883662360287, guid: 7876b4db1afd3dd40b08299262618215,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6200277471455131986, guid: 7876b4db1afd3dd40b08299262618215,
         type: 3}
@@ -2440,6 +2460,11 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 4436004883662360287, guid: 7876b4db1afd3dd40b08299262618215,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6200277471455131986, guid: 7876b4db1afd3dd40b08299262618215,
         type: 3}
       propertyPath: canvasRectTransfrom
@@ -2581,6 +2606,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Pivot.y
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4436004883662360287, guid: 7876b4db1afd3dd40b08299262618215,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6200277471455131986, guid: 7876b4db1afd3dd40b08299262618215,
         type: 3}

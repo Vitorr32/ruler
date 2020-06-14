@@ -29,6 +29,37 @@ public class Officer
         BUDHIST
     }
 
+    public enum Status
+    {
+        SLAVE,
+        INDENTURE_SLAVE,
+        SERF,
+        FREE_MAN,
+        WEALTHY_CITIZEN,
+        MINOR_NOBLE,
+        NOBLE
+    }
+
+    public struct Hobby
+    {
+        public enum Type
+        {
+            HUNTING,
+            FALCONRY,
+            MELEE,
+            LITERATURE,
+            GAMES,
+            DANCE,
+            MUSIC,
+            FESTIVALS,
+            LANGUAGES,
+            FISHING
+        }
+
+        public bool isKnownByPlayer;
+        public Type type;
+    }
+
     public Officer(int pID, string pFirstName, string pFamilytName, string pBirth, string pDeath, List<int> pTraits, int[] pPosition) {
         id = pID;
         firstName = pFirstName;
@@ -55,6 +86,7 @@ public class Officer
     public int mood = 50;
 
     public List<int> traits;
+    public List<string> sprites = new List<string>() { "default_child", "default_child", "default_child" };
     public List<Relationship> relationships;
     public int[] position;
 }

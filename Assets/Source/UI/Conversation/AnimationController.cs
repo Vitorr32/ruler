@@ -96,9 +96,7 @@ public class AnimationController : MonoBehaviour
 
         float offsetFromBorder = canvasRectTransfrom.rect.width * ActorsController.StageBorderOffset;
 
-        float outsideStage = faceTowardsLeft
-            ? canvasRectTransfrom.rect.width + (rectTransform.rect.width / 2)
-            : (rectTransform.rect.width / 2) * -1;
+        float outsideStage = faceTowardsLeft ? canvasRectTransfrom.rect.width : 0;
 
         float insideStage = faceTowardsLeft
             ? canvasRectTransfrom.rect.width - ((rectTransform.rect.width / 2) * (1 + offsetFromOtherActors / 10)) - offsetFromBorder
@@ -119,7 +117,7 @@ public class AnimationController : MonoBehaviour
         //Turn the initial X to Final X tween into a vector 2 so we can add the aplha of the gameobject in the same tween logic
         //So while the tween is going between initalX to finalX, it will go from 0 alpha to 1 alpha at the same time
         LeanTween.value(gameObject, startPosition, endPosition, 2)
-            .setEase(LeanTweenType.easeInOutQuad)
+            .setEase(LeanTweenType.easeOutQuad)
             .setOnUpdate((Vector2 value) => {
                 rectTransform.anchoredPosition = new Vector2(value.x, rectTransform.anchoredPosition.y);
 
@@ -132,10 +130,9 @@ public class AnimationController : MonoBehaviour
     }
 
     private void FocusCharacter(bool inFocus) {
-        LeanTween.color(gameObject, inFocus ? Color.white : Color.grey, .5f)
-            .setOnUpdateColor(
-                newColor => image.color = newColor
-            );
+        LeanTween.color(image.gameObject, inFocus ? Color.white : Color.grey, .5f)
+            .setFromColor(image.color)
+            .setOnUpdateColor(newColor => image.color = newColor);
 
         LeanTween.scale(gameObject,
             inFocus
