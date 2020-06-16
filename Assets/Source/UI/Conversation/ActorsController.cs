@@ -25,7 +25,7 @@ public class ActorsController : MonoBehaviour
 
             animator.PrepareAnimationController(actorsOnStage[i]);
 
-            animator.GetComponent<Image>().sprite = actorsOnStage[i].associatedOfficer.officerSprite.First();
+            animator.GetComponent<Image>().sprite = actorsOnStage[i].associatedOfficer.officerSprite.First().sprite;
         }
     }
     public void ShowAnimation(List<ScriptAnimation> animations) {

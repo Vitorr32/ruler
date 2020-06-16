@@ -15,6 +15,12 @@ public class SceneLoading : MonoBehaviour
     }
 
     IEnumerator LoadAsyncDependecies() {
+        feedback.text = "Processing Images...";
+
+        StoreController.instance.ParseRawSpritesIntoOfficeSprites();
+
+        Debug.Log(StoreController.instance.sprites.Count);
+
         feedback.text = "Importing effects from JSON";
 
         JSONController<Effect> effectReader = new JSONController<Effect>();
@@ -56,14 +62,16 @@ public class SceneLoading : MonoBehaviour
             }
             controller.StartUpController(officer);
 
-            controller.officerSprite = new List<Sprite>() { StoreController.instance.sprites.Find(sprite => sprite.name == ("o_" + officer.id)) };
+            controller.officerSprite = new List<OfficerSprite>() {
+                StoreController.instance.sprites.Find(sprite => sprite.filename == ("o_" + officer.id))
+            };
 
             StoreController.instance.officers.Add(controller);
 
             feedback.text = "Importing Officers : " + (i + 1) + "/" + officerReader.resultList.Count;
         }
 
-        AsyncOperation levelLoad = SceneManager.LoadSceneAsync(2);
+        AsyncOperation levelLoad = SceneManager.LoadSceneAsync(3);
 
         while (levelLoad.progress < 1) {
             proguessBar.fillAmount = levelLoad.progress;

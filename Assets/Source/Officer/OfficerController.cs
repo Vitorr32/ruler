@@ -9,7 +9,7 @@ public class OfficerController
     public Officer baseOfficer;
     public PieceController piece;
 
-    public List<Sprite> officerSprite;
+    public List<OfficerSprite> officerSprite;
     public List<Trait> serializedTraits = new List<Trait>();
     public List<Effect> activeEffects = new List<Effect>();
 

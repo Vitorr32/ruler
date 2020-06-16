@@ -5,34 +5,70 @@ using UnityEngine.UI;
 
 public class SpriteList : MonoBehaviour
 {
-    public enum SpriteFilter
-    {
-        TEEN,
-        YOUNG,
-        MIDDLE_AGE,
-        MALE,
-        FEMALE
-    }
+    private List<SpriteTemplate> spriteTemplates = new List<SpriteTemplate>();
 
-    List<Sprite> sprites;
+    private List<OfficerSprite.Age> ageTagsToFilter;
+    private List<OfficerSprite.Gender> genderTagsToFilter;
+
     public Transform spriteListAchor;
     public GameObject spriteTemplatePrefab;
 
     private void Awake() {
-        SpriteTemplate.onSpriteTemplateClicked += SpriteTemplateSelected;
         ShowAllSprites();
+        BasicInfoController.onSpriteSelectionRequest += OnSpriteSelectionRequest;
+
+        gameObject.SetActive(false);
+    }
+
+    private void OnSpriteSelectionRequest(OfficerSprite.Age age, OfficerSprite.Gender gender) {
+        gameObject.SetActive(true);
+
+        genderTagsToFilter = new List<OfficerSprite.Gender>() { gender };
+        ageTagsToFilter = new List<OfficerSprite.Age>() { age };
+
+        FilterSpriteListByTag(ageTagsToFilter, genderTagsToFilter);
+    }
+
+    public void FilterSpriteListByTag(List<OfficerSprite.Age> ageTags, List<OfficerSprite.Gender> genderTags) {
+        spriteTemplates.ForEach(spriteTemplate => {
+            OfficerSprite officerSprite = spriteTemplate.officerSprite;
+
+            spriteTemplate.gameObject.SetActive(!ageTags.Contains(officerSprite.age) || !genderTags.Contains(officerSprite.gender));
+        });
+    }
+
+    public void ToogleFilterValueForAge(int toFilterAge) {
+        OfficerSprite.Age age = (OfficerSprite.Age)toFilterAge;
+        if (ageTagsToFilter.Contains(age)) {
+            ageTagsToFilter.Remove(age);
+        }
+        else {
+            ageTagsToFilter.Add(age);
+        }
+
+        FilterSpriteListByTag(ageTagsToFilter, genderTagsToFilter);
+    }
+
+    public void ToogleFilterValueForGender(int toFilterGender) {
+        OfficerSprite.Gender gender = (OfficerSprite.Gender)toFilterGender;
+        if (genderTagsToFilter.Contains(gender)) {
+            genderTagsToFilter.Remove(gender);
+        }
+        else {
+            genderTagsToFilter.Add(gender);
+        }
+
+        FilterSpriteListByTag(ageTagsToFilter, genderTagsToFilter);
     }
 
     private void ShowAllSprites() {
         StoreController.instance.sprites.ForEach(sprite => {
-            GameObject spriteTemplate = Instantiate(spriteTemplatePrefab, spriteListAchor);
+            SpriteTemplate spriteTemplate = Instantiate(spriteTemplatePrefab, spriteListAchor).GetComponent<SpriteTemplate>();
 
-            spriteTemplate.GetComponent<SpriteTemplate>().StartUpSpriteTemplate(sprite, sprite.name);
+            spriteTemplate.StartUpSpriteTemplate(sprite, true);
+            spriteTemplates.Add(spriteTemplate);
         });
     }
 
-    private void SpriteTemplateSelected(Sprite sprite, string filename) {
-
-    }
 
 }

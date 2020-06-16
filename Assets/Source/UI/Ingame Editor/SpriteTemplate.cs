@@ -7,24 +7,26 @@ using UnityEngine.UI;
 
 public class SpriteTemplate : MonoBehaviour, IPointerClickHandler
 {
-    public delegate void OnClick(Sprite sprite, string filename);
+
+    public delegate void OnClick(OfficerSprite officerSprite);
     public static event OnClick onSpriteTemplateClicked;
 
-    public string m_filename;
-    public Sprite m_sprite;
-
-    public Text uiText;
+    public Text UIText;
     public Image image;
+    public OfficerSprite officerSprite;
 
-    public void StartUpSpriteTemplate(Sprite sprite, string filename) {
-        m_filename = filename;
-        m_sprite = sprite;
+    private bool shouldEmitEvents = false;
 
-        uiText.text = filename;
-        image.sprite = sprite;
+    public void StartUpSpriteTemplate(OfficerSprite officerSprite, bool shouldEmitEvent = false) {
+        UIText.text = officerSprite.filename;
+        image.sprite = officerSprite.sprite;
+
+        shouldEmitEvents = shouldEmitEvent;
     }
 
     public void OnPointerClick(PointerEventData eventData) {
-        onSpriteTemplateClicked?.Invoke(m_sprite, m_filename);
+        if (!shouldEmitEvents) { return; }
+
+        onSpriteTemplateClicked?.Invoke(officerSprite);
     }
 }
