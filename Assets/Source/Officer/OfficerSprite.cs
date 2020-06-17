@@ -32,11 +32,18 @@ public class OfficerSprite
         filename = rawSprite.name;
         sprite = rawSprite;
 
-        GetValuesFromFilename(filename.Split(Constants.SPRITE_SEPARATOR));
+        GetValuesFromFilename(filename.ToUpper().Split(Constants.SPRITE_SEPARATOR));
     }
 
     private void GetValuesFromFilename(string[] filename) {
-        string genderSubstring = filename[Constants.OFFICER_SPRITE_GENDER_INDEX];
+        if (filename.Length < (int)Constants.OfficerSpriteIndex.OFFICER_SPRITE_MAX) {
+            gender = Gender.UNDEFINED;
+            age = Age.UNDEFINED;
+
+            return;
+        }
+
+        string genderSubstring = filename[(int)Constants.OfficerSpriteIndex.OFFICER_SPRITE_GENDER_INDEX];
 
         if (Constants.MALE.Contains(genderSubstring)) {
             gender = Gender.MALE;
@@ -48,7 +55,7 @@ public class OfficerSprite
             gender = Gender.UNDEFINED;
         }
 
-        string ageSubstring = filename[Constants.OFFICER_SPRITE_AGE_INDEX];
+        string ageSubstring = filename[(int)Constants.OfficerSpriteIndex.OFFICER_SPRITE_AGE_INDEX];
 
         if (Constants.TEEN.Contains(ageSubstring)) {
             age = Age.TEEN;

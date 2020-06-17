@@ -53,6 +53,10 @@ public class BasicInfoController : MonoBehaviour
     public void OnSpriteSelectorClicked(int spriteSelectorInteger) {
         currentSpriteSelector = (SpriteSelector)spriteSelectorInteger;
 
+        Debug.Log(gender.value);
+        Debug.Log((OfficerSprite.Gender)gender.value);
+
+
         switch (currentSpriteSelector) {
             case SpriteSelector.TEEN_SPRITE_SELECTOR:
                 onSpriteSelectionRequest?.Invoke(OfficerSprite.Age.TEEN, (OfficerSprite.Gender)gender.value);

@@ -167,10 +167,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3975051af79194f4da64d75cfb9cf871, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  filename: 
-  sprite: {fileID: 0}
-  uiText: {fileID: 325171691111168590}
+  UIText: {fileID: 325171691111168590}
   image: {fileID: 5266518983800540772}
+  officerSprite:
+    filename: 
+    sprite: {fileID: 0}
+    gender: 0
+    age: 0
 --- !u!1 &7414781875605935017
 GameObject:
   m_ObjectHideFlags: 0

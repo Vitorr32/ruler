@@ -7,11 +7,13 @@ public class Officer
 {
     public enum Gender
     {
+        UNDEFINED,
         MALE,
         FEMALE
     }
     public enum Race
     {
+        UNDEFINED,
         HUMAN,
         ORC,
         ELF,
@@ -20,6 +22,7 @@ public class Officer
 
     public enum Faith
     {
+        UNDEFINED,
         FAITHLESS,
         ATHEIST,
         CHRISTIAN,
@@ -31,6 +34,7 @@ public class Officer
 
     public enum Status
     {
+        UNDEFINED,
         SLAVE,
         INDENTURE_SLAVE,
         SERF,

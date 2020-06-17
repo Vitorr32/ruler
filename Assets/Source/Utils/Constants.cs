@@ -5,9 +5,14 @@ using UnityEngine;
 public static class Constants
 {
     //On the sprite name, which characters will be used to identify the atrtibutes of the image
-    public const int OFFICER_SPRITE_GENDER_INDEX = 1;
-    public const int OFFICER_SPRITE_AGE_INDEX = 2;
-    public const int OFFICER_SPRITE_ID_INDEX = 3;
+    public enum OfficerSpriteIndex
+    {
+        OFFICER_SPRITE_GENDER_INDEX,
+        OFFICER_SPRITE_AGE_INDEX,
+        OFFICER_SPRITE_ID_INDEX,
+
+        OFFICER_SPRITE_MAX
+    }
 
     public const char SPRITE_SEPARATOR = '_';
 

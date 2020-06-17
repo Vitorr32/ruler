@@ -17,11 +17,12 @@ public class SpriteTemplate : MonoBehaviour, IPointerClickHandler
 
     private bool shouldEmitEvents = false;
 
-    public void StartUpSpriteTemplate(OfficerSprite officerSprite, bool shouldEmitEvent = false) {
-        UIText.text = officerSprite.filename;
-        image.sprite = officerSprite.sprite;
+    public void StartUpSpriteTemplate(OfficerSprite officerSpriteToSet, bool shouldEmitEvent = false) {
+        UIText.text = officerSpriteToSet.filename;
+        image.sprite = officerSpriteToSet.sprite;
 
         shouldEmitEvents = shouldEmitEvent;
+        officerSprite = officerSpriteToSet;
     }
 
     public void OnPointerClick(PointerEventData eventData) {

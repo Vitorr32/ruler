@@ -19,8 +19,6 @@ public class SceneLoading : MonoBehaviour
 
         StoreController.instance.ParseRawSpritesIntoOfficeSprites();
 
-        Debug.Log(StoreController.instance.sprites.Count);
-
         feedback.text = "Importing effects from JSON";
 
         JSONController<Effect> effectReader = new JSONController<Effect>();
