@@ -16,6 +16,8 @@ public class BasicInfoController : MonoBehaviour
         MIDDLE_AGE_SPRITE_SELECTOR
     }
 
+    public SpriteList spriteList;
+
     public Dropdown gender;
     public Dropdown race;
     public Dropdown religion;
@@ -37,6 +39,8 @@ public class BasicInfoController : MonoBehaviour
     }
 
     private void SpriteTemplateSelected(OfficerSprite officerSprite) {
+        spriteList.gameObject.SetActive(false);
+
         switch (currentSpriteSelector) {
             case SpriteSelector.TEEN_SPRITE_SELECTOR:
                 teen.StartUpSpriteTemplate(officerSprite);
@@ -51,11 +55,12 @@ public class BasicInfoController : MonoBehaviour
     }
 
     public void OnSpriteSelectorClicked(int spriteSelectorInteger) {
+        if (spriteList.gameObject.activeSelf && currentSpriteSelector == (SpriteSelector)spriteSelectorInteger) {
+            spriteList.gameObject.SetActive(false);
+            return;
+        }
+
         currentSpriteSelector = (SpriteSelector)spriteSelectorInteger;
-
-        Debug.Log(gender.value);
-        Debug.Log((OfficerSprite.Gender)gender.value);
-
 
         switch (currentSpriteSelector) {
             case SpriteSelector.TEEN_SPRITE_SELECTOR:

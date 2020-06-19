@@ -15,19 +15,17 @@ public class SpriteTemplate : MonoBehaviour, IPointerClickHandler
     public Image image;
     public OfficerSprite officerSprite;
 
-    private bool shouldEmitEvents = false;
+    //Whatever this sprite template is a fixed member of the UI(such as the sprite selection on the editor) or not
+    private bool isFixedUI = false;
 
-    public void StartUpSpriteTemplate(OfficerSprite officerSpriteToSet, bool shouldEmitEvent = false) {
+    public void StartUpSpriteTemplate(OfficerSprite officerSpriteToSet) {
         UIText.text = officerSpriteToSet.filename;
         image.sprite = officerSpriteToSet.sprite;
 
-        shouldEmitEvents = shouldEmitEvent;
         officerSprite = officerSpriteToSet;
     }
 
     public void OnPointerClick(PointerEventData eventData) {
-        if (!shouldEmitEvents) { return; }
-
         onSpriteTemplateClicked?.Invoke(officerSprite);
     }
 }

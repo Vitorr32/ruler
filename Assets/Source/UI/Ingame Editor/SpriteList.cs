@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Analytics;
 using UnityEngine.UI;
@@ -33,54 +35,40 @@ public class SpriteList : MonoBehaviour
     private void OnSpriteSelectionRequest(OfficerSprite.Age age, OfficerSprite.Gender gender) {
         gameObject.SetActive(true);
 
-
         genderTagsToFilter =
             gender == OfficerSprite.Gender.UNDEFINED
-                ? new List<OfficerSprite.Gender>()
+                ? Utils.GetEnumValues<OfficerSprite.Gender>()
                 : new List<OfficerSprite.Gender>() { gender };
 
         ageTagsToFilter =
             age == OfficerSprite.Age.UNDEFINED
-                ? new List<OfficerSprite.Age>()
+                ? Utils.GetEnumValues<OfficerSprite.Age>()
                 : new List<OfficerSprite.Age>() { age };
 
-        OnSetInitialToggleState(age, gender);
-
+        OnSetInitialToggleState(ageTagsToFilter, genderTagsToFilter);
         FilterSpriteListByTag(ageTagsToFilter, genderTagsToFilter);
     }
 
-    private void OnSetInitialToggleState(OfficerSprite.Age age, OfficerSprite.Gender gender) {
-        male.SetToggleStatus(gender == OfficerSprite.Gender.UNDEFINED || gender == OfficerSprite.Gender.MALE);
-        female.SetToggleStatus(gender == OfficerSprite.Gender.UNDEFINED || gender == OfficerSprite.Gender.FEMALE);
+    private void OnSetInitialToggleState(List<OfficerSprite.Age> ageTagsToFilter, List<OfficerSprite.Gender> genderTagsToFilter) {
+        male.SetToggleStatus(genderTagsToFilter.Contains(OfficerSprite.Gender.MALE));
+        female.SetToggleStatus(genderTagsToFilter.Contains(OfficerSprite.Gender.FEMALE));
 
-        teen.SetToggleStatus(age == OfficerSprite.Age.UNDEFINED || age == OfficerSprite.Age.TEEN);
-        young.SetToggleStatus(age == OfficerSprite.Age.UNDEFINED || age == OfficerSprite.Age.YOUNG);
-        middleAge.SetToggleStatus(age == OfficerSprite.Age.UNDEFINED || age == OfficerSprite.Age.MIDDLE_AGE);
+        teen.SetToggleStatus(ageTagsToFilter.Contains(OfficerSprite.Age.TEEN));
+        young.SetToggleStatus(ageTagsToFilter.Contains(OfficerSprite.Age.YOUNG));
+        middleAge.SetToggleStatus(ageTagsToFilter.Contains(OfficerSprite.Age.MIDDLE_AGE));
     }
 
     public void FilterSpriteListByTag(List<OfficerSprite.Age> ageTags, List<OfficerSprite.Gender> genderTags) {
-
-        Debug.Log(genderTags.Count);
-        Debug.Log(genderTags[0]);
-
         spriteTemplates.ForEach(spriteTemplate => {
             OfficerSprite officerSprite = spriteTemplate.officerSprite;
 
             bool shouldShowByAge =
                 spriteTemplate.officerSprite.age == OfficerSprite.Age.UNDEFINED ||
-                ageTags.Count == 0 ||
                 ageTags.Contains(officerSprite.age);
-
 
             bool shouldShowByGender =
                 spriteTemplate.officerSprite.gender == OfficerSprite.Gender.UNDEFINED ||
-                genderTags.Count == 0 ||
                 genderTags.Contains(officerSprite.gender);
-
-            Debug.Log(officerSprite.age);
-            Debug.Log(shouldShowByAge);
-            Debug.Log(shouldShowByGender);
-            Debug.Log(shouldShowByAge && shouldShowByGender);
 
             spriteTemplate.gameObject.SetActive(shouldShowByAge && shouldShowByGender);
         });
@@ -88,6 +76,7 @@ public class SpriteList : MonoBehaviour
 
     public void ToogleFilterValueForAge(int toFilterAge) {
         OfficerSprite.Age age = (OfficerSprite.Age)toFilterAge;
+
         if (ageTagsToFilter.Contains(age)) {
             ageTagsToFilter.Remove(age);
         }
@@ -100,6 +89,7 @@ public class SpriteList : MonoBehaviour
 
     public void ToogleFilterValueForGender(int toFilterGender) {
         OfficerSprite.Gender gender = (OfficerSprite.Gender)toFilterGender;
+
         if (genderTagsToFilter.Contains(gender)) {
             genderTagsToFilter.Remove(gender);
         }
@@ -114,10 +104,8 @@ public class SpriteList : MonoBehaviour
         StoreController.instance.sprites.ForEach(sprite => {
             SpriteTemplate spriteTemplate = Instantiate(spriteTemplatePrefab, spriteListAchor).GetComponent<SpriteTemplate>();
 
-            spriteTemplate.StartUpSpriteTemplate(sprite, true);
+            spriteTemplate.StartUpSpriteTemplate(sprite);
             spriteTemplates.Add(spriteTemplate);
         });
     }
-
-
 }

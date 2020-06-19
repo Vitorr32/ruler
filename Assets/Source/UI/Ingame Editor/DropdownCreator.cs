@@ -7,7 +7,8 @@ public enum DropdownType
     OFFICER_GENDER,
     OFFICER_RACE,
     OFFICER_RELIGION,
-    OFFICER_STATUS
+    OFFICER_STATUS,
+    OFFICER_TIER
 }
 public class DropdownCreator : MonoBehaviour
 {
@@ -30,6 +31,8 @@ public class DropdownCreator : MonoBehaviour
                 return ConvertStringArrayToOptions(System.Enum.GetNames(typeof(Officer.Faith)));
             case DropdownType.OFFICER_STATUS:
                 return ConvertStringArrayToOptions(System.Enum.GetNames(typeof(Officer.Status)));
+            case DropdownType.OFFICER_TIER:
+                return ConvertStringArrayToOptions(System.Enum.GetNames(typeof(Officer.Tier)));
             default:
                 Debug.LogError("The dropdown " + gameObject.name + " has no type set!");
 

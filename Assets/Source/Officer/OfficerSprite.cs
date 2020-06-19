@@ -13,14 +13,18 @@ public class OfficerSprite
         UNDEFINED,
         TEEN,
         YOUNG,
-        MIDDLE_AGE
+        MIDDLE_AGE,
+
+        MAX_AGES
     }
 
     public enum Gender
     {
         UNDEFINED,
         MALE,
-        FEMALE
+        FEMALE,
+
+        MAX_GENDERS
     }
 
     public string filename;

@@ -44,6 +44,16 @@ public class Officer
         NOBLE
     }
 
+    public enum Tier
+    {
+        UNDEFINED = 0,
+        NOBODY = 100,
+        LOCAL_FAME = 125,
+        REGIONAL_RENOWN = 150,
+        CONTINENTAL_POWERHOUSE = 200,
+        WORLD_UNIFIER = 300
+    }
+
     public struct Hobby
     {
         public enum Type

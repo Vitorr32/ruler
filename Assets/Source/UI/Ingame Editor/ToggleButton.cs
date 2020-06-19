@@ -17,8 +17,12 @@ public class ToggleButton : MonoBehaviour
         }
     }
 
+    public bool IsOn() {
+        return toggle.isOn;
+    }
+
     public void SetToggleStatus(bool isOn) {
-        toggle.isOn = isOn;
+        toggle.SetIsOnWithoutNotify(isOn);
         OnTooglePressed();
     }
 }
