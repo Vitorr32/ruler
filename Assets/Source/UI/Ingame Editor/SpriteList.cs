@@ -32,6 +32,10 @@ public class SpriteList : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    private void OnDestroy() {
+        BasicInfoController.onSpriteSelectionRequest -= OnSpriteSelectionRequest;
+    }
+
     private void OnSpriteSelectionRequest(OfficerSprite.Age age, OfficerSprite.Gender gender) {
         gameObject.SetActive(true);
 

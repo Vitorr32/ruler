@@ -33,6 +33,10 @@ public class BasicInfoController : MonoBehaviour
         SpriteTemplate.onSpriteTemplateClicked += SpriteTemplateSelected;
     }
 
+    private void OnDestroy() {
+        SpriteTemplate.onSpriteTemplateClicked -= SpriteTemplateSelected;
+    }
+
     // Update is called once per frame
     void Update() {
 

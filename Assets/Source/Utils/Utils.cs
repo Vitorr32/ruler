@@ -25,15 +25,17 @@ public static class Utils
         return date.ToString(fullDateFormat);
     }
 
-    public static List<T> GetEnumValues<T>() {
-        T[] array = (T[])Enum.GetValues(typeof(T));
+    public static List<T> GetEnumValues<T>(bool returnAll = false) {
+        List<T> array = ((T[])Enum.GetValues(typeof(T))).ToList();
+
+        if (returnAll) {
+            return array;
+        }
 
         //The first and last member of the Enum should always be UNDEFINED for the first, MAX_NUMBER for the former
-        List<T> list = array.ToList();
+        array.RemoveAt(array.FindIndex((T value) => (int)(object)value == array.Count - 1));
+        array.RemoveAt(array.FindIndex((T value) => (int)(object)value == -1));
 
-        list.RemoveAt(0);
-        list.RemoveAt(list.Count - 1);
-
-        return list;
+        return array;
     }
 }

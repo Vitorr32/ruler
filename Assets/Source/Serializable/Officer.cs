@@ -7,57 +7,79 @@ public class Officer
 {
     public enum Gender
     {
-        UNDEFINED,
+        UNDEFINED = -1,
         MALE,
-        FEMALE
+        FEMALE,
+
+        MAX_GENDERS
     }
     public enum Race
     {
-        UNDEFINED,
+        UNDEFINED = -1,
         HUMAN,
         ORC,
         ELF,
-        DWARF
+        DWARF,
+
+        MAX_RACES
     }
 
     public enum Faith
     {
-        UNDEFINED,
+        UNDEFINED = -1,
         FAITHLESS,
         ATHEIST,
         CHRISTIAN,
         JEWISH,
         ORTHODOX,
         MUSLIM,
-        BUDHIST
+        BUDHIST,
+
+        MAX_FAITHS
     }
 
     public enum Status
     {
-        UNDEFINED,
+        UNDEFINED = -1,
         SLAVE,
         INDENTURE_SLAVE,
         SERF,
         FREE_MAN,
         WEALTHY_CITIZEN,
         MINOR_NOBLE,
-        NOBLE
+        NOBLE,
+
+        MAX_STATUS
     }
+
+    public enum Attribute
+    {
+        UNDEFINED = -1,
+        DIPLOMACY,
+        MARTIAL,
+        INTELIGENCE,
+
+        MAX_ATTRIBUTES
+    }
+
 
     public enum Tier
     {
-        UNDEFINED = 0,
+        UNDEFINED = -1,
         NOBODY = 100,
         LOCAL_FAME = 125,
         REGIONAL_RENOWN = 150,
         CONTINENTAL_POWERHOUSE = 200,
-        WORLD_UNIFIER = 300
+        WORLD_UNIFIER = 300,
+
+        MAX_ATTRIBUTES = 6
     }
 
     public struct Hobby
     {
         public enum Type
         {
+            UNDEFINED = -1,
             HUNTING,
             FALCONRY,
             MELEE,
@@ -67,10 +89,13 @@ public class Officer
             MUSIC,
             FESTIVALS,
             LANGUAGES,
-            FISHING
+            FISHING,
+
+            MAX_TYPES
         }
 
         public bool isKnownByPlayer;
+        public int passion;
         public Type type;
     }
 
@@ -100,7 +125,7 @@ public class Officer
     public int mood = 50;
 
     public List<int> traits;
-    public List<string> sprites = new List<string>() { "default_child", "default_child", "default_child" };
+    public List<string> spriteNames = new List<string>() { "default_child", "default_child", "default_child" };
     public List<Relationship> relationships;
     public int[] position;
 }

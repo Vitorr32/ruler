@@ -32,7 +32,7 @@ public class DropdownCreator : MonoBehaviour
             case DropdownType.OFFICER_STATUS:
                 return ConvertStringArrayToOptions(System.Enum.GetNames(typeof(Officer.Status)));
             case DropdownType.OFFICER_TIER:
-                return ConvertStringArrayToOptions(System.Enum.GetNames(typeof(Officer.Tier)));
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Officer.Tier>());
             default:
                 Debug.LogError("The dropdown " + gameObject.name + " has no type set!");
 
@@ -45,6 +45,16 @@ public class DropdownCreator : MonoBehaviour
 
         for (int i = 0; i < enumNames.Length; i++) {
             options.Add(new Dropdown.OptionData() { text = enumNames[i] });
+        }
+
+        return options;
+    }
+
+    List<Dropdown.OptionData> ConvertStringArrayToOptions<T>(List<T> enumNames) {
+        List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
+
+        for (int i = 0; i < enumNames.Count; i++) {
+            options.Add(new Dropdown.OptionData() { text = enumNames[i].ToString() });
         }
 
         return options;
