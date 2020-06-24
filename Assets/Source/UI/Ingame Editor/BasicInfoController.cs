@@ -18,6 +18,9 @@ public class BasicInfoController : MonoBehaviour
 
     public SpriteList spriteList;
 
+    public InputField forename;
+    public InputField surname;
+
     public Dropdown gender;
     public Dropdown race;
     public Dropdown religion;
