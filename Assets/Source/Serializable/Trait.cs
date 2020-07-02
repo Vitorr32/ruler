@@ -11,6 +11,8 @@ public class Trait
     public string description;
     public int[] effects;
 
-    [NonSerialized]
+    public string spriteName;
+    public Sprite sprite;
+
     public List<Effect> uEffects = new List<Effect>();
 }

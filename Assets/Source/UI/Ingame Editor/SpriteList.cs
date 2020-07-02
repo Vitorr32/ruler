@@ -105,7 +105,7 @@ public class SpriteList : MonoBehaviour
     }
 
     private void ShowAllSprites() {
-        StoreController.instance.sprites.ForEach(sprite => {
+        StoreController.instance.officerSprites.ForEach(sprite => {
             SpriteTemplate spriteTemplate = Instantiate(spriteTemplatePrefab, spriteListAchor).GetComponent<SpriteTemplate>();
 
             spriteTemplate.StartUpSpriteTemplate(sprite);

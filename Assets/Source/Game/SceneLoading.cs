@@ -15,7 +15,7 @@ public class SceneLoading : MonoBehaviour
     }
 
     IEnumerator LoadAsyncDependecies() {
-        feedback.text = "Processing Images...";
+        feedback.text = "Processing Officer Images...";
 
         StoreController.instance.ParseRawSpritesIntoOfficeSprites();
 
@@ -43,6 +43,8 @@ public class SceneLoading : MonoBehaviour
                 trait.uEffects.Add(StoreController.instance.effects.First(effect => effect.id == trait.effects[j]));
             }
 
+            trait.sprite = StoreController.instance.miscellaneousSprites.Find(sprite => sprite.name == trait.spriteName);
+
             StoreController.instance.traits.Add(trait);
         }
 
@@ -61,7 +63,7 @@ public class SceneLoading : MonoBehaviour
             controller.StartUpController(officer);
 
             controller.officerSprite = new List<OfficerSprite>() {
-                StoreController.instance.sprites.Find(sprite => sprite.filename == ("o_" + officer.id))
+                StoreController.instance.officerSprites.Find(sprite => sprite.filename == ("o_" + officer.id))
             };
 
             StoreController.instance.officers.Add(controller);

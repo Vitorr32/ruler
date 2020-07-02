@@ -13,9 +13,11 @@ public class StoreController : MonoBehaviour
     public List<Trait> traits = new List<Trait>();
     public List<Dialogue> dialogues = new List<Dialogue>();
 
-    public List<OfficerSprite> sprites = new List<OfficerSprite>();
+    public List<OfficerSprite> officerSprites = new List<OfficerSprite>();
+    public List<Sprite> miscellaneousSprites = new List<Sprite>();
+    //public List<Sprite> sprites = new List<Sprite>();
     [SerializeField]
-    private List<Sprite> rawSprites = new List<Sprite>();
+    private List<Sprite> rawOfficerSprites = new List<Sprite>();
 
     private void Awake() {
         if (instance != null && instance != this) {
@@ -27,19 +29,18 @@ public class StoreController : MonoBehaviour
     }
 
     public void ParseRawSpritesIntoOfficeSprites() {
-        if (rawSprites.Count == 0) {
+        if (rawOfficerSprites.Count == 0) {
             Debug.LogError("There is no Raw Sprites feed to the Store Controller!");
             return;
         }
 
-        rawSprites.ForEach(rawSprite => {
-            sprites.Add(new OfficerSprite(rawSprite));
+        rawOfficerSprites.ForEach(rawSprite => {
+            officerSprites.Add(new OfficerSprite(rawSprite));
         });
     }
 
     // Start is called before the first frame update
     void Start() {
-
     }
 
     // Update is called once per frame
