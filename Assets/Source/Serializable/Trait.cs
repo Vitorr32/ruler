@@ -6,6 +6,18 @@ using UnityEngine;
 [Serializable]
 public class Trait
 {
+    public enum Type{
+        UNDEFINED,
+        NORMAL,
+        PHYSICAL,
+        MENTAL,
+        PERSONALITY,
+        SEXUAL,
+        SPECIAL,
+
+        MAX_TYPES
+    }
+
     public int id;
     public string name;
     public string description;

@@ -7,7 +7,7 @@ public class Officer
 {
     public enum Gender
     {
-        UNDEFINED = -1,
+        UNDEFINED,
         MALE,
         FEMALE,
 
@@ -15,7 +15,7 @@ public class Officer
     }
     public enum Race
     {
-        UNDEFINED = -1,
+        UNDEFINED,
         HUMAN,
         ORC,
         ELF,
@@ -26,7 +26,7 @@ public class Officer
 
     public enum Faith
     {
-        UNDEFINED = -1,
+        UNDEFINED,
         FAITHLESS,
         ATHEIST,
         CHRISTIAN,
@@ -40,7 +40,7 @@ public class Officer
 
     public enum Status
     {
-        UNDEFINED = -1,
+        UNDEFINED,
         SLAVE,
         INDENTURE_SLAVE,
         SERF,
@@ -54,7 +54,7 @@ public class Officer
 
     public enum Attribute
     {
-        UNDEFINED = -1,
+        UNDEFINED,
         DIPLOMACY,
         MARTIAL,
         INTELIGENCE,
@@ -65,7 +65,7 @@ public class Officer
 
     public enum Tier
     {
-        UNDEFINED = -1,
+        UNDEFINED,
         NOBODY = 100,
         LOCAL_FAME = 125,
         REGIONAL_RENOWN = 150,
@@ -79,7 +79,7 @@ public class Officer
     {
         public enum Type
         {
-            UNDEFINED = -1,
+            UNDEFINED,
             HUNTING,
             FALCONRY,
             MELEE,
