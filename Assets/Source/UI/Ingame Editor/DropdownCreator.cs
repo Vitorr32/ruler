@@ -9,7 +9,8 @@ public enum DropdownType
     OFFICER_RELIGION,
     OFFICER_STATUS,
     OFFICER_TIER,
-    TRAIT_TYPE
+    TRAIT_TYPE,
+    MODIFIER_TYPE
 }
 public class DropdownCreator : MonoBehaviour
 {
@@ -36,6 +37,8 @@ public class DropdownCreator : MonoBehaviour
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Officer.Tier>());
             case DropdownType.TRAIT_TYPE:
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Trait.Type>());
+            case DropdownType.MODIFIER_TYPE:
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Modifier.Type>());
             default:
                 Debug.LogError("The dropdown " + gameObject.name + " has no type set!");
 
@@ -57,7 +60,7 @@ public class DropdownCreator : MonoBehaviour
         List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
 
         for (int i = 0; i < enumNames.Count; i++) {
-            options.Add(new Dropdown.OptionData() { text = enumNames[i].ToString() });
+            options.Add(new Dropdown.OptionData() { text = enumNames[i].ToString() });;
         }
 
         return options;

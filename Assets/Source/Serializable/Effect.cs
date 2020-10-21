@@ -31,10 +31,11 @@ public class Effect
     {
         public enum Type
         {
+            UNDEFINED,
             MODIFY_ATTRIBUTE_ABSOLUTE,
             MODIFY_ATTRIBUTE_RELATIVE,
-            MODIFY_RESOURCE_GAIN,
-            MODIFY_HEALTH
+
+            MAX_MODIFIERS
         }
 
         public Type type;
