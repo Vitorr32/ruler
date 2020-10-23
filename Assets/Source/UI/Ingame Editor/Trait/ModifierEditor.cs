@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -31,5 +33,9 @@ public class ModifierEditor : MonoBehaviour
             case ModifierTarget.AGAINST_TRAIT:
                 break;
         }
+    }
+
+    public void OnModiferTypeChanged(Dropdown dropdown) {
+        Debug.Log(dropdown.value);
     }
 }
