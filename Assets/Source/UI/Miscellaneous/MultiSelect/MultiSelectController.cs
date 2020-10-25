@@ -1,12 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class MultiSelectController : MonoBehaviour
 {
-    private List<MultiSelectOption> selectOptions = new List<MultiSelectOption>();
+    public class Option
+    {
+        public int value;
+        public string label;
+        public bool selected;
+
+        public Option(int value, string label) {
+            this.value = value;
+            this.label = label;
+            this.selected = false;
+        }
+    }
+
+    public delegate void OnMultiSelectChange(int value);
+    public static event OnMultiSelectChange onMultiselectChanged;
+
+
+    private List<Option> selectOptions = new List<Option>();
+    public List<MultiSelectOption> multiselectOptionPrefabPool = new List<MultiSelectOption>();
 
     //Game object references
     public Dropdown dropdown;
@@ -24,27 +43,73 @@ public class MultiSelectController : MonoBehaviour
     }
 
     private void OnDisable() {
-        this.selectOptions.ForEach(option => {
+        this.multiselectOptionPrefabPool.ForEach(option => {
             if (option.gameObject.activeSelf) {
-                option.OnDisable();
+                option.DisableOption();
             }
         });
-
-        this.selectOptions = new List<MultiSelectOption>();
+        this.selectOptions = new List<Option>();
         this.dropdown.ClearOptions();
     }
 
     public void OnStartupMultiselect<T>(List<T> multiselectOptions, string valueParameter, string labelParameter) {
-        int i = 0;
         foreach (T option in multiselectOptions) {
             int value = (int)typeof(T).GetProperty(valueParameter).GetValue(option);
             string label = (string)typeof(T).GetProperty(labelParameter).GetValue(option);
 
-            i++;
+            this.selectOptions.Add(new Option(value, label));
         }
+
+        this.PopulateDropdownWithValues(this.selectOptions);
     }
 
-    public void OnSelectionRemoval() {
+    public void OnDropdownSelection() {
+        string selectedLabel = this.dropdown.options[this.dropdown.value].text;
 
+        Option selectedOption = this.selectOptions.Find(option => option.label == selectedLabel);
+        selectedOption.selected = true;
+
+        this.OnUpdateMultiselectList(selectOptions);
+        this.dropdown.value = 0;
+    }
+
+    private void OnUpdateMultiselectList(List<Option> options) {
+        List<Option> selectedOptions = GetSelectedOptions(options);
+
+        if (this.selectOptions.Count > this.multiselectOptionPrefabPool.Count) {
+            throw new System.Exception("Number of selected options in MultiSelect bigger than the prefab pool");
+        }
+
+        int i = 0;
+        this.multiselectOptionPrefabPool.ForEach(prefab => {
+            if (i < this.selectOptions.Count) {
+                prefab.ActivateOption(selectedOptions[i], this);
+            }
+            else {
+                prefab.DisableOption();
+            }
+            i++;
+        });
+    }
+
+    private List<Dropdown.OptionData> PopulateDropdownWithValues(List<Option> dropdownValues) {
+        List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
+
+        options.Add(new Dropdown.OptionData() { text = "" });
+        dropdownValues.ForEach(dropdownValue => {
+            options.Add(new Dropdown.OptionData() { text = dropdownValue.label });
+        });
+
+        return options;
+    }
+
+    private List<Option> GetSelectedOptions(List<Option> options) {
+        return options.Where((option) => option.selected).ToList();
+    }
+
+    public void OnSelectionRemoval(Option option) {
+        Option toDeleteOption = this.selectOptions.Find(iteratedOption => iteratedOption == option);
+
+        toDeleteOption.selected = false;
     }
 }

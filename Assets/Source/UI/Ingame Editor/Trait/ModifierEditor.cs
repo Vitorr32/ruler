@@ -14,6 +14,7 @@ public enum ModifierTarget
 public class ModifierEditor : MonoBehaviour
 {
     public Dropdown modifierTargetValueDropdown;
+    public MultiSelectController multiSelectController;
     // Start is called before the first frame update
     void Start() {
     }
@@ -22,10 +23,16 @@ public class ModifierEditor : MonoBehaviour
     void Update() {
 
     }
-    public void OnModifierTargetSet(ModifierTarget modifierTarget) {
-        switch (modifierTarget) {
+    public void OnModifierTargetSet(Dropdown dropdown) {
+        switch ((ModifierTarget)dropdown.value) {
             case ModifierTarget.AGAINST_CHARACTER:
+                List<MultiSelectController.Option> options = new List<MultiSelectController.Option>();
 
+                List<Effect.Restriction.Type> modifiers = Utils.GetEnumValues<Effect.Restriction.Type>();
+                modifiers.ForEach(modifier => {
+                    options.Add(new MultiSelectController.Option((int)modifier, EnumToString.getStringOfRestrictionsEnum(modifier)));
+                });
+                multiSelectController.OnStartupMultiselect(options, "value", "label");
                 //TODO MODIFY SELECTION BASED IN TARGET
                 break;
             case ModifierTarget.AGAINST_NATIONALITY:

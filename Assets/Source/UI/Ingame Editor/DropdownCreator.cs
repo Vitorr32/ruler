@@ -10,7 +10,8 @@ public enum DropdownType
     OFFICER_STATUS,
     OFFICER_TIER,
     TRAIT_TYPE,
-    MODIFIER_TYPE
+    MODIFIER_TYPE,
+    RESTRICTION_TYPE
 }
 public class DropdownCreator : MonoBehaviour
 {
@@ -39,6 +40,8 @@ public class DropdownCreator : MonoBehaviour
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Trait.Type>());
             case DropdownType.MODIFIER_TYPE:
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Modifier.Type>());
+            case DropdownType.RESTRICTION_TYPE:
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Restriction.Type>());
             default:
                 Debug.LogError("The dropdown " + gameObject.name + " has no type set!");
 
@@ -46,7 +49,7 @@ public class DropdownCreator : MonoBehaviour
         }
     }
 
-    List<Dropdown.OptionData> ConvertStringArrayToOptions(string[] enumNames) {
+    public static List<Dropdown.OptionData> ConvertStringArrayToOptions(string[] enumNames) {
         List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
 
         for (int i = 0; i < enumNames.Length; i++) {
@@ -56,11 +59,11 @@ public class DropdownCreator : MonoBehaviour
         return options;
     }
 
-    List<Dropdown.OptionData> ConvertStringArrayToOptions<T>(List<T> enumNames) {
+    public static List<Dropdown.OptionData> ConvertStringArrayToOptions<T>(List<T> enumNames) {
         List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
 
         for (int i = 0; i < enumNames.Count; i++) {
-            options.Add(new Dropdown.OptionData() { text = enumNames[i].ToString() });;
+            options.Add(new Dropdown.OptionData() { text = enumNames[i].ToString() }); ;
         }
 
         return options;

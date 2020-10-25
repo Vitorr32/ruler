@@ -14,13 +14,16 @@ public class Effect
     {
         public enum Type
         {
+            UNDEFINED,
             NO_RESTRICTION,
             AGAINST_GENDER,
             AGAINST_RACE,
             AGAINST_FAITH,
             NOT_AGAINST_GENDER,
             NOT_AGAINST_RACE,
-            NOT_AGAINST_FAITH
+            NOT_AGAINST_FAITH,
+
+            MAX_RESTRICTIONS
         }
 
         public Type type;
