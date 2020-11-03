@@ -52,13 +52,8 @@ public class MultiSelectController : MonoBehaviour
         this.dropdown.ClearOptions();
     }
 
-    public void OnStartupMultiselect<T>(List<T> multiselectOptions, string valueParameter, string labelParameter) {
-        foreach (T option in multiselectOptions) {
-            int value = (int)typeof(T).GetProperty(valueParameter).GetValue(option);
-            string label = (string)typeof(T).GetProperty(labelParameter).GetValue(option);
-
-            this.selectOptions.Add(new Option(value, label));
-        }
+    public void OnStartupMultiselect(List<Option> multiselectOptions) {
+        this.selectOptions = multiselectOptions;
 
         this.PopulateDropdownWithValues(this.selectOptions);
     }
@@ -66,11 +61,15 @@ public class MultiSelectController : MonoBehaviour
     public void OnDropdownSelection() {
         string selectedLabel = this.dropdown.options[this.dropdown.value].text;
 
+        if (selectedLabel == "") {
+            return;
+        }
+
         Option selectedOption = this.selectOptions.Find(option => option.label == selectedLabel);
         selectedOption.selected = true;
 
         this.OnUpdateMultiselectList(selectOptions);
-        this.dropdown.value = 0;
+        this.dropdown.SetValueWithoutNotify(0);
     }
 
     private void OnUpdateMultiselectList(List<Option> options) {
@@ -82,7 +81,7 @@ public class MultiSelectController : MonoBehaviour
 
         int i = 0;
         this.multiselectOptionPrefabPool.ForEach(prefab => {
-            if (i < this.selectOptions.Count) {
+            if (i < selectedOptions.Count) {
                 prefab.ActivateOption(selectedOptions[i], this);
             }
             else {
@@ -99,6 +98,8 @@ public class MultiSelectController : MonoBehaviour
         dropdownValues.ForEach(dropdownValue => {
             options.Add(new Dropdown.OptionData() { text = dropdownValue.label });
         });
+
+        this.dropdown.options = options;
 
         return options;
     }

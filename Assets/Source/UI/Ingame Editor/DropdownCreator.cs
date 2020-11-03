@@ -16,6 +16,8 @@ public enum DropdownType
 public class DropdownCreator : MonoBehaviour
 {
     public DropdownType type;
+    public bool revealAll = false;
+
     private Dropdown dropdown;
     // Start is called before the first frame update
     void Start() {
@@ -41,7 +43,7 @@ public class DropdownCreator : MonoBehaviour
             case DropdownType.MODIFIER_TYPE:
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Modifier.Type>());
             case DropdownType.RESTRICTION_TYPE:
-                return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Restriction.Type>());
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Restriction.Type>(this.revealAll));
             default:
                 Debug.LogError("The dropdown " + gameObject.name + " has no type set!");
 

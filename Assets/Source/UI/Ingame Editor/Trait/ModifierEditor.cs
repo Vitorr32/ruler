@@ -5,12 +5,6 @@ using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum ModifierTarget
-{
-    AGAINST_CHARACTER,
-    AGAINST_NATIONALITY,
-    AGAINST_TRAIT
-}
 public class ModifierEditor : MonoBehaviour
 {
     public Dropdown modifierTargetValueDropdown;
@@ -24,25 +18,23 @@ public class ModifierEditor : MonoBehaviour
 
     }
     public void OnModifierTargetSet(Dropdown dropdown) {
-        switch ((ModifierTarget)dropdown.value) {
-            case ModifierTarget.AGAINST_CHARACTER:
+        switch ((Effect.Restriction.Type)dropdown.value) {
+            case Effect.Restriction.Type.AGAINST_RACE:
                 List<MultiSelectController.Option> options = new List<MultiSelectController.Option>();
 
-                List<Effect.Restriction.Type> modifiers = Utils.GetEnumValues<Effect.Restriction.Type>();
+                List<Officer.Race> modifiers = Utils.GetEnumValues<Officer.Race>();
                 modifiers.ForEach(modifier => {
-                    options.Add(new MultiSelectController.Option((int)modifier, EnumToString.getStringOfRestrictionsEnum(modifier)));
+                    MultiSelectController.Option option = new MultiSelectController.Option((int)modifier, modifier.ToString());
+
+                    options.Add(option);
                 });
-                multiSelectController.OnStartupMultiselect(options, "value", "label");
-                //TODO MODIFY SELECTION BASED IN TARGET
+                multiSelectController.OnStartupMultiselect(options);
                 break;
-            case ModifierTarget.AGAINST_NATIONALITY:
-                break;
-            case ModifierTarget.AGAINST_TRAIT:
+            default:
                 break;
         }
     }
 
     public void OnModiferTypeChanged(Dropdown dropdown) {
-        Debug.Log(dropdown.value);
     }
 }

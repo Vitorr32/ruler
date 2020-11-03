@@ -3958,6 +3958,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 5
+  revealAll: 0
 --- !u!114 &258300671
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4443,6 +4444,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
+  revealAll: 0
 --- !u!1 &280053152
 GameObject:
   m_ObjectHideFlags: 0
@@ -5136,6 +5138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 7
+  revealAll: 1
 --- !u!1001 &315065160
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6748,6 +6751,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 6
+  revealAll: 0
 --- !u!114 &441070760
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6984,6 +6988,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 4
+  revealAll: 0
 --- !u!114 &462860162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -19360,6 +19365,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 0
+  revealAll: 0
 --- !u!114 &1305207853
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21440,6 +21446,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 1
+  revealAll: 0
 --- !u!114 &1471332903
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -26810,6 +26817,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 3
+  revealAll: 0
 --- !u!114 &1828394326
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -31061,6 +31069,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
+  revealAll: 0
 --- !u!114 &2084042301
 MonoBehaviour:
   m_ObjectHideFlags: 0
