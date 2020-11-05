@@ -10,7 +10,8 @@ public enum DropdownType
     OFFICER_STATUS,
     OFFICER_TIER,
     TRAIT_TYPE,
-    MODIFIER_TYPE,
+    TRIGGERS,
+    MODIFIER_TARGET,
     RESTRICTION_TYPE
 }
 public class DropdownCreator : MonoBehaviour
@@ -40,8 +41,10 @@ public class DropdownCreator : MonoBehaviour
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Officer.Tier>());
             case DropdownType.TRAIT_TYPE:
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Trait.Type>());
-            case DropdownType.MODIFIER_TYPE:
-                return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Modifier.Type>());
+            case DropdownType.TRIGGERS:
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<ActionType>());
+            case DropdownType.MODIFIER_TARGET:
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Target.Type>());
             case DropdownType.RESTRICTION_TYPE:
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Restriction.Type>(this.revealAll));
             default:

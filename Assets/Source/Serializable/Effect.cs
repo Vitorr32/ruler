@@ -30,11 +30,38 @@ public class Effect
         public int[] arguments;
     }
     [Serializable]
+    public struct Target
+    {
+        public enum Type
+        {
+            UNDEFINED,
+
+            ALL_TARGETS,
+
+            TARGET_CHARACTER_BY_TRAIT,
+            TARGET_CHARACTER_BY_AGE,
+            TARGET_CHARACTER_BY_ID,
+
+            TARGET_INTERACTION,
+            TARGET_ATTRIBUTE,
+            TARGET_MONEY_GAIN,
+            TARGET_POPULARITY_GAIN,
+            TARGET_STRESS_GAIN,
+
+            MAX_TARGETS
+        }
+
+        public Type type;
+        public int[] arguments;
+    }
+
+    [Serializable]
     public struct Modifier
     {
         public enum Type
         {
             UNDEFINED,
+
             MODIFY_ATTRIBUTE_ABSOLUTE,
             MODIFY_ATTRIBUTE_RELATIVE,
 

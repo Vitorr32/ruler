@@ -55,6 +55,7 @@ public class MultiSelectController : MonoBehaviour
     public void OnStartupMultiselect(List<Option> multiselectOptions) {
         this.selectOptions = multiselectOptions;
 
+        this.gameObject.SetActive(true);
         this.PopulateDropdownWithValues(this.selectOptions);
     }
 

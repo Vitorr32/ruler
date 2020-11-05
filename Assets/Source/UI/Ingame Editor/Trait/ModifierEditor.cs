@@ -11,6 +11,7 @@ public class ModifierEditor : MonoBehaviour
     public MultiSelectController multiSelectController;
     // Start is called before the first frame update
     void Start() {
+        multiSelectController.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -18,23 +19,29 @@ public class ModifierEditor : MonoBehaviour
 
     }
     public void OnModifierTargetSet(Dropdown dropdown) {
-        switch ((Effect.Restriction.Type)dropdown.value) {
-            case Effect.Restriction.Type.AGAINST_RACE:
-                List<MultiSelectController.Option> options = new List<MultiSelectController.Option>();
-
-                List<Officer.Race> modifiers = Utils.GetEnumValues<Officer.Race>();
-                modifiers.ForEach(modifier => {
-                    MultiSelectController.Option option = new MultiSelectController.Option((int)modifier, modifier.ToString());
-
-                    options.Add(option);
-                });
-                multiSelectController.OnStartupMultiselect(options);
+        switch ((Effect.Target.Type)(dropdown.value + 1)) {
+            case Effect.Target.Type.TARGET_ATTRIBUTE:
+                PopulateSelectWithEnumValues<Officer.Attribute>();
                 break;
+            case Effect.Target.Type.TARGET_MONEY_GAIN:
+
             default:
                 break;
         }
     }
 
     public void OnModiferTypeChanged(Dropdown dropdown) {
+    }
+
+    private void PopulateSelectWithEnumValues<T>() {
+        List<MultiSelectController.Option> options = new List<MultiSelectController.Option>();
+
+        List<T> attributes = Utils.GetEnumValues<T>();
+        attributes.ForEach(modifier => {
+            MultiSelectController.Option option = new MultiSelectController.Option((int)(object)modifier, modifier.ToString());
+
+            options.Add(option);
+        });
+        multiSelectController.OnStartupMultiselect(options);
     }
 }

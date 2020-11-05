@@ -61,7 +61,6 @@ public class OfficerController
         if (effect.trigger.type != triggerType) { return false; }
 
         switch (triggerType) {
-            case ActionType.NO_TRIGGER:
             case ActionType.ALWAYS_ACTIVE:
                 return true;
             default:

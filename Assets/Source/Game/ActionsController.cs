@@ -4,7 +4,8 @@ using UnityEngine;
 
 public enum ActionType
 {
-    NO_TRIGGER,
+    UNDEFINED,
+
     ALWAYS_ACTIVE,
     ON_ATTACK,
     ON_DEFENSE,
@@ -15,6 +16,9 @@ public enum ActionType
     ON_DIALOGUE,
     ON_DAY_CHANGE,
     ON_HOUR_CHANGE,
+    ON_ATTRIBUTE_CHANGE,
+
+    MAX_ACTION_TYPES
 }
 public class ActionsController : MonoBehaviour
 {

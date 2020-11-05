@@ -55,6 +55,7 @@ public class Officer
     public enum Attribute
     {
         UNDEFINED,
+
         DIPLOMACY,
         MARTIAL,
         INTELIGENCE,
