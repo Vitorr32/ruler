@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public enum DropdownType
 {
+    UNDEFINED,
+
     OFFICER_GENDER,
     OFFICER_RACE,
     OFFICER_RELIGION,
@@ -16,15 +18,17 @@ public enum DropdownType
 }
 public class DropdownCreator : MonoBehaviour
 {
-    public DropdownType type;
+    public DropdownType type = DropdownType.UNDEFINED;
     public bool revealAll = false;
 
     private Dropdown dropdown;
     // Start is called before the first frame update
     void Start() {
-        dropdown = GetComponent<Dropdown>();
+        this.dropdown = GetComponent<Dropdown>();
 
-        dropdown.options = PopulateDropdown(type);
+        if (type != DropdownType.UNDEFINED) {
+            this.dropdown.options = PopulateDropdown(type);
+        }
     }
 
     List<Dropdown.OptionData> PopulateDropdown(DropdownType type) {

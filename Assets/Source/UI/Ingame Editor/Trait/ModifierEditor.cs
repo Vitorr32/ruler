@@ -7,10 +7,13 @@ using UnityEngine.UI;
 
 public class ModifierEditor : MonoBehaviour
 {
+    public GameObject modifierTargetGameObject;
     public Dropdown modifierTargetValueDropdown;
+
     public MultiSelectController multiSelectController;
     // Start is called before the first frame update
     void Start() {
+        modifierTargetGameObject.SetActive(false);
         multiSelectController.gameObject.SetActive(false);
     }
 
@@ -31,6 +34,33 @@ public class ModifierEditor : MonoBehaviour
     }
 
     public void OnModiferTypeChanged(Dropdown dropdown) {
+        string[] options;
+
+        modifierTargetGameObject.SetActive(true);
+        Enum.TryParse(dropdown.options[dropdown.value].text, out ActionType actionType);
+        switch (actionType) {
+            case ActionType.ALWAYS_ACTIVE:
+                options = new string[] {
+                    Effect.Target.Type.TARGET_ATTRIBUTE.ToString(),
+                    Effect.Target.Type.TARGET_POPULARITY_GAIN.ToString(),
+                    Effect.Target.Type.TARGET_STRESS_GAIN.ToString()
+                };
+                modifierTargetValueDropdown.options = DropdownCreator.ConvertStringArrayToOptions(options);
+                break;
+
+            case ActionType.ON_INTERACTION:
+                options = new string[] {
+                    Effect.Target.Type.TARGET_INTERACTION.ToString()
+                };
+                modifierTargetValueDropdown.options = DropdownCreator.ConvertStringArrayToOptions(options);
+                break;
+
+            //modifierTargetValueDropdown.options = DropdownCreator.ConvertStringArrayToOptions()
+            default:
+                modifierTargetGameObject.SetActive(false);
+                modifierTargetValueDropdown.options = new List<Dropdown.OptionData>();
+                break;
+        }
     }
 
     private void PopulateSelectWithEnumValues<T>() {

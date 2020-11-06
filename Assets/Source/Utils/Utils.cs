@@ -32,8 +32,6 @@ public static class Utils
             return array;
         }
 
-        Debug.Log(array.FindIndex((T value) => (int)(object)value == array.Count - 1));
-
         //The first and last member of the Enum should always be UNDEFINED for the first, MAX_NUMBER for the former
         array.RemoveAt(array.FindIndex((T value) => (int)(object)value == array.Count - 1));
         array.RemoveAt(array.FindIndex((T value) => (int)(object)value == 0));
