@@ -20,9 +20,8 @@ public class MultiSelectController : MonoBehaviour
         }
     }
 
-    public delegate void OnMultiSelectChange(int value);
+    public delegate void OnMultiSelectChange(int value, MultiSelectController controller);
     public static event OnMultiSelectChange onMultiselectChanged;
-
 
     private List<Option> selectOptions = new List<Option>();
     public List<MultiSelectOption> multiselectOptionPrefabPool = new List<MultiSelectOption>();

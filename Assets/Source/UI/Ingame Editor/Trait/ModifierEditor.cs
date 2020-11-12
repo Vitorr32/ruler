@@ -10,27 +10,33 @@ public class ModifierEditor : MonoBehaviour
     public GameObject modifierTargetGameObject;
     public Dropdown modifierTargetValueDropdown;
 
-    public MultiSelectController multiSelectController;
+    public MultiSelectController primaryTargetSelectController;
+    public MultiSelectController secondaryTargetSelectController;
+
+    public GameObject valueChangeGO;
+    public GameObject absoluteValueChangeGO;
+    public Text absoluteValueChangeText;
+    public GameObject relativeValueChangeGO;
+    public Text relativeValueChangeText;
+
     // Start is called before the first frame update
     void Start() {
         modifierTargetGameObject.SetActive(false);
-        multiSelectController.gameObject.SetActive(false);
+
+        this.DeactivateModifierValue();
+        primaryTargetSelectController.gameObject.SetActive(false);
+        secondaryTargetSelectController.gameObject.SetActive(false);
+
+        MultiSelectController.onMultiselectChanged += OnMultiSelectChange;
     }
 
     // Update is called once per frame
     void Update() {
 
     }
-    public void OnModifierTargetSet(Dropdown dropdown) {
-        switch ((Effect.Target.Type)(dropdown.value + 1)) {
-            case Effect.Target.Type.TARGET_ATTRIBUTE:
-                PopulateSelectWithEnumValues<Officer.Attribute>();
-                break;
-            case Effect.Target.Type.TARGET_MONEY_GAIN:
 
-            default:
-                break;
-        }
+    private void Destroy() {
+        MultiSelectController.onMultiselectChanged -= OnMultiSelectChange;
     }
 
     public void OnModiferTypeChanged(Dropdown dropdown) {
@@ -63,7 +69,23 @@ public class ModifierEditor : MonoBehaviour
         }
     }
 
-    private void PopulateSelectWithEnumValues<T>() {
+    public void OnModifierTargetSet(Dropdown dropdown) {
+
+        Enum.TryParse(dropdown.options[dropdown.value].text, out Effect.Target.Type actionType);
+        switch (actionType) {
+            case Effect.Target.Type.TARGET_ATTRIBUTE:
+                PopulateSelectWithEnumValues<Officer.Attribute>(this.primaryTargetSelectController);
+                ActivateAbsoluteChangeInput();
+                ActivateRelativeChangeInput();
+                break;
+            case Effect.Target.Type.TARGET_MONEY_GAIN:
+
+            default:
+                break;
+        }
+    }
+
+    private void PopulateSelectWithEnumValues<T>(MultiSelectController controller) {
         List<MultiSelectController.Option> options = new List<MultiSelectController.Option>();
 
         List<T> attributes = Utils.GetEnumValues<T>();
@@ -72,6 +94,24 @@ public class ModifierEditor : MonoBehaviour
 
             options.Add(option);
         });
-        multiSelectController.OnStartupMultiselect(options);
+        controller.OnStartupMultiselect(options);
+    }
+
+    private void OnMultiSelectChange(int value, MultiSelectController controller) {
+        
+    }
+
+    private void ActivateRelativeChangeInput() {
+        this.relativeValueChangeGO.SetActive(true);
+        this.relativeValueChangeText.text = "";
+    }
+    private void ActivateAbsoluteChangeInput() {
+        this.absoluteValueChangeGO.SetActive(true);
+        this.absoluteValueChangeText.text = "";
+    }
+    private void DeactivateModifierValue() {
+        valueChangeGO.SetActive(false);
+        this.relativeValueChangeGO.SetActive(false);
+        this.absoluteValueChangeGO.SetActive(false);
     }
 }
