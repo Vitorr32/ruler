@@ -4,7 +4,7 @@
 public class Effect
 {
     [Serializable]
-    public class Trigger
+    public struct Trigger
     {
         public ActionType type;
         public int[] arguments;
@@ -90,7 +90,8 @@ public class Effect
     public int id;
     //Source is with item/trait/race is the source of the effect
     public int sourceID;
-    public Trigger trigger;
+    public Trigger trigger = new Trigger();
+    public Target target = new Target();
     public Duration duration;
     public Restriction[] restrictions;
     public Modifier[] modifiers;

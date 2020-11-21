@@ -19,6 +19,10 @@ public class ModifierEditor : MonoBehaviour
     public GameObject relativeValueChangeGO;
     public Text relativeValueChangeText;
 
+    public Text summaryText;
+
+    private Effect currentEffect = new Effect();
+
     // Start is called before the first frame update
     void Start() {
         modifierTargetGameObject.SetActive(false);
@@ -51,9 +55,8 @@ public class ModifierEditor : MonoBehaviour
                     Effect.Target.Type.TARGET_POPULARITY_GAIN.ToString(),
                     Effect.Target.Type.TARGET_STRESS_GAIN.ToString()
                 };
-                modifierTargetValueDropdown.options = DropdownCreator.ConvertStringArrayToOptions(options);
+                modifierTargetValueDropdown.options = DropdownCreator.ConvertStringArrayToOptions(options, "Select a permanent modifier");
                 break;
-
             case ActionType.ON_INTERACTION:
                 options = new string[] {
                     Effect.Target.Type.TARGET_INTERACTION.ToString()
@@ -67,12 +70,15 @@ public class ModifierEditor : MonoBehaviour
                 modifierTargetValueDropdown.options = new List<Dropdown.OptionData>();
                 break;
         }
+
+        this.currentEffect.trigger.type = actionType;
+        this.RenderSummaryOfEffect(this.currentEffect);
     }
 
     public void OnModifierTargetSet(Dropdown dropdown) {
 
-        Enum.TryParse(dropdown.options[dropdown.value].text, out Effect.Target.Type actionType);
-        switch (actionType) {
+        Enum.TryParse(dropdown.options[dropdown.value].text, out Effect.Target.Type targetType);
+        switch (targetType) {
             case Effect.Target.Type.TARGET_ATTRIBUTE:
                 PopulateSelectWithEnumValues<Officer.Attribute>(this.primaryTargetSelectController);
                 ActivateAbsoluteChangeInput();
@@ -83,6 +89,9 @@ public class ModifierEditor : MonoBehaviour
             default:
                 break;
         }
+
+        this.currentEffect.target.type = targetType;
+        this.RenderSummaryOfEffect(this.currentEffect);
     }
 
     private void PopulateSelectWithEnumValues<T>(MultiSelectController controller) {
@@ -98,7 +107,11 @@ public class ModifierEditor : MonoBehaviour
     }
 
     private void OnMultiSelectChange(int value, MultiSelectController controller) {
-        
+
+    }
+
+    private void RenderSummaryOfEffect(Effect effect) {
+        this.summaryText.text = Summarizer.SummarizeEffect(effect);
     }
 
     private void ActivateRelativeChangeInput() {

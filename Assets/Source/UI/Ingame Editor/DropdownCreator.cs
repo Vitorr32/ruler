@@ -20,6 +20,8 @@ public class DropdownCreator : MonoBehaviour
 {
     public DropdownType type = DropdownType.UNDEFINED;
     public bool revealAll = false;
+    public bool hasPlaceholderOption = false;
+    public string placeholderMessage;
 
     private Dropdown dropdown;
     // Start is called before the first frame update
@@ -27,7 +29,16 @@ public class DropdownCreator : MonoBehaviour
         this.dropdown = GetComponent<Dropdown>();
 
         if (type != DropdownType.UNDEFINED) {
-            this.dropdown.options = PopulateDropdown(type);
+            this.StartUpDropdown();
+        }
+    }
+
+    private void StartUpDropdown() {
+        this.dropdown.options = PopulateDropdown(type);
+
+        //Add placeholder option at the start of the list of options
+        if (this.hasPlaceholderOption) {
+            this.dropdown.options.Insert(0, new Dropdown.OptionData() { text = placeholderMessage });
         }
     }
 
@@ -58,21 +69,29 @@ public class DropdownCreator : MonoBehaviour
         }
     }
 
-    public static List<Dropdown.OptionData> ConvertStringArrayToOptions(string[] enumNames) {
+    public static List<Dropdown.OptionData> ConvertStringArrayToOptions(string[] enumNames, string placeholderMessage = null) {
         List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
 
         for (int i = 0; i < enumNames.Length; i++) {
             options.Add(new Dropdown.OptionData() { text = enumNames[i] });
         }
 
+        if (placeholderMessage != null) {
+            options.Insert(0, new Dropdown.OptionData() { text = placeholderMessage });
+        }
+
         return options;
     }
 
-    public static List<Dropdown.OptionData> ConvertStringArrayToOptions<T>(List<T> enumNames) {
+    public static List<Dropdown.OptionData> ConvertStringArrayToOptions<T>(List<T> enumNames, string placeholderMessage = null) {
         List<Dropdown.OptionData> options = new List<Dropdown.OptionData>();
 
         for (int i = 0; i < enumNames.Count; i++) {
             options.Add(new Dropdown.OptionData() { text = enumNames[i].ToString() }); ;
+        }
+
+        if (placeholderMessage != null) {
+            options.Insert(0, new Dropdown.OptionData() { text = placeholderMessage });
         }
 
         return options;
