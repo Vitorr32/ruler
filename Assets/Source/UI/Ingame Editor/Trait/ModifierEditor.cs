@@ -80,9 +80,14 @@ public class ModifierEditor : MonoBehaviour
         Enum.TryParse(dropdown.options[dropdown.value].text, out Effect.Target.Type targetType);
         switch (targetType) {
             case Effect.Target.Type.TARGET_ATTRIBUTE:
-                PopulateSelectWithEnumValues<Officer.Attribute>(this.primaryTargetSelectController);
+                PopulateSelectWithEnumValues<Officer.Attribute>(this.primaryTargetSelectController, (int)Effect.Target.Type.TARGET_ATTRIBUTE);
                 ActivateAbsoluteChangeInput();
                 ActivateRelativeChangeInput();
+
+                this.currentEffect.target.type = Effect.Target.Type.TARGET_ATTRIBUTE;
+                this.currentEffect.target.arguments = new int[][] {
+                    new int[] { (int)Effect.Target.Type.TARGET_ATTRIBUTE, 0, 0 }
+                };
                 break;
             case Effect.Target.Type.TARGET_MONEY_GAIN:
 
@@ -94,7 +99,7 @@ public class ModifierEditor : MonoBehaviour
         this.RenderSummaryOfEffect(this.currentEffect);
     }
 
-    private void PopulateSelectWithEnumValues<T>(MultiSelectController controller) {
+    private void PopulateSelectWithEnumValues<T>(MultiSelectController controller, int identifier) {
         List<MultiSelectController.Option> options = new List<MultiSelectController.Option>();
 
         List<T> attributes = Utils.GetEnumValues<T>();
@@ -103,15 +108,21 @@ public class ModifierEditor : MonoBehaviour
 
             options.Add(option);
         });
-        controller.OnStartupMultiselect(options);
+        controller.OnStartupMultiselect(options, identifier);
     }
 
-    private void OnMultiSelectChange(int value, MultiSelectController controller) {
+    private void OnMultiSelectChange(int value, int identifier, MultiSelectController controller) {
+        if (controller != primaryTargetSelectController && controller != secondaryTargetSelectController) {
+            return;
+        }
 
+        bool primaryTarget = controller == primaryTargetSelectController;
+        switch ((Effect.Target.Type)identifier) {
+        }
     }
 
     private void RenderSummaryOfEffect(Effect effect) {
-        this.summaryText.text = Summarizer.SummarizeEffect(effect);
+        this.summaryText.text = Summarizer.SummarizeEffect(effect, true);
     }
 
     private void ActivateRelativeChangeInput() {

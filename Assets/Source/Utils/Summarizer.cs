@@ -1,17 +1,17 @@
 ﻿
-using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using UnityEngine;
 
 public static class Summarizer
 {
-    public static string SummarizeEffect(Effect effect) {
+    public static string SummarizeEffect(Effect effect, bool allowFailure = false) {
         string summary = "";
 
         summary += SummarizeTrigger(effect.trigger);
         summary += SummarizeTarget(effect.target);
-        summary += SummarizePrimaryTargetSelectors(effect);
+        summary += SummarizePrimaryTargetSelectors(effect, allowFailure);
 
         return summary;
     }
@@ -35,12 +35,53 @@ public static class Summarizer
         return "Swag";
     }
 
-    private static string SummarizePrimaryTargetSelectors(Effect effect) {
+    private static string SummarizePrimaryTargetSelectors(Effect effect, bool allowFailure = false) {
+        Debug.Log(effect.target.type.ToString());
         switch (effect.target.type) {
             case Effect.Target.Type.TARGET_ATTRIBUTE:
-                List<string> list = effect.target.arguments.Select(i => Enum.GetName(Officer.Attribute, i) ).ToList();
+                List<TargetAttributeArguments> targetArguments = effect.target.arguments.ToList().Select(argumentList => {
+                    return new TargetAttributeArguments() {
+                        name = Enum.GetName(typeof(Officer.Attribute), argumentList[0]),
+                        absoluteChange = argumentList[1],
+                        percentageChange = argumentList[2]
+                    };
+                }).ToList();
 
-                return list.Join(",");
+                string initial = "Modify " + (targetArguments.Count > 1 ? "attributes" : "attribute") + ":\n";
+                string finalString = "";
+
+                targetArguments.ForEach(argumentStruct => {
+                    bool isAbsolute = argumentStruct.absoluteChange != 0 ? true : false;
+                    bool isRelative = argumentStruct.percentageChange != 0 ? true : false;
+
+                    if (!isAbsolute && !isRelative) {
+                        if (allowFailure) {
+                            return;
+                        }
+                        else {
+                            throw new Exception("The effect of target attribute is neither absolute or relative, please check the effect of id " + effect.id);
+                        }
+                    }
+
+                    finalString += argumentStruct.name + " by " + (isAbsolute ? argumentStruct.absoluteChange.ToString() : argumentStruct.percentageChange.ToString() + "%") + "\n";
+                });
+
+                if (finalString == "") {
+                    return "";
+                }
+                else {
+                    return initial + finalString;
+                }
+
+            default:
+                return "TARGET TYPE " + effect.target.type + " NOT FOUND IN ENUMERATOR";
         }
+    }
+
+    public struct TargetAttributeArguments
+    {
+        public string name;
+        public int absoluteChange;
+        public float percentageChange;
     }
 }

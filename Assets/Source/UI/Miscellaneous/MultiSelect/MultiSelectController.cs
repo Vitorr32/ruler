@@ -20,7 +20,7 @@ public class MultiSelectController : MonoBehaviour
         }
     }
 
-    public delegate void OnMultiSelectChange(int value, MultiSelectController controller);
+    public delegate void OnMultiSelectChange(int value, int identifier, MultiSelectController controller);
     public static event OnMultiSelectChange onMultiselectChanged;
 
     private List<Option> selectOptions = new List<Option>();
@@ -31,6 +31,7 @@ public class MultiSelectController : MonoBehaviour
     public Text multiselectLabel;
 
     public string label;
+    public int multiSelectIdentifier;
 
     void Start() {
         this.multiselectLabel.text = label;
@@ -51,8 +52,9 @@ public class MultiSelectController : MonoBehaviour
         this.dropdown.ClearOptions();
     }
 
-    public void OnStartupMultiselect(List<Option> multiselectOptions) {
+    public void OnStartupMultiselect(List<Option> multiselectOptions, int identifier) {
         this.selectOptions = multiselectOptions;
+        this.multiSelectIdentifier = identifier;
 
         this.gameObject.SetActive(true);
         this.PopulateDropdownWithValues(this.selectOptions);

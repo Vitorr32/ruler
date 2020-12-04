@@ -52,7 +52,7 @@ public class Effect
         }
 
         public Type type;
-        public int[] arguments;
+        public int[][] arguments;
     }
 
     [Serializable]
