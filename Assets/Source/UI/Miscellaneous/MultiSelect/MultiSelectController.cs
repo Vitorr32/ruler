@@ -72,6 +72,8 @@ public class MultiSelectController : MonoBehaviour
 
         this.OnUpdateMultiselectList(selectOptions);
         this.dropdown.SetValueWithoutNotify(0);
+
+        onMultiselectChanged?.Invoke(selectedOption.value, this.multiSelectIdentifier, this);
     }
 
     private void OnUpdateMultiselectList(List<Option> options) {

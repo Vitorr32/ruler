@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -85,9 +84,6 @@ public class ModifierEditor : MonoBehaviour
                 ActivateRelativeChangeInput();
 
                 this.currentEffect.target.type = Effect.Target.Type.TARGET_ATTRIBUTE;
-                this.currentEffect.target.arguments = new int[][] {
-                    new int[] { (int)Effect.Target.Type.TARGET_ATTRIBUTE, 0, 0 }
-                };
                 break;
             case Effect.Target.Type.TARGET_MONEY_GAIN:
 
@@ -118,7 +114,55 @@ public class ModifierEditor : MonoBehaviour
 
         bool primaryTarget = controller == primaryTargetSelectController;
         switch ((Effect.Target.Type)identifier) {
+            case Effect.Target.Type.TARGET_ATTRIBUTE:
+                if (primaryTarget) {
+                    //Check if the effect already has arguments for the Target varible
+                    if (EffectHasTargetArguments(this.currentEffect)) {
+                        int index = Array.FindIndex(this.currentEffect.target.arguments, argumentList => argumentList[0] == value);
+                        //Only modify when the argument for that target don't exist yet
+                        if (index == -1) {
+                            this.currentEffect.target.arguments = this.currentEffect.target.arguments.Append(new int[] { value, 0, 0 }).ToArray();
+                        }
+                    }
+                    //Initialize a new argument array
+                    else {
+                        this.currentEffect.target.arguments = new int[][] { new int[] { value, 0, 0 } };
+                    }
+                }
+                break;
+            default:
+                throw new Exception("Unknown identifier " + identifier + " found in the onMultiSelectChange function");
         }
+
+        this.RenderSummaryOfEffect(this.currentEffect);
+    }
+
+    public void onInputValueChanged(string inputIdentifier) {
+        if (this.absoluteValueChangeText.text == "" && this.relativeValueChangeText.text == "") {
+            return;
+        }
+
+        try {
+            switch (inputIdentifier) {
+                case "absoluteChange":
+                    this.AssignValueToTargetArguments(Int32.Parse(absoluteValueChangeText.text));
+                    break;
+                case "relativeChange":
+                    this.AssignValueToTargetArguments(0, Int32.Parse(relativeValueChangeText.text));
+                    break;
+            }
+        }
+        catch (FormatException e) {
+            Debug.Log(e);
+        }
+    }
+
+    private void AssignValueToTargetArguments(int absoluteValue = 0, int relativeValue = 0) {
+
+    }
+
+    private bool EffectHasTargetArguments(Effect effect) {
+        return effect.target.arguments != null;
     }
 
     private void RenderSummaryOfEffect(Effect effect) {

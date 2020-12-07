@@ -6,12 +6,11 @@ using UnityEngine;
 
 public static class Summarizer
 {
-    public static string SummarizeEffect(Effect effect, bool allowFailure = false) {
+    public static string SummarizeEffect(Effect effect, bool allowIncomplete = false) {
         string summary = "";
 
         summary += SummarizeTrigger(effect.trigger);
-        summary += SummarizeTarget(effect.target);
-        summary += SummarizePrimaryTargetSelectors(effect, allowFailure);
+        summary += SummarizePrimaryTargetSelectors(effect, allowIncomplete);
 
         return summary;
     }
@@ -35,11 +34,22 @@ public static class Summarizer
         return "Swag";
     }
 
-    private static string SummarizePrimaryTargetSelectors(Effect effect, bool allowFailure = false) {
-        Debug.Log(effect.target.type.ToString());
+    private static string SummarizePrimaryTargetSelectors(Effect effect, bool allowIncomplete = false) {
         switch (effect.target.type) {
             case Effect.Target.Type.TARGET_ATTRIBUTE:
+                if (effect.target.arguments == null) {
+                    if (allowIncomplete) {
+                        return "";
+                    }
+                    else {
+                        throw new Exception("The effect of id " + effect.id + " has no arguments for type target attribute, please check the effect arguments");
+                    }
+                }
+
+                Debug.Log("Count :" + effect.target.arguments.Count());
+
                 List<TargetAttributeArguments> targetArguments = effect.target.arguments.ToList().Select(argumentList => {
+                    Debug.Log("Passing trough argument..." + Enum.GetName(typeof(Officer.Attribute), argumentList[0]));
                     return new TargetAttributeArguments() {
                         name = Enum.GetName(typeof(Officer.Attribute), argumentList[0]),
                         absoluteChange = argumentList[1],
@@ -50,21 +60,24 @@ public static class Summarizer
                 string initial = "Modify " + (targetArguments.Count > 1 ? "attributes" : "attribute") + ":\n";
                 string finalString = "";
 
-                targetArguments.ForEach(argumentStruct => {
+                Debug.Log("Target argument " + targetArguments[0].name);
+
+                foreach (TargetAttributeArguments argumentStruct in targetArguments) {
                     bool isAbsolute = argumentStruct.absoluteChange != 0 ? true : false;
                     bool isRelative = argumentStruct.percentageChange != 0 ? true : false;
 
                     if (!isAbsolute && !isRelative) {
-                        if (allowFailure) {
-                            return;
+                        if (allowIncomplete) {
+                            finalString += argumentStruct.name + " by" + Environment.NewLine;
+                            continue;
                         }
                         else {
                             throw new Exception("The effect of target attribute is neither absolute or relative, please check the effect of id " + effect.id);
                         }
                     }
 
-                    finalString += argumentStruct.name + " by " + (isAbsolute ? argumentStruct.absoluteChange.ToString() : argumentStruct.percentageChange.ToString() + "%") + "\n";
-                });
+                    finalString += argumentStruct.name + " by " + (isAbsolute ? argumentStruct.absoluteChange.ToString() : argumentStruct.percentageChange.ToString() + "%") + Environment.NewLine;
+                }
 
                 if (finalString == "") {
                     return "";
@@ -74,7 +87,7 @@ public static class Summarizer
                 }
 
             default:
-                return "TARGET TYPE " + effect.target.type + " NOT FOUND IN ENUMERATOR";
+                return allowIncomplete ? "" : "TARGET TYPE " + effect.target.type + " NOT FOUND IN ENUMERATOR";
         }
     }
 
