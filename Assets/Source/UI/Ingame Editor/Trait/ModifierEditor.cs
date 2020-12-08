@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class ModifierEditor : MonoBehaviour
 {
+    public delegate void OnModiferEditorEnd(Effect effect);
+    public static event OnModiferEditorEnd OnModifierEditorEnded;
+
     public GameObject modifierTargetGameObject;
     public Dropdown modifierTargetValueDropdown;
 
@@ -30,7 +33,7 @@ public class ModifierEditor : MonoBehaviour
         primaryTargetSelectController.gameObject.SetActive(false);
         secondaryTargetSelectController.gameObject.SetActive(false);
 
-        MultiSelectController.onMultiselectChanged += OnMultiSelectChange;
+        MultiSelectController.onMultiselectChanged += OnMultiselectEventReceived;
     }
 
     // Update is called once per frame
@@ -39,7 +42,11 @@ public class ModifierEditor : MonoBehaviour
     }
 
     private void Destroy() {
-        MultiSelectController.onMultiselectChanged -= OnMultiSelectChange;
+        MultiSelectController.onMultiselectChanged -= OnMultiselectEventReceived;
+    }
+
+    public void StartUpEditor() {
+
     }
 
     public void OnModiferTypeChanged(Dropdown dropdown) {
@@ -83,7 +90,6 @@ public class ModifierEditor : MonoBehaviour
                 ActivateAbsoluteChangeInput();
                 ActivateRelativeChangeInput();
 
-                this.currentEffect.target.type = Effect.Target.Type.TARGET_ATTRIBUTE;
                 break;
             case Effect.Target.Type.TARGET_MONEY_GAIN:
 
@@ -107,7 +113,16 @@ public class ModifierEditor : MonoBehaviour
         controller.OnStartupMultiselect(options, identifier);
     }
 
-    private void OnMultiSelectChange(int value, int identifier, MultiSelectController controller) {
+    private void OnMultiselectEventReceived(bool isAdding, int value, int identifier, MultiSelectController controller) {
+        if (isAdding) {
+            this.OnMultiSelectOptionAdded(value, identifier, controller);
+        }
+        else {
+            this.OnMultiselectOptionRemoved(value, identifier, controller);
+        }
+    }
+
+    private void OnMultiSelectOptionAdded(int value, int identifier, MultiSelectController controller) {
         if (controller != primaryTargetSelectController && controller != secondaryTargetSelectController) {
             return;
         }
@@ -128,6 +143,9 @@ public class ModifierEditor : MonoBehaviour
                     else {
                         this.currentEffect.target.arguments = new int[][] { new int[] { value, 0, 0 } };
                     }
+
+                    this.ActivateAbsoluteChangeInput();
+                    this.ActivateRelativeChangeInput();
                 }
                 break;
             default:
@@ -137,7 +155,63 @@ public class ModifierEditor : MonoBehaviour
         this.RenderSummaryOfEffect(this.currentEffect);
     }
 
-    public void onInputValueChanged(string inputIdentifier) {
+    private void OnMultiselectOptionRemoved(int value, int identifier, MultiSelectController controller) {
+        if (controller != primaryTargetSelectController && controller != secondaryTargetSelectController) {
+            return;
+        }
+
+        bool primaryTarget = controller == primaryTargetSelectController;
+        switch ((Effect.Target.Type)identifier) {
+            case Effect.Target.Type.TARGET_ATTRIBUTE:
+                if (primaryTarget) {
+                    int index = Array.FindIndex(this.currentEffect.target.arguments, argumentList => argumentList[0] == value);
+
+                    if (index != -1) {
+                        List<int[]> newArguments = this.currentEffect.target.arguments.ToList();
+                        newArguments.RemoveAt(index);
+
+                        this.currentEffect.target.arguments = newArguments.ToArray();
+                    }
+                    else {
+                        throw new Exception("Tried to remove a target attribute list with value " + value + " but there was none");
+                    }
+
+                    if (this.currentEffect.target.arguments.Length == 0) {
+                        this.DeactivateModifierValue();
+                    }
+                }
+                break;
+            default:
+                throw new Exception("Unknown identifier " + identifier + " found in the OnMultiselectOptionRemoved function");
+        }
+
+        this.RenderSummaryOfEffect(this.currentEffect);
+    }
+
+    public void OnSubmitEffectToTrait() {
+
+        if (CheckIfTargetArgumentsAreValid(this.currentEffect.target)) {
+            OnModifierEditorEnded?.Invoke(this.currentEffect);
+        }
+    }
+
+    private bool CheckIfTargetArgumentsAreValid(Effect.Target target) {
+        switch (target.type) {
+            case Effect.Target.Type.TARGET_ATTRIBUTE:
+                foreach (int[] argumentList in target.arguments) {
+                    if (argumentList[1] != 0 && argumentList[2] != 0) {
+                        this.ShowErrorMessage("A attribute can't be modified by an absolute and relative value at the same time");
+                        return false;
+                    }
+                }
+
+                return true;
+        }
+
+        return false;
+    }
+
+    public void OnInputValueChanged(string inputIdentifier) {
         if (this.absoluteValueChangeText.text == "" && this.relativeValueChangeText.text == "") {
             return;
         }
@@ -151,6 +225,8 @@ public class ModifierEditor : MonoBehaviour
                     this.AssignValueToTargetArguments(0, Int32.Parse(relativeValueChangeText.text));
                     break;
             }
+
+            this.RenderSummaryOfEffect(this.currentEffect);
         }
         catch (FormatException e) {
             Debug.Log(e);
@@ -158,7 +234,10 @@ public class ModifierEditor : MonoBehaviour
     }
 
     private void AssignValueToTargetArguments(int absoluteValue = 0, int relativeValue = 0) {
-
+        for (int i = 0; i < this.currentEffect.target.arguments.Length; i++) {
+            this.currentEffect.target.arguments[i][1] = absoluteValue;
+            this.currentEffect.target.arguments[i][2] = relativeValue;
+        }
     }
 
     private bool EffectHasTargetArguments(Effect effect) {
@@ -170,10 +249,12 @@ public class ModifierEditor : MonoBehaviour
     }
 
     private void ActivateRelativeChangeInput() {
+        this.valueChangeGO.SetActive(true);
         this.relativeValueChangeGO.SetActive(true);
         this.relativeValueChangeText.text = "";
     }
     private void ActivateAbsoluteChangeInput() {
+        this.valueChangeGO.SetActive(true);
         this.absoluteValueChangeGO.SetActive(true);
         this.absoluteValueChangeText.text = "";
     }
@@ -181,5 +262,13 @@ public class ModifierEditor : MonoBehaviour
         valueChangeGO.SetActive(false);
         this.relativeValueChangeGO.SetActive(false);
         this.absoluteValueChangeGO.SetActive(false);
+    }
+
+    private void CleanUpEditor() {
+        this.DeactivateModifierValue();
+        this.
+    }
+    private void ShowErrorMessage(string message) {
+        Debug.Log("Error message: " + message);
     }
 }

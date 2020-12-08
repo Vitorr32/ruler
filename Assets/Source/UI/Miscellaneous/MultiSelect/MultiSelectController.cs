@@ -20,7 +20,7 @@ public class MultiSelectController : MonoBehaviour
         }
     }
 
-    public delegate void OnMultiSelectChange(int value, int identifier, MultiSelectController controller);
+    public delegate void OnMultiSelectChange(bool isAdding, int value, int identifier, MultiSelectController controller);
     public static event OnMultiSelectChange onMultiselectChanged;
 
     private List<Option> selectOptions = new List<Option>();
@@ -73,7 +73,7 @@ public class MultiSelectController : MonoBehaviour
         this.OnUpdateMultiselectList(selectOptions);
         this.dropdown.SetValueWithoutNotify(0);
 
-        onMultiselectChanged?.Invoke(selectedOption.value, this.multiSelectIdentifier, this);
+        onMultiselectChanged?.Invoke(true, selectedOption.value, this.multiSelectIdentifier, this);
     }
 
     private void OnUpdateMultiselectList(List<Option> options) {
@@ -116,5 +116,7 @@ public class MultiSelectController : MonoBehaviour
         Option toDeleteOption = this.selectOptions.Find(iteratedOption => iteratedOption == option);
 
         toDeleteOption.selected = false;
+
+        onMultiselectChanged?.Invoke(false, toDeleteOption.value, this.multiSelectIdentifier, this);
     }
 }

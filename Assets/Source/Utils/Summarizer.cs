@@ -37,7 +37,7 @@ public static class Summarizer
     private static string SummarizePrimaryTargetSelectors(Effect effect, bool allowIncomplete = false) {
         switch (effect.target.type) {
             case Effect.Target.Type.TARGET_ATTRIBUTE:
-                if (effect.target.arguments == null) {
+                if (effect.target.arguments == null || effect.target.arguments.Length == 0) {
                     if (allowIncomplete) {
                         return "";
                     }
@@ -46,10 +46,7 @@ public static class Summarizer
                     }
                 }
 
-                Debug.Log("Count :" + effect.target.arguments.Count());
-
                 List<TargetAttributeArguments> targetArguments = effect.target.arguments.ToList().Select(argumentList => {
-                    Debug.Log("Passing trough argument..." + Enum.GetName(typeof(Officer.Attribute), argumentList[0]));
                     return new TargetAttributeArguments() {
                         name = Enum.GetName(typeof(Officer.Attribute), argumentList[0]),
                         absoluteChange = argumentList[1],
@@ -59,8 +56,6 @@ public static class Summarizer
 
                 string initial = "Modify " + (targetArguments.Count > 1 ? "attributes" : "attribute") + ":\n";
                 string finalString = "";
-
-                Debug.Log("Target argument " + targetArguments[0].name);
 
                 foreach (TargetAttributeArguments argumentStruct in targetArguments) {
                     bool isAbsolute = argumentStruct.absoluteChange != 0 ? true : false;
