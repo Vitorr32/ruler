@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -52,12 +50,28 @@ public class MultiSelectController : MonoBehaviour
         this.dropdown.ClearOptions();
     }
 
-    public void OnStartupMultiselect(List<Option> multiselectOptions, int identifier) {
-        this.selectOptions = multiselectOptions;
+    public void OnStartupMultiselect(List<Option> multiselectOptions, int identifier, int[] currentlySelected = null) {
+        this.PopulateOptionsOfMultiselect(multiselectOptions, currentlySelected);
         this.multiSelectIdentifier = identifier;
 
         this.gameObject.SetActive(true);
         this.PopulateDropdownWithValues(this.selectOptions);
+    }
+
+    private void PopulateOptionsOfMultiselect(List<Option> multiselectOptions, int[] currentlySelected) {
+        this.selectOptions = multiselectOptions;
+
+        if (currentlySelected != null) {
+            foreach (int selected in currentlySelected) {
+                int index = this.selectOptions.FindIndex(option => option.value == selected);
+                if (index != 1) {
+                    this.selectOptions[index].selected = true;
+                }
+                else {
+                    throw new System.Exception("Currently selected array has options with value outside of list, value : " + selected);
+                }
+            }
+        }
     }
 
     public void OnDropdownSelection() {

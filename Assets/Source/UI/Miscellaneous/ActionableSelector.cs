@@ -32,6 +32,8 @@ public class ActionableSelector : MonoBehaviour
         this.content = content;
         this.identifier = identifier;
         this.context = context;
+        this.title = title;
+        this.description = description;
         this.editable = editable;
         this.deletable = deletable;
 
@@ -59,5 +61,13 @@ public class ActionableSelector : MonoBehaviour
 
     public void OnSelectorEdit() {
         if (!this.editable) { return; }
+    }
+
+    public void OnClearActionableSelector() {
+        this.title = null;
+        this.description = null;
+        this.content = null;
+        this.content = null;
+        this.identifier = -1;
     }
 }

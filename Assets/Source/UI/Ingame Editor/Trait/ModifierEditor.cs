@@ -9,6 +9,7 @@ public class ModifierEditor : MonoBehaviour
     public delegate void OnModiferEditorEnd(Effect effect);
     public static event OnModiferEditorEnd OnModifierEditorEnded;
 
+    public Dropdown modifierTriggerDropdown;
     public GameObject modifierTargetGameObject;
     public Dropdown modifierTargetValueDropdown;
 
@@ -27,26 +28,24 @@ public class ModifierEditor : MonoBehaviour
 
     // Start is called before the first frame update
     void Start() {
-        modifierTargetGameObject.SetActive(false);
-
-        this.DeactivateModifierValue();
-        primaryTargetSelectController.gameObject.SetActive(false);
-        secondaryTargetSelectController.gameObject.SetActive(false);
-
         MultiSelectController.onMultiselectChanged += OnMultiselectEventReceived;
     }
 
-    // Update is called once per frame
-    void Update() {
-
-    }
-
-    private void Destroy() {
+    void Destroy() {
         MultiSelectController.onMultiselectChanged -= OnMultiselectEventReceived;
     }
 
-    public void StartUpEditor() {
+    private void OnDisable() {
+        this.CleanUpEditor();
+        this.GetComponent<PopupWrapper>().HidePopup();
+    }
 
+    public void StartUpEditor(Effect toEditEffect = null) {
+        this.SetInitialStateOfGameObjects();
+
+        if (toEditEffect != null) {
+            this.PopulateEffectValuesForEdit(toEditEffect);
+        }
     }
 
     public void OnModiferTypeChanged(Dropdown dropdown) {
@@ -101,7 +100,7 @@ public class ModifierEditor : MonoBehaviour
         this.RenderSummaryOfEffect(this.currentEffect);
     }
 
-    private void PopulateSelectWithEnumValues<T>(MultiSelectController controller, int identifier) {
+    private void PopulateSelectWithEnumValues<T>(MultiSelectController controller, int identifier, int[] currentlySelected = null) {
         List<MultiSelectController.Option> options = new List<MultiSelectController.Option>();
 
         List<T> attributes = Utils.GetEnumValues<T>();
@@ -110,7 +109,7 @@ public class ModifierEditor : MonoBehaviour
 
             options.Add(option);
         });
-        controller.OnStartupMultiselect(options, identifier);
+        controller.OnStartupMultiselect(options, identifier, currentlySelected);
     }
 
     private void OnMultiselectEventReceived(bool isAdding, int value, int identifier, MultiSelectController controller) {
@@ -192,6 +191,7 @@ public class ModifierEditor : MonoBehaviour
 
         if (CheckIfTargetArgumentsAreValid(this.currentEffect.target)) {
             OnModifierEditorEnded?.Invoke(this.currentEffect);
+            this.CleanUpEditor();
         }
     }
 
@@ -232,14 +232,12 @@ public class ModifierEditor : MonoBehaviour
             Debug.Log(e);
         }
     }
-
     private void AssignValueToTargetArguments(int absoluteValue = 0, int relativeValue = 0) {
         for (int i = 0; i < this.currentEffect.target.arguments.Length; i++) {
             this.currentEffect.target.arguments[i][1] = absoluteValue;
             this.currentEffect.target.arguments[i][2] = relativeValue;
         }
     }
-
     private bool EffectHasTargetArguments(Effect effect) {
         return effect.target.arguments != null;
     }
@@ -263,10 +261,43 @@ public class ModifierEditor : MonoBehaviour
         this.relativeValueChangeGO.SetActive(false);
         this.absoluteValueChangeGO.SetActive(false);
     }
+    private void SetInitialStateOfGameObjects() {
+        modifierTargetGameObject.SetActive(false);
+
+        this.DeactivateModifierValue();
+        primaryTargetSelectController.gameObject.SetActive(false);
+        secondaryTargetSelectController.gameObject.SetActive(false);
+
+        MultiSelectController.onMultiselectChanged += OnMultiselectEventReceived;
+    }
 
     private void CleanUpEditor() {
         this.DeactivateModifierValue();
-        this.
+        this.primaryTargetSelectController.gameObject.SetActive(false);
+        this.secondaryTargetSelectController.gameObject.SetActive(false);
+        this.summaryText.text = "";
+        this.absoluteValueChangeText.text = "";
+        this.relativeValueChangeText.text = "";
+
+        this.modifierTriggerDropdown.GetComponent<DropdownCreator>().ResetDropdownState();
+        this.modifierTargetValueDropdown.GetComponent<DropdownCreator>().ResetDropdownState();
+    }
+    private void PopulateEffectValuesForEdit(Effect effect) {
+        this.currentEffect = effect;
+
+        this.PopulatePrimaryTargetValues(this.currentEffect.target);
+    }
+
+    private void PopulatePrimaryTargetValues(Effect.Target target) {
+        switch (target.type) {
+            case Effect.Target.Type.TARGET_ATTRIBUTE:
+                PopulateSelectWithEnumValues<Officer.Attribute>(
+                    this.primaryTargetSelectController,
+                    (int)Effect.Target.Type.TARGET_ATTRIBUTE,
+                    this.currentEffect.target.arguments.Select(argumentList => argumentList[0]).ToArray()
+                );
+                break;
+        }
     }
     private void ShowErrorMessage(string message) {
         Debug.Log("Error message: " + message);

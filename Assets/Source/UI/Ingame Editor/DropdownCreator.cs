@@ -42,7 +42,17 @@ public class DropdownCreator : MonoBehaviour
         }
     }
 
-    List<Dropdown.OptionData> PopulateDropdown(DropdownType type) {
+    public void ResetDropdownState() {
+        if (type != DropdownType.UNDEFINED) {
+            this.StartUpDropdown();
+        }
+
+        if (this.dropdown) {
+            this.dropdown.value = 0;
+        }
+    }
+
+    private List<Dropdown.OptionData> PopulateDropdown(DropdownType type) {
         switch (type) {
             case DropdownType.OFFICER_GENDER:
                 return ConvertStringArrayToOptions(System.Enum.GetNames(typeof(Officer.Gender)));
