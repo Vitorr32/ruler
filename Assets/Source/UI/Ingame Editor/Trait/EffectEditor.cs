@@ -4,7 +4,7 @@ using UnityEngine;
 public class EffectEditor : MonoBehaviour
 {
 
-    private List<Effect> effects;
+    private List<Effect> effects = new List<Effect>();
     public GameObject effectListGO;
 
     public ModifierEditor modifierEditor;
@@ -38,10 +38,13 @@ public class EffectEditor : MonoBehaviour
     }
 
     private void OnEffectHasSucessfullySubmited(Effect effect) {
+        Debug.Log("New effect id: ");
+        Debug.Log(effect.id.ToString());
+
         this.effects.Add(effect);
+        int index = this.effects.Count - 1;
 
-        int index = this.effects.Count;
-
-        this.effectListItemPrefabPool[index - 1].OnSelectorStartup(effect, effect.id, "effectEditor", effect.trigger.type.ToString());
+        this.effectListItemPrefabPool[index].OnSelectorStartup(effect, effect.id, "effectEditor", effect.trigger.type.ToString());
+        this.effectListItemPrefabPool[index].gameObject.SetActive(true);
     }
 }

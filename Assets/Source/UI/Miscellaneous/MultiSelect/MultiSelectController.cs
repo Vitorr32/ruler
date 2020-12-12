@@ -56,6 +56,7 @@ public class MultiSelectController : MonoBehaviour
 
         this.gameObject.SetActive(true);
         this.PopulateDropdownWithValues(this.selectOptions);
+        this.OnUpdateMultiselectList(this.selectOptions);
     }
 
     private void PopulateOptionsOfMultiselect(List<Option> multiselectOptions, int[] currentlySelected) {
@@ -64,7 +65,7 @@ public class MultiSelectController : MonoBehaviour
         if (currentlySelected != null) {
             foreach (int selected in currentlySelected) {
                 int index = this.selectOptions.FindIndex(option => option.value == selected);
-                if (index != 1) {
+                if (index != -1) {
                     this.selectOptions[index].selected = true;
                 }
                 else {

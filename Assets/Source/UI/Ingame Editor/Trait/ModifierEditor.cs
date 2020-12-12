@@ -25,10 +25,27 @@ public class ModifierEditor : MonoBehaviour
     public Text summaryText;
 
     private Effect currentEffect = new Effect();
+    //private ModifierConfiguration modifierConfiguration;
+
+    //public struct ModifierConfiguration
+    //{
+    //    public struct TargetConfiguration
+    //    {
+    //        public bool allowTarget;
+    //        public Type targetType;
+    //        public List<int> targetOptions;
+    //    }
+
+    //    public TargetConfiguration primaryTargetConfig;
+    //    public TargetConfiguration secondaryTargetConfig;
+    //    public ActionType actionType;
+    //}
 
     // Start is called before the first frame update
     void Start() {
         MultiSelectController.onMultiselectChanged += OnMultiselectEventReceived;
+
+        this.CleanUpEditor();
     }
 
     void Destroy() {
@@ -41,8 +58,6 @@ public class ModifierEditor : MonoBehaviour
     }
 
     public void StartUpEditor(Effect toEditEffect = null) {
-        this.SetInitialStateOfGameObjects();
-
         if (toEditEffect != null) {
             this.PopulateEffectValuesForEdit(toEditEffect);
         }
@@ -55,6 +70,25 @@ public class ModifierEditor : MonoBehaviour
         Enum.TryParse(dropdown.options[dropdown.value].text, out ActionType actionType);
         switch (actionType) {
             case ActionType.ALWAYS_ACTIVE:
+
+                //this.modifierConfiguration = new ModifierConfiguration() {
+                //    actionType = actionType,
+                //    primaryTargetConfig = new ModifierConfiguration.TargetConfiguration() {
+                //        allowTarget = true,
+                //        targetOptions = new List<int> {
+                //            (int)Effect.Target.Type.TARGET_ATTRIBUTE,
+                //            (int)Effect.Target.Type.TARGET_POPULARITY_GAIN,
+                //            (int)Effect.Target.Type.TARGET_STRESS_GAIN
+                //        },
+                //        targetType = typeof(Effect.Target.Type)
+                //    },
+                //    secondaryTargetConfig = new ModifierConfiguration.TargetConfiguration() {
+                //        allowTarget = false,
+                //        targetOptions = null,
+                //        targetType = null
+                //    }
+                //};
+
                 options = new string[] {
                     Effect.Target.Type.TARGET_ATTRIBUTE.ToString(),
                     Effect.Target.Type.TARGET_POPULARITY_GAIN.ToString(),
@@ -109,6 +143,7 @@ public class ModifierEditor : MonoBehaviour
 
             options.Add(option);
         });
+
         controller.OnStartupMultiselect(options, identifier, currentlySelected);
     }
 
@@ -190,8 +225,12 @@ public class ModifierEditor : MonoBehaviour
     public void OnSubmitEffectToTrait() {
 
         if (CheckIfTargetArgumentsAreValid(this.currentEffect.target)) {
+            this.currentEffect.id = PlayerPrefs.GetInt("effectIdCounter") + 1;
+            PlayerPrefs.SetInt("effectIdCounter", this.currentEffect.id);
             OnModifierEditorEnded?.Invoke(this.currentEffect);
             this.CleanUpEditor();
+
+            this.gameObject.GetComponent<PopupWrapper>().HidePopup();
         }
     }
 
@@ -212,7 +251,8 @@ public class ModifierEditor : MonoBehaviour
     }
 
     public void OnInputValueChanged(string inputIdentifier) {
-        if (this.absoluteValueChangeText.text == "" && this.relativeValueChangeText.text == "") {
+        if ((this.absoluteValueChangeText.text == "" && this.relativeValueChangeText.text == "") ||
+            (this.currentEffect.target.arguments == null || this.currentEffect.target.arguments.Length == 0)) {
             return;
         }
 
@@ -261,18 +301,10 @@ public class ModifierEditor : MonoBehaviour
         this.relativeValueChangeGO.SetActive(false);
         this.absoluteValueChangeGO.SetActive(false);
     }
-    private void SetInitialStateOfGameObjects() {
-        modifierTargetGameObject.SetActive(false);
-
-        this.DeactivateModifierValue();
-        primaryTargetSelectController.gameObject.SetActive(false);
-        secondaryTargetSelectController.gameObject.SetActive(false);
-
-        MultiSelectController.onMultiselectChanged += OnMultiselectEventReceived;
-    }
-
     private void CleanUpEditor() {
         this.DeactivateModifierValue();
+
+        this.modifierTargetGameObject.SetActive(false);
         this.primaryTargetSelectController.gameObject.SetActive(false);
         this.secondaryTargetSelectController.gameObject.SetActive(false);
         this.summaryText.text = "";
@@ -281,10 +313,14 @@ public class ModifierEditor : MonoBehaviour
 
         this.modifierTriggerDropdown.GetComponent<DropdownCreator>().ResetDropdownState();
         this.modifierTargetValueDropdown.GetComponent<DropdownCreator>().ResetDropdownState();
+
+        this.currentEffect = new Effect();
     }
     private void PopulateEffectValuesForEdit(Effect effect) {
         this.currentEffect = effect;
 
+        this.modifierTriggerDropdown.value = this.modifierTriggerDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(ActionType), effect.trigger.type));
+        this.modifierTargetValueDropdown.value = this.modifierTargetValueDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(Effect.Target.Type), effect.target.type));
         this.PopulatePrimaryTargetValues(this.currentEffect.target);
     }
 
