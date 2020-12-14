@@ -60,6 +60,7 @@ public class ModifierEditor : MonoBehaviour
     public void StartUpEditor(Effect toEditEffect = null) {
         if (toEditEffect != null) {
             this.PopulateEffectValuesForEdit(toEditEffect);
+            this.gameObject.SetActive(true);
         }
     }
 
@@ -68,6 +69,7 @@ public class ModifierEditor : MonoBehaviour
 
         modifierTargetGameObject.SetActive(true);
         Enum.TryParse(dropdown.options[dropdown.value].text, out ActionType actionType);
+
         switch (actionType) {
             case ActionType.ALWAYS_ACTIVE:
 
@@ -319,9 +321,17 @@ public class ModifierEditor : MonoBehaviour
     private void PopulateEffectValuesForEdit(Effect effect) {
         this.currentEffect = effect;
 
-        this.modifierTriggerDropdown.value = this.modifierTriggerDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(ActionType), effect.trigger.type));
-        this.modifierTargetValueDropdown.value = this.modifierTargetValueDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(Effect.Target.Type), effect.target.type));
+        this.modifierTriggerDropdown.SetValueWithoutNotify(this.modifierTriggerDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(ActionType), effect.trigger.type)));
+        this.OnModiferTypeChanged(this.modifierTriggerDropdown);
+        this.modifierTargetValueDropdown.SetValueWithoutNotify(this.modifierTargetValueDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(Effect.Target.Type), effect.target.type)));
+        this.OnModifierTargetSet(this.modifierTargetValueDropdown);
+
+        this.modifierTriggerDropdown.RefreshShownValue();
+        this.modifierTargetValueDropdown.RefreshShownValue();
         this.PopulatePrimaryTargetValues(this.currentEffect.target);
+
+
+        this.RenderSummaryOfEffect(this.currentEffect);
     }
 
     private void PopulatePrimaryTargetValues(Effect.Target target) {
@@ -332,6 +342,20 @@ public class ModifierEditor : MonoBehaviour
                     (int)Effect.Target.Type.TARGET_ATTRIBUTE,
                     this.currentEffect.target.arguments.Select(argumentList => argumentList[0]).ToArray()
                 );
+
+                this.primaryTargetSelectController.gameObject.SetActive(true);
+                break;
+        }
+    }
+
+    private void PopulateInputValues(Effect.Target target) {
+        switch (target.type) {
+            default:
+                this.absoluteValueChangeText.text = target.arguments[1].ToString();
+                this.relativeValueChangeText.text = target.arguments[2].ToString();
+
+                this.ActivateAbsoluteChangeInput();
+                this.ActivateRelativeChangeInput();
                 break;
         }
     }

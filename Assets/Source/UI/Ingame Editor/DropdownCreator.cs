@@ -39,7 +39,8 @@ public class DropdownCreator : MonoBehaviour
         //Add placeholder option at the start of the list of options
         if (this.hasPlaceholderOption) {
             this.dropdown.options.Insert(0, new Dropdown.OptionData() { text = placeholderMessage });
-            this.dropdown.value = -1;
+
+            this.ResetDropdownShownValue();
         }
     }
 
@@ -49,8 +50,13 @@ public class DropdownCreator : MonoBehaviour
                 this.StartUpDropdown();
             }
 
-            this.dropdown.value = -1;
+            this.ResetDropdownShownValue();
         }
+    }
+
+    private void ResetDropdownShownValue() {
+        this.dropdown.SetValueWithoutNotify(0);
+        this.dropdown.RefreshShownValue();
     }
 
     private List<Dropdown.OptionData> PopulateDropdown(DropdownType type) {

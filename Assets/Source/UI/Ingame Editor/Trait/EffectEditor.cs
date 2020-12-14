@@ -38,11 +38,15 @@ public class EffectEditor : MonoBehaviour
     }
 
     private void OnEffectHasSucessfullySubmited(Effect effect) {
-        Debug.Log("New effect id: ");
-        Debug.Log(effect.id.ToString());
+        int index = this.effects.FindIndex(effectInList => effectInList.id == effect.id);
 
-        this.effects.Add(effect);
-        int index = this.effects.Count - 1;
+        if (index == -1) {
+            this.effects.Add(effect);
+            index = this.effects.Count - 1;
+        }
+        else {
+            this.effects[index] = effect;
+        }
 
         this.effectListItemPrefabPool[index].OnSelectorStartup(effect, effect.id, "effectEditor", effect.trigger.type.ToString());
         this.effectListItemPrefabPool[index].gameObject.SetActive(true);
