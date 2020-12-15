@@ -68,10 +68,10 @@ public class ModifierEditor : MonoBehaviour
         string[] options;
 
         modifierTargetGameObject.SetActive(true);
-        Enum.TryParse(dropdown.options[dropdown.value].text, out ActionType actionType);
+        Enum.TryParse(dropdown.options[dropdown.value].text, out Effect.Trigger.Type actionType);
 
         switch (actionType) {
-            case ActionType.ALWAYS_ACTIVE:
+            case Effect.Trigger.Type.ALWAYS_ACTIVE:
 
                 //this.modifierConfiguration = new ModifierConfiguration() {
                 //    actionType = actionType,
@@ -98,7 +98,7 @@ public class ModifierEditor : MonoBehaviour
                 };
                 modifierTargetValueDropdown.options = DropdownCreator.ConvertStringArrayToOptions(options, "Select a permanent modifier");
                 break;
-            case ActionType.ON_INTERACTION:
+            case Effect.Trigger.Type.ON_INTERACTION:
                 options = new string[] {
                     Effect.Target.Type.TARGET_INTERACTION.ToString()
                 };
@@ -321,7 +321,7 @@ public class ModifierEditor : MonoBehaviour
     private void PopulateEffectValuesForEdit(Effect effect) {
         this.currentEffect = effect;
 
-        this.modifierTriggerDropdown.SetValueWithoutNotify(this.modifierTriggerDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(ActionType), effect.trigger.type)));
+        this.modifierTriggerDropdown.SetValueWithoutNotify(this.modifierTriggerDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(Effect.Trigger.Type), effect.trigger.type)));
         this.OnModiferTypeChanged(this.modifierTriggerDropdown);
         this.modifierTargetValueDropdown.SetValueWithoutNotify(this.modifierTargetValueDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(Effect.Target.Type), effect.target.type)));
         this.OnModifierTargetSet(this.modifierTargetValueDropdown);

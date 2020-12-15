@@ -74,7 +74,7 @@ public class DropdownCreator : MonoBehaviour
             case DropdownType.TRAIT_TYPE:
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Trait.Type>());
             case DropdownType.TRIGGERS:
-                return ConvertStringArrayToOptions(Utils.GetEnumValues<ActionType>());
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Trigger.Type>());
             case DropdownType.MODIFIER_TARGET:
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Target.Type>());
             case DropdownType.RESTRICTION_TYPE:

@@ -6,7 +6,17 @@ public class Effect
     [Serializable]
     public struct Trigger
     {
-        public ActionType type;
+        public enum Type
+        {
+            UNDEFINED,
+
+            ALWAYS_ACTIVE,
+            ON_INTERACTION,
+
+            MAX_ACTION_TYPES
+        }
+
+        public Type type;
         public int[] arguments;
     }
     [Serializable]
