@@ -24,6 +24,12 @@ public class Officer
         MAX_RACES
     }
 
+    public enum Skill
+    {
+        STAMINA,
+        STRENGTH
+    }
+
     public enum Faith
     {
         UNDEFINED,
