@@ -1,35 +1,45 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class ConditionLine : MonoBehaviour
 {
-    // Start is called before the first frame update
     public bool active;
+
+    private ConditionMapper.StepsMapper stepsMapper;
 
     public Dropdown logicOperator;
     public Dropdown conditionInitiator;
 
-    public List<Dropdown> specifiersDropdowns;
+    public Dropdown customSelectorDropdown;
+    public Dropdown customValueDropdown;
+    public Dropdown customConditionDropdown;
 
-    public List<int> currentArguments = new List<int>() { 0, 0 };
+    public Input firstNumericInput;
+    public Input secondNumericInput;
 
     void Start() {
 
     }
 
-    // Update is called once per frame
-    void Update() {
-
-    }
-
     public void OnLogicOperatorSelected() {
-        this.currentArguments[0] = this.logicOperator.value;
-        this.conditionInitiator.gameObject.SetActive(true);
+        this.stepsMapper.logicOperator = (LogicOperator)this.logicOperator.value;
     }
     public void OnConditionInitiatorSelected() {
-        this.currentArguments[1] = this.conditionInitiator.value;
+        this.stepsMapper.conditionInitiator = (Condition)this.conditionInitiator.value;
 
-        ConditionMapper.getNextStepOfCondition(this.currentArguments);
+        this.stepsMapper = ConditionMapper.getNextStepOfCondition(this.stepsMapper);
+
+        this.RenderTheCurrentStepsMapperState(this.stepsMapper);
+    }
+
+    private void RenderTheCurrentStepsMapperState(ConditionMapper.StepsMapper stepsMapper) {
+        if (stepsMapper.customSelectorType == null) {
+
+        }
+    }
+
+    private void GetCustomSelectorTypeValues(ConditionMapper.StepsMapper customSelectorType) {
+
     }
 }

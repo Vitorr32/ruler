@@ -14,7 +14,8 @@ public enum DropdownType
     TRAIT_TYPE,
     TRIGGERS,
     MODIFIER_TARGET,
-    RESTRICTION_TYPE
+    RESTRICTION_TYPE,
+    CONDITION_INITIATOR
 }
 public class DropdownCreator : MonoBehaviour
 {
@@ -79,6 +80,8 @@ public class DropdownCreator : MonoBehaviour
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Target.Type>());
             case DropdownType.RESTRICTION_TYPE:
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Restriction.Type>(this.revealAll));
+            case DropdownType.CONDITION_INITIATOR:
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Condition>(this.revealAll));
             default:
                 Debug.LogError("The dropdown " + gameObject.name + " has no type set!");
 

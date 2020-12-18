@@ -2,14 +2,23 @@
 using System.Collections.Generic;
 using System.Linq;
 
+public enum LogicOperator
+{
+    IF,
+    AND,
+    OR
+}
 public enum Condition
 {
+    UNDEFINED,
     THIS_CHARACTER_IS,
     TARGET_CHARACTER_IS,
     THIS_CHARACTER_HAS,
     TARGET_CHARACTER_HAS,
     TIME_IS,
-    INTERACTING_WITH
+    INTERACTING_WITH,
+
+    MAX_CONDITIONS
 }
 
 public enum CharacterState
@@ -31,6 +40,8 @@ public enum CharacterHas
 
 public enum CustomSelector
 {
+    UNDEFINED,
+
     CHARACTER,
     EVENT,
     LOCATION,
@@ -46,33 +57,25 @@ public enum NumberInput
 }
 public static class ConditionMapper
 {
-    public class StepMapper
+    public struct StepsMapper
     {
-        bool maximumSetter;
-        bool minimumSetter;
-        bool valueInput;
+        public LogicOperator logicOperator;
+        public Condition conditionInitiator;
 
-        bool customSelector;
-        CustomSelector customSelectorType;
+        public bool maximumSetter;
+        public bool minimumSetter;
+        public bool valueInput;
+
+        public bool customSelector;
+        public CustomSelector customSelectorType;
     }
 
-    public static Dictionary<int, List<int>> triggerToTargetDictionary = new Dictionary<int, List<int>>() {
-        {
-            (int)Condition.THIS_CHARACTER_IS,
-            ConditionMapper.EnumToIntArray<CharacterState>()
-        },
-        {
-            (int)Condition.THIS_CHARACTER_HAS,
-            ConditionMapper.EnumToIntArray<CharacterHas>()
-        }
-    };
-
-    public static StepMapper getNextStepOfCondition(List<int> currentArgument) {
-        switch ((Condition)currentArgument[1]) {
-            case Condition.THIS_CHARACTER_HAS:
-                return new StepMapper();
+    public static StepsMapper getNextStepOfCondition(StepsMapper currentStepMapper) {
+        switch (currentStepMapper) {
+            //case Condition.THIS_CHARACTER_HAS:
+            //    return new StepsMapper() { maximumSetter = true };
             default:
-                return new StepMapper();
+                return new StepsMapper();
         }
     }
 
