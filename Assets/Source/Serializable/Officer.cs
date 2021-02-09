@@ -133,6 +133,6 @@ public class Officer
 
     public List<int> traits;
     public List<string> spriteNames = new List<string>() { "default_child", "default_child", "default_child" };
-    public List<Relationship> relationships;
+    public List<RelationshipTemp> relationships;
     public int[] position;
 }

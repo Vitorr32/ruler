@@ -75,14 +75,14 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
             new ConversationActor(){ associatedOfficer = target, isFocused = true, isOnLeftSideOfStage = false }
         };
 
-        Relationship[] relationships = GetRelationshipBetweenCharacters(source.baseOfficer, target.baseOfficer);
+        RelationshipTemp[] relationships = GetRelationshipBetweenCharacters(source.baseOfficer, target.baseOfficer);
 
         List<ScriptLine> writtenScript = WriteInitialConversationScript(source, target, relationships);
 
         stageController.StartUpStageForScript(writtenScript, actorsInConversation);
     }
 
-    private List<ScriptLine> WriteInitialConversationScript(OfficerController source, OfficerController target, Relationship[] relationships) {
+    private List<ScriptLine> WriteInitialConversationScript(OfficerController source, OfficerController target, RelationshipTemp[] relationships) {
         List<ScriptLine> scriptLines = new List<ScriptLine>();
 
         ScriptLine playerEnterSage = new ScriptLine();
@@ -131,8 +131,8 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
         return scriptLines;
     }
 
-    private Relationship[] GetRelationshipBetweenCharacters(Officer officer1, Officer officer2) {
-        Relationship[] relationships = new Relationship[2];
+    private RelationshipTemp[] GetRelationshipBetweenCharacters(Officer officer1, Officer officer2) {
+        RelationshipTemp[] relationships = new RelationshipTemp[2];
 
         relationships[0] = officer1.relationships.Find(relationship => relationship.targetID == officer2.id);
         relationships[1] = officer2.relationships.Find(relationship => relationship.targetID == officer1.id);

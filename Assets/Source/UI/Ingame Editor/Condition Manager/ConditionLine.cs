@@ -26,11 +26,11 @@ public class ConditionLine : MonoBehaviour
         this.stepsMapper.logicOperator = (LogicOperator)this.logicOperator.value;
     }
     public void OnConditionInitiatorSelected() {
-        this.stepsMapper.conditionInitiator = (Condition)this.conditionInitiator.value;
+        //this.stepsMapper.conditionInitiator = (Condition)this.conditionInitiator.value;
 
-        this.stepsMapper = ConditionMapper.getNextStepOfCondition(this.stepsMapper);
+        //this.stepsMapper = ConditionMapper.getNextStepOfCondition(this.stepsMapper);
 
-        this.RenderTheCurrentStepsMapperState(this.stepsMapper);
+        //this.RenderTheCurrentStepsMapperState(this.stepsMapper);
     }
 
     private void RenderTheCurrentStepsMapperState(ConditionMapper.StepsMapper stepsMapper) {

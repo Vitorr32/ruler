@@ -36,7 +36,7 @@ public enum Opinion
 
 
 [Serializable]
-public struct Relationship
+public struct RelationshipTemp
 {
     public int desire;
     public int trust;
@@ -56,11 +56,11 @@ public struct Relationship
 public static class RelationshipController
 {
 
-    public static bool DoesOfficerRecognizeOther(Relationship o1, Relationship o2) {
+    public static bool DoesOfficerRecognizeOther(RelationshipTemp o1, RelationshipTemp o2) {
         return o1.knowAppearance && o2.knowAppearance;
     }
 
-    public static bool DoesOfficerMeetOther(Relationship o1, Relationship o2) {
+    public static bool DoesOfficerMeetOther(RelationshipTemp o1, RelationshipTemp o2) {
         return o1.establishedDate != null && o2.establishedDate != null;
     }
 }
