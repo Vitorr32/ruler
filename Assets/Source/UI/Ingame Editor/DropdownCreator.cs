@@ -15,7 +15,13 @@ public enum DropdownType
     TRIGGERS,
     MODIFIER_TARGET,
     RESTRICTION_TYPE,
-    CONDITION_INITIATOR
+    CONDITION_INITIATOR,
+    ATTRIBUTE_RANGE_SELECTOR,
+    TRAIT_SELECTOR,
+    EVENT_FLAGGED_SELECTOR,
+    LOCATION_SELECTOR,
+    TIME_SELECTOR,
+    RELATIONSHIP_SELECTOR
 }
 public class DropdownCreator : MonoBehaviour
 {
@@ -81,7 +87,19 @@ public class DropdownCreator : MonoBehaviour
             case DropdownType.RESTRICTION_TYPE:
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Restriction.Type>(this.revealAll));
             case DropdownType.CONDITION_INITIATOR:
-                return ConvertStringArrayToOptions(Utils.GetEnumValues<Condition>(this.revealAll));
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Condition.Initiator>(this.revealAll));
+            case DropdownType.ATTRIBUTE_RANGE_SELECTOR:
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Condition.AttributeRange.Selector>(this.revealAll));
+            case DropdownType.TRAIT_SELECTOR:
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Condition.Trait.Selector>(this.revealAll));
+            case DropdownType.EVENT_FLAGGED_SELECTOR:
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Condition.EventFlagged.Selector>(this.revealAll));
+            case DropdownType.LOCATION_SELECTOR:
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Condition.Location.Selector>(this.revealAll));
+            case DropdownType.TIME_SELECTOR:
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Condition.Time.Selector>(this.revealAll));
+            case DropdownType.RELATIONSHIP_SELECTOR:
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Condition.Relationship.Selector>(this.revealAll));
             default:
                 Debug.LogError("The dropdown " + gameObject.name + " has no type set!");
 

@@ -36,7 +36,7 @@ public class Skill
     public string description;
     //Encoding used to show skill name in interface
     public string displayName;
-
+    //Identifier to find the skill on search or serialization of JSON
     public int id;
 
 }

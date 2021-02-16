@@ -1,144 +1,187 @@
 ﻿
 using System;
+using System.Collections.Generic;
 
 [Serializable]
 public class Condition
 {
-    public struct Struct
+    public enum LogicOperator
     {
-        public enum Type
+        UNDEFINED,
+
+        IF,
+        AND,
+        OR,
+
+        MAX_LOGIC_OPERATORS
+    }
+
+    public LogicOperator logicOperator = LogicOperator.UNDEFINED;
+
+    public enum Initiator
+    {
+        UNDEFINED,
+
+        ATTRIBUTE_RANGE,
+        TRAIT,
+        EVENT_FLAGGED,
+        LOCATION,
+        TIME,
+        RELATIONSHIP,
+
+        MAX_TYPES
+    }
+
+    public Initiator initiator = Initiator.UNDEFINED;
+
+    public enum Specificator
+    {
+        UNDEFINED,
+
+        SELF,
+        TARGET,
+        SPECIFIC,
+        GLOBAL,
+
+        MAX_SPECIFICATORS
+    }
+
+    public Specificator specificator = Specificator.UNDEFINED;
+
+    public struct AttributeRange
+    {
+        public enum Selector
         {
             UNDEFINED,
 
-            ATTRIBUTE_RANGE,
-            TRAIT,
-            EVENT_FLAGGED,
-            LOCATION,
-            TIME,
+            BIGGER_THAN,
+            SMALLER_THAN,
+            BETWEEN,
+            EXACTLY,
 
-            MAX_TYPES
+            MAX_SELECTORS
+        }
+        public enum SelectableAttribute
+        {
+            ATTRIBUTES,
+            SKILL,
+            TITLE,
+            STATUS
         }
 
-        public enum Specificator
+        public Selector selector;
+        public SelectableAttribute selectableAttribute;
+
+        //Which Attribute/Skill/Title/Status enum/id was selected, should be converted to an int for easy storage on JSON
+        public int selectedAttributeValue;
+        // Selector BETWEEN has 2 parameters (min and max), the others have only one
+        public int[] attrRangeParameters;
+    }
+
+    public AttributeRange attributeRange;
+
+    public struct Trait
+    {
+        public enum Selector
         {
             UNDEFINED,
 
-            SELF,
-            TARGET,
-            SPECIFIC,
+            HAS,
+            DONT,
 
-            MAX_SPECIFICATORS
+            MAX_SELECTORS
         }
 
-        public Type type;
-        public Specificator specificator;
+        public Selector selector;
 
-        public struct AttributeRange
+        //Which trait was specified in this condition
+        public int selectedTraitID;
+    }
+
+    public Trait trait;
+
+    public struct EventFlagged
+    {
+        public enum Selector
         {
-            public enum Selector
-            {
-                UNDEFINED,
+            UNDEFINED,
 
-                BIGGER_THAN,
-                SMALLER_THAN,
-                BETWEEN,
-                EXACTLY,
+            TRIGGERED,
+            NOT_TRIGGERED,
 
-                MAX_SELECTORS
-            }
-            public enum SelectableAttribute
-            {
-                ATTRIBUTES,
-                SKILL,
-                TITLE,
-                STATUS
-            }
-
-            public Selector selector;
-            public SelectableAttribute selectableAttribute;
-
-            //Which Attribute/Skill/Title/Status enum/id was selected, should be converted to an int for easy storage on JSON
-            public int selectedAttributeValue;
-            // Selector BETWEEN has 2 parameters (min and max), the others have only one
-            public int[] attrRangeParameters;
+            MAX_SELECTORS
         }
 
-        public AttributeRange attributeRange;
+        public Selector selector;
+        //Which event flag was specified
+        public int selectedEventFlagID;
+    }
 
-        public struct Trait
+    public EventFlagged eventFlagged;
+
+    public struct Location
+    {
+        public enum Selector
         {
-            public enum Selector
-            {
-                UNDEFINED,
+            UNDEFINED,
 
-                HAS,
-                DONT,
+            IS_AT,
+            IS_NOT_AT,
 
-                MAX_SELECTORS
-            }
-
-            public Selector selector;
-
-            //Which trait was specified in this condition
-            public int selectedTraitID;
+            MAX_SELECTORS
         }
 
-        public Trait trait;
+        public Selector selector;
+        //Which location id was specified
+        public int selectedLocationID;
+    }
 
-        public struct EventFlagged
+    public Location location;
+
+    public struct Time
+    {
+        public enum Selector
         {
-            public enum Selector
-            {
-                UNDEFINED,
+            UNDEFINED,
 
-                TRIGGERED,
-                NOT_TRIGGERED,
+            EXACTLY,
+            BEFORE,
+            AFTER,
 
-                MAX_SELECTORS
-            }
-
-            public Selector selector;
-            //Which event flag was specified
-            public int selectedEventFlagID;
+            MAX_SELECTORS
         }
 
-        public EventFlagged eventFlagged;
+        public Selector selector;
+        public DateTime timestamp;
+    }
 
-        public struct Location
+    public Time time;
+
+    public struct Relationship
+    {
+        public enum Selector
         {
-            public enum Selector
-            {
-                UNDEFINED,
+            UNDEFINED,
 
-                IS_AT,
-                IS_NOT_AT,
+            STATUS,
+            KNOWLEDGE,
 
-                MAX_SELECTORS
-            }
-
-            public Selector selector;
-            //Which location id was specified
-            public int selectedLocationID;
+            MAX_SELECTORS
         }
 
-        public Location location;
-
-        public struct Time
+        public enum SelectableStatus
         {
-            public enum Selector
-            {
-                UNDEFINED,
+            UNDEFINED,
 
-                EXACTLY,
-                BEFORE,
-                AFTER,
-
-                MAX_SELECTORS
-            }
-
-            public Selector selector;
-            //Which location id was specified
-            public int timestamp;
+            MAX_STATUS
         }
+
+        public Selector selector;
+        public SelectableStatus status;
+    }
+
+
+    public bool EvaluateCondition(Character self, List<Character> targets, int? world = null) {
+        return true;
     }
 }
