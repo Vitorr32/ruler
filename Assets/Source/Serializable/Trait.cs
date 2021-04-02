@@ -20,6 +20,7 @@ public class Trait
 
     public int id;
     public string name;
+    public Type type;
     public string description;
     public int[] effects;
 
