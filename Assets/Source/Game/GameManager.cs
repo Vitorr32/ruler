@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
         }
         else {
             instance = this;
-            SceneManager.LoadScene(3);
+            SceneManager.LoadScene(1);
         }
     }
 

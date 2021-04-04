@@ -3,29 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SelectableTraitOption : MonoBehaviour
+public class SelectableTraitOption : SelectableOption<Trait>
 {
-
-    public delegate void OnTraitClick(Trait trait);
-    public static event OnTraitClick OnTraitClicked;
-
     public Text description;
     public Text title;
     public Text type;
     public Text id;
     public Image icon;
 
-    private Trait associatedTrait;
-    private Image background;
-
-    // Start is called before the first frame update
-    void Start() {
+    public override void InitiateSelectableOption(Trait trait, bool isSelected) {
         this.background = this.gameObject.GetComponent<Image>();
-    }
 
-    public void InitiateSelectableOption(Trait trait, bool isSelected) {
         if (trait == null) {
-            this.associatedTrait = null;
+            this.associatedSelection = null;
 
             this.description.text = "";
             this.title.text = "";
@@ -33,10 +23,11 @@ public class SelectableTraitOption : MonoBehaviour
             this.id.text = "";
 
             this.icon.sprite = null;
-            this.background.color = new Color(255, 0, 0);
+            this.background.color = new Color(0, 0, 0);
+            this.gameObject.SetActive(false);
         }
         else {
-            this.associatedTrait = trait;
+            this.associatedSelection = trait;
 
             this.description.text = trait.description;
             this.title.text = trait.name;
@@ -44,16 +35,9 @@ public class SelectableTraitOption : MonoBehaviour
             this.id.text = trait.id.ToString();
 
             this.icon.sprite = trait.sprite;
-            this.background.color = new Color(255, 255, 255);
+            this.background.color = isSelected ? new Color(0, 255, 0) : new Color(255, 255, 255);
+            this.gameObject.SetActive(true);
         }
-    }
-
-    public void HighlightSelectableOption(bool shouldHighlight) {
-
-    }
-
-    public void OnSelectableClick() {
-        OnTraitClicked?.Invoke(this.associatedTrait);
     }
 
 }
