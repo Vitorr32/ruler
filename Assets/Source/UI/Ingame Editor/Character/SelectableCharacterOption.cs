@@ -3,38 +3,44 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SelectableCharacterOption : SelectableOption<OfficerController>
+public class SelectableCharacterOption : SelectableOption<CharacterController>
 {
-    public Text description;
-    public Text title;
-    public Text type;
+    public Text charName;
+    public Text age;
+    public Text birthday;
     public Text id;
-    public Image icon;
+    public Text gender;
+    public Text race;
+    public Image charIcon;
 
-    public override void InitiateSelectableOption(OfficerController officer, bool isSelected) {
+    public override void InitiateSelectableOption(CharacterController charController, bool isSelected) {
         this.background = this.gameObject.GetComponent<Image>();
 
-        if (officer == null) {
+        if (charController == null) {
             this.associatedSelection = null;
 
-            this.description.text = "";
-            this.title.text = "";
-            this.type.text = "";
+            this.charName.text = "";
+            this.age.text = "";
+            this.birthday.text = "";
             this.id.text = "";
+            this.gender.text = "";
+            this.race.text = "";
 
-            this.icon.sprite = null;
+            this.charIcon.sprite = null;
             this.background.color = new Color(0, 0, 0);
             this.gameObject.SetActive(false);
         }
         else {
-            this.associatedSelection = officer;
+            this.associatedSelection = charController;
 
-            //this.description.text = officer.ba.description;
-            //this.title.text = officer.name;
-            //this.type.text = officer.type.ToString();
-            //this.id.text = officer.id.ToString();
+            this.charName.text = charController.baseCharacter.name + " " + charController.baseCharacter.surname;
+            this.age.text = charController.baseCharacter.age.ToString();
+            this.birthday.text = charController.baseCharacter.birthday.ToString();
+            this.id.text = charController.baseCharacter.id.ToString();
+            this.gender.text = charController.baseCharacter.gender.ToString();
+            this.race.text = charController.baseCharacter.race.ToString();
 
-            //this.icon.sprite = officer.sprite;
+            this.charIcon.sprite = charController.charSprites[0].sprite;
             this.background.color = isSelected ? new Color(0, 255, 0) : new Color(255, 255, 255);
             this.gameObject.SetActive(true);
         }

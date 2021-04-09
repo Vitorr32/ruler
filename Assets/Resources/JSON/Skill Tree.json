@@ -1,0 +1,69 @@
+/*
+  Skill Variables:
+
+  category:   
+        BASIC: 1
+        SUNLIGHT: 2
+        STARLIGHT: 3
+        MOONLIGHT: 4
+
+  type:
+        ABSOLUTE_VALUE: 1
+        CATEGORY_VALUE: 2
+  growth:
+        TECHINAL: 1
+        MENTAL: 2
+        PHYSICAL: 3
+
+  valueOptions: string[] String array of categories that this skill can have( Like: Frail, Weak, Normal, Fit, Strong);
+  maxValue: maximum value for absolute, has default 100;
+  minValue: minimum value for absolute, has default 0;
+
+  description: string
+  name: string
+  id: number
+*/
+
+[
+  {
+    "id": 0,
+    "category": 1,
+    "type": 1,
+    "name": "Inteligence",
+    "growth": 1,
+    "description": "The capacity of this character to learn new skills, analyse his surrounding and better understand himself and others"
+  },
+  {
+    "id": 1,
+    "category": 1,
+    "type": 1,
+    "name": "Health",
+    "growth": 3,
+    "description": "The physical wellness of an character, directly affecting his stamina and mood. Determine the maximum energy of the character"
+  },
+  {
+    "id": 2,
+    "category": 1,
+    "type": 1,
+    "name": "Attractiviness",
+    "growth": 3,
+    "description": "The pyshical natural attractiviness of a character, represting the lack of any unattractive feature or deformity"
+  },
+  {
+    "id": 3,
+    "category": 1,
+    "type": 1,
+    "name": "Charisma",
+    "growth": 2,
+    "description": "The capacity of this character to convice, enchant and persuade people to adopt his views or ideals"
+  },
+  {
+    "id": 4,
+    "category": 1,
+    "type": 1,
+    "name": "Leadership",
+    "growth": 2,
+    "description": "The capacity of the character to inspire, coordinate and help his peers"
+  }
+
+]

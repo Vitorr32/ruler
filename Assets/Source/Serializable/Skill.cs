@@ -1,6 +1,19 @@
 ﻿
+using System.Collections.Generic;
+
 public class Skill
 {
+    public enum Category
+    {
+        UNDEFINED,
+
+        BASIC,
+        SUNLIGHT,
+        STARLIGHT,
+        MOONLIGHT,
+
+        MAX_CATEGORIES
+    }
     public enum Type
     {
         UNDEFINED,
@@ -25,9 +38,10 @@ public class Skill
         MAX_GROWTHS
     }
 
-    public string category;
+    public Category category = Category.BASIC;
     public Type type = Type.ABSOLUTE_VALUE;
     public Growth growth = Growth.TECHINAL;
+    public string[] valuesOptions;
 
     public int maxValue = 100;
     public int minValue = 0;
@@ -35,7 +49,7 @@ public class Skill
     //Description that will appear when the player hover over the skill
     public string description;
     //Encoding used to show skill name in interface
-    public string displayName;
+    public string name;
     //Identifier to find the skill on search or serialization of JSON
     public int id;
 
