@@ -15,7 +15,7 @@ public class SceneLoading : MonoBehaviour
     }
 
     IEnumerator LoadAsyncDependecies() {
-        feedback.text = "Processing Officer Images...";
+        feedback.text = "Processing Characters Images...";
 
         StoreController.instance.ParseRawSpritesIntoOfficeSprites();
 
@@ -70,6 +70,28 @@ public class SceneLoading : MonoBehaviour
 
             feedback.text = "Importing Officers : " + (i + 1) + "/" + officerReader.resultList.Count;
         }
+
+        feedback.text = "Import Characters JSON";
+
+        JSONController<Character> characterReader = new JSONController<Character>();
+        yield return characterReader.ParseFileListIntoType(GameManager.instance.characterFiles);
+
+        for (int i = 0; i < characterReader.resultList.Count; i++) {
+            Character character = characterReader.resultList[i];
+
+            CharacterController characterController = new CharacterController();
+            characterController.baseCharacter = character;
+
+            characterController.charSprites = new List<OfficerSprite>() {
+                StoreController.instance.officerSprites.Find(sprite => sprite.filename == ("o_" + character.id))
+            };
+
+            StoreController.instance.characterControllers.Add(characterController);
+
+            feedback.text = "Importing Officers : " + (i + 1) + "/" + officerReader.resultList.Count;
+        }
+
+        feedback.text = "Instanciating Level...";
 
         AsyncOperation levelLoad = SceneManager.LoadSceneAsync(3);
 

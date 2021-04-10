@@ -46,9 +46,9 @@ public class Character
     public int age;
     public DateTime birthday;
 
-    public int mood;
-    public int stress;
-    public int energy;
+    public int mood = 50;
+    public int stress = 0;
+    public int energy = 100;
 
     public Race race;
     public Gender gender;

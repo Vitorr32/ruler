@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class SelectableCharacterOption : SelectableOption<CharacterController>
@@ -40,7 +38,7 @@ public class SelectableCharacterOption : SelectableOption<CharacterController>
             this.gender.text = charController.baseCharacter.gender.ToString();
             this.race.text = charController.baseCharacter.race.ToString();
 
-            this.charIcon.sprite = charController.charSprites[0].sprite;
+            //this.charIcon.sprite = charController.charSprites[0].sprite;
             this.background.color = isSelected ? new Color(0, 255, 0) : new Color(255, 255, 255);
             this.gameObject.SetActive(true);
         }

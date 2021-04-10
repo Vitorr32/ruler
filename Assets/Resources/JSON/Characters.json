@@ -1,0 +1,16 @@
+[
+  {
+    "id": 0,
+    "name": "Robert",
+    "surname": "Baratheon",
+    "age": 23,
+    "birthday": "20/10/975",
+    "race": 1,
+    "gender": 1,
+    "family": [],
+    "traits": [ 1 ],
+    "flags": [],
+    "skills": [],
+    "spriteNames": null
+  }
+]

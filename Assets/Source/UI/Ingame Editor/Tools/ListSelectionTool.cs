@@ -93,10 +93,9 @@ public abstract class ListSelectionTool<T> : MonoBehaviour where T : class
         int indexOfSelected = this.selectedObject == null ? -1 : this.GetIndexOfSelectionInList(this.selectedObject);
 
         for (int i = 0; i < pageSize; i++) {
+            Debug.Log(this.selectableOptions[i]);
             this.selectableOptions[i].InitiateSelectableOption(toShowSelectable.Count > i ? toShowSelectable[i] : null, i == indexOfSelected);
         }
-
-        Debug.Log(this.pageSize);
 
         if (repaginate) {
             this.currentPage = 0;

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public class CharacterSelectionTool : ListSelectionTool<OfficerController>
+public class CharacterSelectionTool : ListSelectionTool<CharacterController>
 {
     protected override void SetInitiateToolValues() {
         this.currentPage = 0;
@@ -8,13 +8,15 @@ public class CharacterSelectionTool : ListSelectionTool<OfficerController>
         this.pageSize = 20;
     }
 
-    protected override List<OfficerController> GetAllSelectableMembers() {
-        return StoreController.instance.officers;
+    protected override List<CharacterController> GetAllSelectableMembers() {
+        return StoreController.instance.characterControllers;
     }
 
-    protected override List<OfficerController> FilterSelectableMembersByQuery(string query) {
-        return StoreController.instance.officers.FindAll((OfficerController character) => {
-            if (character.baseOfficer.firstName.Contains(query) || character.baseOfficer.id.ToString().Contains(query)) {
+    protected override List<CharacterController> FilterSelectableMembersByQuery(string query) {
+        return StoreController.instance.characterControllers.FindAll((CharacterController character) => {
+            if (
+                (character.baseCharacter.name + character.baseCharacter.surname).Contains(query) ||
+                character.baseCharacter.id.ToString().Contains(query)) {
                 return true;
             }
 
@@ -22,7 +24,7 @@ public class CharacterSelectionTool : ListSelectionTool<OfficerController>
         });
     }
 
-    protected override int GetIndexOfSelectionInList(OfficerController selected) {
-        return this.queriedSelection.FindIndex((OfficerController character) => character.baseOfficer.id == selected.baseOfficer.id);
+    protected override int GetIndexOfSelectionInList(CharacterController selected) {
+        return this.queriedSelection.FindIndex((CharacterController character) => character.baseCharacter.id == selected.baseCharacter.id);
     }
 }
