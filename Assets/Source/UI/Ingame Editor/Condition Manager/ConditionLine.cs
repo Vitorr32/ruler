@@ -13,6 +13,16 @@ public class ConditionLine : MonoBehaviour
     public Dropdown conditionInitiator;
     public Dropdown targetSpecificatorSelector;
 
+    public Button traitSelector;
+    private bool selectingTrait;
+    private Trait selectedTrait;
+    public TraitSelectionTool traitSelectionTool;
+
+    public Button characterSelector;
+    private bool selectingCharacter;
+    private CharacterController selectedCharacter;
+    public CharacterSelectionTool characterSelectionTool;
+
     // Dropdowns which every selector for every possible type of initiator
     public Dropdown attrRangeDropdown;
     public Dropdown traitDropdown;
@@ -26,8 +36,14 @@ public class ConditionLine : MonoBehaviour
 
     private int layer;
 
-    void Start() {
+    private void Start() {
+        TraitSelectionTool.OnToolFinished += SelectedTrait;
+        CharacterSelectionTool.OnToolFinished += SelectedCharacter;
+    }
 
+    private void OnDestroy() {
+        TraitSelectionTool.OnToolFinished -= SelectedTrait;
+        CharacterSelectionTool.OnToolFinished -= SelectedCharacter;
     }
 
     public void OnStartUpConditionLine(ConditionLine previousLine = null, int layer = 0) {
@@ -153,6 +169,52 @@ public class ConditionLine : MonoBehaviour
                 this.relationshipDropdown.gameObject.SetActive(true);
                 break;
         }
+    }
+
+    public void OnTraitSelection() {
+        Debug.Log("Trait dropdown value " + traitDropdown.value.ToString());
+        this.conditionOfLine.trait.selector = (Condition.Trait.Selector)traitDropdown.value;
+
+        Debug.Log("Trait dropdown value " + this.conditionOfLine.trait.selector.ToString());
+
+        switch (this.conditionOfLine.trait.selector) {
+            case Condition.Trait.Selector.DONT:
+            case Condition.Trait.Selector.HAS:
+                this.traitSelector.gameObject.SetActive(true);
+                break;
+            default:
+                this.conditionOfLine.trait.selector = Condition.Trait.Selector.UNDEFINED;
+                this.traitSelector.gameObject.SetActive(false);
+                break;
+        }
+    }
+
+    public void OnTraitSelectorClick() {
+        this.selectingTrait = true;
+        this.traitSelectionTool.gameObject.SetActive(true);
+    }
+    public void OnCharacterSelectorClick() {
+        this.selectingCharacter = true;
+        this.characterSelectionTool.gameObject.SetActive(true);
+    }
+    private void SelectedTrait(Trait trait) {
+        if (!this.selectingTrait) {
+            return;
+        }
+
+        this.selectedTrait = trait;
+        this.traitSelector.GetComponentInChildren<Text>().text = trait.name;
+        this.selectingTrait = false;
+    }
+
+    private void SelectedCharacter(CharacterController characterController) {
+        if (!this.selectingCharacter) {
+            return;
+        }
+
+        this.selectedCharacter = characterController;
+        this.characterSelector.GetComponentInChildren<Text>().text = characterController.baseCharacter.name + " " + characterController.baseCharacter.surname;
+        this.selectingTrait = false;
     }
 
     private void GetCustomSelectorTypeValues(ConditionMapper.StepsMapper customSelectorType) {

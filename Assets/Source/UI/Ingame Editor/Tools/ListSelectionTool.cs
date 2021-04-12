@@ -40,11 +40,16 @@ public abstract class ListSelectionTool<T> : MonoBehaviour where T : class
         this.RenderSelectionableOptions(true);
     }
 
+    private void OnDisable() {
+        if (this.selectedObject != null) {
+            this.OnCloseToolWithoutSelection();
+        }
+    }
+
     abstract protected void SetInitiateToolValues();
 
     abstract protected List<T> GetAllSelectableMembers();
     abstract protected List<T> FilterSelectableMembersByQuery(string query);
-
     abstract protected int GetIndexOfSelectionInList(T selected);
 
     public void OnSearchInputChanged() {
@@ -93,7 +98,6 @@ public abstract class ListSelectionTool<T> : MonoBehaviour where T : class
         int indexOfSelected = this.selectedObject == null ? -1 : this.GetIndexOfSelectionInList(this.selectedObject);
 
         for (int i = 0; i < pageSize; i++) {
-            Debug.Log(this.selectableOptions[i]);
             this.selectableOptions[i].InitiateSelectableOption(toShowSelectable.Count > i ? toShowSelectable[i] : null, i == indexOfSelected);
         }
 
