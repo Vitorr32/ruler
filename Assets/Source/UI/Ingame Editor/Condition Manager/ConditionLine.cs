@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,7 +22,7 @@ public class ConditionLine : MonoBehaviour
     private CharacterController selectedCharacter;
     public CharacterSelectionTool characterSelectionTool;
 
-    // Dropdowns which every selector for every possible type of initiator
+    // Dropdowns which every selector for every possible type of initiator:
     public Dropdown attrRangeDropdown;
     public Dropdown traitDropdown;
     public Dropdown eventFlaggedDropdown;
@@ -31,8 +30,9 @@ public class ConditionLine : MonoBehaviour
     public Dropdown timeDropdown;
     public Dropdown relationshipDropdown;
 
-    public Input firstNumericInput;
-    public Input secondNumericInput;
+    //Inputs for numerical values:
+    public InputField firstNumericInput;
+    public InputField secondNumericInput;
 
     private int layer;
 
@@ -80,6 +80,7 @@ public class ConditionLine : MonoBehaviour
             case Condition.Initiator.LOCATION:
             case Condition.Initiator.TRAIT:
                 this.targetSpecificatorSelector.AddOptions(new List<Dropdown.OptionData>() {
+                    new Dropdown.OptionData(){text = ""},
                     new Dropdown.OptionData(){text = Condition.Specificator.SELF.ToString()},
                     new Dropdown.OptionData(){text = Condition.Specificator.TARGET.ToString()},
                     new Dropdown.OptionData(){text = Condition.Specificator.SPECIFIC.ToString()}
@@ -88,6 +89,7 @@ public class ConditionLine : MonoBehaviour
                 break;
             case Condition.Initiator.EVENT_FLAGGED:
                 this.targetSpecificatorSelector.AddOptions(new List<Dropdown.OptionData>() {
+                    new Dropdown.OptionData(){text = ""},
                     new Dropdown.OptionData(){text = Condition.Specificator.SELF.ToString()},
                     new Dropdown.OptionData(){text = Condition.Specificator.TARGET.ToString()},
                     new Dropdown.OptionData(){text = Condition.Specificator.GLOBAL.ToString()}
@@ -114,18 +116,30 @@ public class ConditionLine : MonoBehaviour
                 break;
             case Condition.Specificator.SPECIFIC:
                 //TODO: Allow selection of specifc id/flag on this choice.
+                switch (this.conditionOfLine.initiator) {
+                    case Condition.Initiator.ATTRIBUTE_RANGE:
+                    case Condition.Initiator.TRAIT:
+                    case Condition.Initiator.LOCATION:
+                        //TODO: Specific specificator for each iniator;
+                        break;
+                }
                 break;
         }
+
+        this.RenderConditionLine(this.conditionOfLine);
     }
 
     private void RenderConditionLine(Condition condition) {
         if (this.conditionOfLine.logicOperator != Condition.LogicOperator.UNDEFINED) {
-            this.RenderConditionOperator(condition);
+            //this.RenderConditionOperator(condition);
             this.conditionInitiator.gameObject.SetActive(true);
         }
 
         if (this.conditionOfLine.initiator != Condition.Initiator.UNDEFINED) {
             this.targetSpecificatorSelector.gameObject.SetActive(this.conditionOfLine.initiator != Condition.Initiator.TIME);
+        }
+        else {
+
         }
 
         if (this.conditionOfLine.specificator != Condition.Specificator.UNDEFINED) {
@@ -172,10 +186,7 @@ public class ConditionLine : MonoBehaviour
     }
 
     public void OnTraitSelection() {
-        Debug.Log("Trait dropdown value " + traitDropdown.value.ToString());
         this.conditionOfLine.trait.selector = (Condition.Trait.Selector)traitDropdown.value;
-
-        Debug.Log("Trait dropdown value " + this.conditionOfLine.trait.selector.ToString());
 
         switch (this.conditionOfLine.trait.selector) {
             case Condition.Trait.Selector.DONT:
@@ -193,6 +204,28 @@ public class ConditionLine : MonoBehaviour
         this.selectingTrait = true;
         this.traitSelectionTool.gameObject.SetActive(true);
     }
+
+    public void OnAttributeRangeSelection() {
+        this.conditionOfLine.attributeRange.selector = (Condition.AttributeRange.Selector)this.attrRangeDropdown.value;
+
+        switch (this.conditionOfLine.attributeRange.selector) {
+            case Condition.AttributeRange.Selector.BETWEEN:
+                this.firstNumericInput.gameObject.SetActive(true);
+                this.secondNumericInput.gameObject.SetActive(true);
+                break;
+            case Condition.AttributeRange.Selector.SMALLER_THAN:
+            case Condition.AttributeRange.Selector.BIGGER_THAN:
+            case Condition.AttributeRange.Selector.EXACTLY:
+                this.firstNumericInput.gameObject.SetActive(true);
+                this.secondNumericInput.gameObject.SetActive(false);
+                break;
+            default:
+                this.firstNumericInput.gameObject.SetActive(false);
+                this.secondNumericInput.gameObject.SetActive(false);
+                break;
+        }
+    }
+
     public void OnCharacterSelectorClick() {
         this.selectingCharacter = true;
         this.characterSelectionTool.gameObject.SetActive(true);

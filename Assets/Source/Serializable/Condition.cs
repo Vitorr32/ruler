@@ -41,6 +41,9 @@ public class Condition
         SELF,
         TARGET,
         SPECIFIC,
+        SELF_TARGET,
+        SELF_SPECIFIC,
+        SPECIFIC_SPECIFIC,
         GLOBAL,
 
         MAX_SPECIFICATORS
