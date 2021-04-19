@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class SelectableCharacterOption : SelectableOption<CharacterController>
+public class SelectableCharacterOption : SelectableOption<CharacterStateController>
 {
     public Text charName;
     public Text age;
@@ -11,7 +11,7 @@ public class SelectableCharacterOption : SelectableOption<CharacterController>
     public Text race;
     public Image charIcon;
 
-    public override void InitiateSelectableOption(CharacterController charController, bool isSelected) {
+    public override void InitiateSelectableOption(CharacterStateController charController, bool isSelected) {
         this.background = this.gameObject.GetComponent<Image>();
 
         if (charController == null) {

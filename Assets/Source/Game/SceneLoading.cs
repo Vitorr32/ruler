@@ -79,8 +79,7 @@ public class SceneLoading : MonoBehaviour
         for (int i = 0; i < characterReader.resultList.Count; i++) {
             Character character = characterReader.resultList[i];
 
-            CharacterController characterController = new CharacterController();
-            characterController.baseCharacter = character;
+            CharacterStateController characterController = new CharacterStateController(character);
 
             characterController.charSprites = new List<OfficerSprite>() {
                 StoreController.instance.officerSprites.Find(sprite => sprite.filename == ("o_" + character.id))

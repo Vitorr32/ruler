@@ -7,7 +7,9 @@ using UnityEngine;
 public class Trait
 {
     public enum Type{
+
         UNDEFINED,
+
         NORMAL,
         PHYSICAL,
         MENTAL,

@@ -48,7 +48,7 @@ public class EffectEditor : MonoBehaviour
             this.effects[index] = effect;
         }
 
-        this.effectListItemPrefabPool[index].OnSelectorStartup(effect, effect.id, "effectEditor", effect.trigger.type.ToString());
+        //this.effectListItemPrefabPool[index].OnSelectorStartup(effect, effect.id, "effectEditor", effect.trigger.type.ToString());
         this.effectListItemPrefabPool[index].gameObject.SetActive(true);
     }
 }

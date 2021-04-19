@@ -14,15 +14,6 @@ public class Skill
 
         MAX_CATEGORIES
     }
-    public enum Type
-    {
-        UNDEFINED,
-
-        ABSOLUTE_VALUE,
-        CATEGORY_VALUE,
-
-        MAX_TYPES
-    }
 
     public enum Growth
     {
@@ -39,12 +30,7 @@ public class Skill
     }
 
     public Category category = Category.BASIC;
-    public Type type = Type.ABSOLUTE_VALUE;
     public Growth growth = Growth.TECHINAL;
-    public string[] valuesOptions;
-
-    public int maxValue = 100;
-    public int minValue = 0;
 
     //Description that will appear when the player hover over the skill
     public string description;

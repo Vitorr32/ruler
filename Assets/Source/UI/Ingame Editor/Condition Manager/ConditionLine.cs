@@ -19,7 +19,7 @@ public class ConditionLine : MonoBehaviour
 
     public Button characterSelector;
     private bool selectingCharacter;
-    private CharacterController selectedCharacter;
+    private CharacterStateController selectedCharacter;
     public CharacterSelectionTool characterSelectionTool;
 
     // Dropdowns which every selector for every possible type of initiator:
@@ -240,7 +240,7 @@ public class ConditionLine : MonoBehaviour
         this.selectingTrait = false;
     }
 
-    private void SelectedCharacter(CharacterController characterController) {
+    private void SelectedCharacter(CharacterStateController characterController) {
         if (!this.selectingCharacter) {
             return;
         }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-public class CharacterSelectionTool : ListSelectionTool<CharacterController>
+public class CharacterSelectionTool : ListSelectionTool<CharacterStateController>
 {
     protected override void SetInitiateToolValues() {
         this.currentPage = 0;
@@ -8,12 +8,12 @@ public class CharacterSelectionTool : ListSelectionTool<CharacterController>
         this.pageSize = 20;
     }
 
-    protected override List<CharacterController> GetAllSelectableMembers() {
+    protected override List<CharacterStateController> GetAllSelectableMembers() {
         return StoreController.instance.characterControllers;
     }
 
-    protected override List<CharacterController> FilterSelectableMembersByQuery(string query) {
-        return StoreController.instance.characterControllers.FindAll((CharacterController character) => {
+    protected override List<CharacterStateController> FilterSelectableMembersByQuery(string query) {
+        return StoreController.instance.characterControllers.FindAll((CharacterStateController character) => {
             if (
                 (character.baseCharacter.name + character.baseCharacter.surname).Contains(query) ||
                 character.baseCharacter.id.ToString().Contains(query)) {
@@ -24,7 +24,7 @@ public class CharacterSelectionTool : ListSelectionTool<CharacterController>
         });
     }
 
-    protected override int GetIndexOfSelectionInList(CharacterController selected) {
-        return this.queriedSelection.FindIndex((CharacterController character) => character.baseCharacter.id == selected.baseCharacter.id);
+    protected override int GetIndexOfSelectionInList(CharacterStateController selected) {
+        return this.queriedSelection.FindIndex((CharacterStateController character) => character.baseCharacter.id == selected.baseCharacter.id);
     }
 }

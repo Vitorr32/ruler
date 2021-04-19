@@ -39,6 +39,7 @@ public class Character
         MAX_ETHINICITIES
     }
 
+    //Absolute Basic values of the character, these will never change
     public int id;
     public string[] sprites;
     public string name;
@@ -46,9 +47,10 @@ public class Character
     public int age;
     public DateTime birthday;
 
-    public int mood = 50;
-    public int stress = 0;
-    public int energy = 100;
+    //Current state of the character attributes that should be serialized in case of save
+    public int baseMood = 50;
+    public int baseStress = 0;
+    public int baseEnergy = 100;
 
     public Race race;
     public Gender gender;

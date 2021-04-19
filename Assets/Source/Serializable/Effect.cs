@@ -3,106 +3,61 @@
 [Serializable]
 public class Effect
 {
-    [Serializable]
-    public struct Trigger
+    public enum Trigger
     {
-        public enum Type
-        {
-            UNDEFINED,
+        UNDEFINED,
 
-            ALWAYS_ACTIVE,
-            ON_INTERACTION,
+        ALWAYS_ACTIVE,
+        ON_INTERACTION_START,
+        ON_INTERACTION_END,
+        ON_INTERACTION_TALK_ABOUT,
 
-            MAX_ACTION_TYPES
-        }
 
-        public Type type;
-        public int[] arguments;
-    }
-    [Serializable]
-    public struct Restriction
-    {
-        public enum Type
-        {
-            UNDEFINED,
-            NO_RESTRICTION,
-            AGAINST_GENDER,
-            AGAINST_RACE,
-            AGAINST_FAITH,
-            NOT_AGAINST_GENDER,
-            NOT_AGAINST_RACE,
-            NOT_AGAINST_FAITH,
-
-            MAX_RESTRICTIONS
-        }
-
-        public Type type;
-        public int[] arguments;
-    }
-    [Serializable]
-    public struct Target
-    {
-        public enum Type
-        {
-            UNDEFINED,
-
-            ALL_TARGETS,
-
-            TARGET_CHARACTER_BY_TRAIT,
-            TARGET_CHARACTER_BY_AGE,
-            TARGET_CHARACTER_BY_ID,
-
-            TARGET_INTERACTION,
-            TARGET_ATTRIBUTE,
-            TARGET_MONEY_GAIN,
-            TARGET_POPULARITY_GAIN,
-            TARGET_STRESS_GAIN,
-
-            MAX_TARGETS
-        }
-
-        public Type type;
-        public int[][] arguments;
+        MAX_TRIGGERS
     }
 
-    [Serializable]
-    public struct Modifier
-    {
-        public enum Type
-        {
-            UNDEFINED,
-
-            MODIFY_ATTRIBUTE_ABSOLUTE,
-            MODIFY_ATTRIBUTE_RELATIVE,
-
-            MAX_MODIFIERS
-        }
-
-        public Type type;
-        public int[] arguments;
-    }
     [Serializable]
     public struct Duration
     {
         public enum Type
         {
+            UNDEFINED,
+
             PERMANENT,
-            ON_TURN_END,
-            ON_TURN_START,
             SPECIFIC_DURATION,
-            SPECIFIC_DATE
+            SPECIFIC_DATE,
+
+            MAX_DURATIONS
         }
 
         public Type type;
         public int[] arguments;
     }
 
+    public enum Source
+    {
+        UNDEFINED,
+
+        TRAIT,
+        RACE,
+        ITEM,
+
+        MAX_SOURCES
+    }
+
+    //ID of the effect on the list of ids
     public int id;
-    //Source is with item/trait/race is the source of the effect
+    //Whetever this effect affect the holder of the effect or the target, if applicable, of the trigger
+    public bool targetSelf = true;
+    //Source is with item/trait/race is the source of the effect, used to associate the effect to parent
+    public Source sourceType;
     public int sourceID;
-    public Trigger trigger = new Trigger();
-    public Target target = new Target();
+    //What trigger the check for this effect
+    public Trigger trigger = Trigger.UNDEFINED;
+    //What is the condition for the activation of this effect when the trigger is triggered.
+    public ConditionTree ConditionTree;
+    //After the effect was activatd, for how much time does it take effect?
     public Duration duration;
-    public Restriction[] restrictions;
-    public Modifier[] modifiers;
+    //What is the modifier that this effect cause
+    public Modifier modifier;
 }

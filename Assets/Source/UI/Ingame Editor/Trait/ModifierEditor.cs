@@ -10,8 +10,11 @@ public class ModifierEditor : MonoBehaviour
     public static event OnModiferEditorEnd OnModifierEditorEnded;
 
     public Dropdown modifierTriggerDropdown;
-    public GameObject modifierTargetGameObject;
-    public Dropdown modifierTargetValueDropdown;
+
+    public GameObject modifierTypeGameObject;
+    public Dropdown modifierTypeDropdown;
+
+    public Toggle modifierTargetToogle;
 
     public MultiSelectController primaryTargetSelectController;
     public MultiSelectController secondaryTargetSelectController;
@@ -25,21 +28,6 @@ public class ModifierEditor : MonoBehaviour
     public Text summaryText;
 
     private Effect currentEffect = new Effect();
-    //private ModifierConfiguration modifierConfiguration;
-
-    //public struct ModifierConfiguration
-    //{
-    //    public struct TargetConfiguration
-    //    {
-    //        public bool allowTarget;
-    //        public Type targetType;
-    //        public List<int> targetOptions;
-    //    }
-
-    //    public TargetConfiguration primaryTargetConfig;
-    //    public TargetConfiguration secondaryTargetConfig;
-    //    public ActionType actionType;
-    //}
 
     // Start is called before the first frame update
     void Start() {
@@ -63,76 +51,40 @@ public class ModifierEditor : MonoBehaviour
             this.gameObject.SetActive(true);
         }
     }
+    //The first dropdown, define the type of trigger that can activate this effect
+    public void OnTriggerTypeChanged(Dropdown dropdown) {
+        this.currentEffect.trigger = (Effect.Trigger)dropdown.value;
 
-    public void OnModiferTypeChanged(Dropdown dropdown) {
-        string[] options;
-
-        modifierTargetGameObject.SetActive(true);
-        Enum.TryParse(dropdown.options[dropdown.value].text, out Effect.Trigger.Type actionType);
-
-        switch (actionType) {
-            case Effect.Trigger.Type.ALWAYS_ACTIVE:
-
-                //this.modifierConfiguration = new ModifierConfiguration() {
-                //    actionType = actionType,
-                //    primaryTargetConfig = new ModifierConfiguration.TargetConfiguration() {
-                //        allowTarget = true,
-                //        targetOptions = new List<int> {
-                //            (int)Effect.Target.Type.TARGET_ATTRIBUTE,
-                //            (int)Effect.Target.Type.TARGET_POPULARITY_GAIN,
-                //            (int)Effect.Target.Type.TARGET_STRESS_GAIN
-                //        },
-                //        targetType = typeof(Effect.Target.Type)
-                //    },
-                //    secondaryTargetConfig = new ModifierConfiguration.TargetConfiguration() {
-                //        allowTarget = false,
-                //        targetOptions = null,
-                //        targetType = null
-                //    }
-                //};
-
-                options = new string[] {
-                    Effect.Target.Type.TARGET_ATTRIBUTE.ToString(),
-                    Effect.Target.Type.TARGET_POPULARITY_GAIN.ToString(),
-                    Effect.Target.Type.TARGET_STRESS_GAIN.ToString()
-                };
-                modifierTargetValueDropdown.options = DropdownCreator.ConvertStringArrayToOptions(options, "Select a permanent modifier");
+        switch (this.currentEffect.trigger) {
+            case Effect.Trigger.ON_INTERACTION_END:
+            case Effect.Trigger.ON_INTERACTION_START:
+            case Effect.Trigger.ON_INTERACTION_TALK_ABOUT:
+                this.modifierTargetToogle.gameObject.SetActive(true);
                 break;
-            case Effect.Trigger.Type.ON_INTERACTION:
-                options = new string[] {
-                    Effect.Target.Type.TARGET_INTERACTION.ToString()
-                };
-                modifierTargetValueDropdown.options = DropdownCreator.ConvertStringArrayToOptions(options);
-                break;
-
-            //modifierTargetValueDropdown.options = DropdownCreator.ConvertStringArrayToOptions()
             default:
-                modifierTargetGameObject.SetActive(false);
-                modifierTargetValueDropdown.options = new List<Dropdown.OptionData>();
+                this.modifierTargetToogle.gameObject.SetActive(false);
                 break;
         }
+        this.modifierTypeGameObject.SetActive(true);
 
-        this.currentEffect.trigger.type = actionType;
         this.RenderSummaryOfEffect(this.currentEffect);
     }
 
-    public void OnModifierTargetSet(Dropdown dropdown) {
+    //Second dropdown, define what the possible selectable values to be modified in this effect
+    public void OnModifierTypeSet() {
+        this.currentEffect.modifier.type = (Modifier.Type)modifierTypeDropdown.value;
 
-        Enum.TryParse(dropdown.options[dropdown.value].text, out Effect.Target.Type targetType);
-        switch (targetType) {
-            case Effect.Target.Type.TARGET_ATTRIBUTE:
-                PopulateSelectWithEnumValues<Officer.Attribute>(this.primaryTargetSelectController, (int)Effect.Target.Type.TARGET_ATTRIBUTE);
+        switch (this.currentEffect.modifier.type) {
+            case Modifier.Type.MODIFY_SKILL_VALUE:
+                PopulateSelectWithEnumValues<Officer.Attribute>(this.primaryTargetSelectController, (int)this.currentEffect.modifier.type);
                 ActivateAbsoluteChangeInput();
                 ActivateRelativeChangeInput();
 
                 break;
-            case Effect.Target.Type.TARGET_MONEY_GAIN:
-
             default:
                 break;
         }
 
-        this.currentEffect.target.type = targetType;
         this.RenderSummaryOfEffect(this.currentEffect);
     }
 
@@ -164,29 +116,20 @@ public class ModifierEditor : MonoBehaviour
         }
 
         bool primaryTarget = controller == primaryTargetSelectController;
-        switch ((Effect.Target.Type)identifier) {
-            case Effect.Target.Type.TARGET_ATTRIBUTE:
-                if (primaryTarget) {
-                    //Check if the effect already has arguments for the Target varible
-                    if (EffectHasTargetArguments(this.currentEffect)) {
-                        int index = Array.FindIndex(this.currentEffect.target.arguments, argumentList => argumentList[0] == value);
-                        //Only modify when the argument for that target don't exist yet
-                        if (index == -1) {
-                            this.currentEffect.target.arguments = this.currentEffect.target.arguments.Append(new int[] { value, 0, 0 }).ToArray();
-                        }
-                    }
-                    //Initialize a new argument array
-                    else {
-                        this.currentEffect.target.arguments = new int[][] { new int[] { value, 0, 0 } };
-                    }
-
-                    this.ActivateAbsoluteChangeInput();
-                    this.ActivateRelativeChangeInput();
-                }
-                break;
-            default:
-                throw new Exception("Unknown identifier " + identifier + " found in the onMultiSelectChange function");
+        if (EffectHasTargetArguments(this.currentEffect)) {
+            int index = Array.FindIndex(this.currentEffect.modifier.arguments, argumentList => argumentList[0] == value);
+            //Only modify when the argument for that target don't exist yet
+            if (index == -1) {
+                this.currentEffect.target.arguments = this.currentEffect.target.arguments.Append(new int[] { value, 0, 0 }).ToArray();
+            }
         }
+        //Initialize a new argument array
+        else {
+            this.currentEffect.target.arguments = new int[][] { new int[] { value, 0, 0 } };
+        }
+
+        this.ActivateAbsoluteChangeInput();
+        this.ActivateRelativeChangeInput();
 
         this.RenderSummaryOfEffect(this.currentEffect);
     }
@@ -306,7 +249,7 @@ public class ModifierEditor : MonoBehaviour
     private void CleanUpEditor() {
         this.DeactivateModifierValue();
 
-        this.modifierTargetGameObject.SetActive(false);
+        this.modifierTypeGameObject.SetActive(false);
         this.primaryTargetSelectController.gameObject.SetActive(false);
         this.secondaryTargetSelectController.gameObject.SetActive(false);
         this.summaryText.text = "";
@@ -314,7 +257,7 @@ public class ModifierEditor : MonoBehaviour
         this.relativeValueChangeText.text = "";
 
         this.modifierTriggerDropdown.GetComponent<DropdownCreator>().ResetDropdownState();
-        this.modifierTargetValueDropdown.GetComponent<DropdownCreator>().ResetDropdownState();
+        this.modifierTypeValueDropdown.GetComponent<DropdownCreator>().ResetDropdownState();
 
         this.currentEffect = new Effect();
     }
@@ -322,12 +265,12 @@ public class ModifierEditor : MonoBehaviour
         this.currentEffect = effect;
 
         this.modifierTriggerDropdown.SetValueWithoutNotify(this.modifierTriggerDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(Effect.Trigger.Type), effect.trigger.type)));
-        this.OnModiferTypeChanged(this.modifierTriggerDropdown);
-        this.modifierTargetValueDropdown.SetValueWithoutNotify(this.modifierTargetValueDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(Effect.Target.Type), effect.target.type)));
-        this.OnModifierTargetSet(this.modifierTargetValueDropdown);
+        this.OnTriggerTypeChanged(this.modifierTriggerDropdown);
+        this.modifierTypeValueDropdown.SetValueWithoutNotify(this.modifierTypeValueDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(Effect.Target.Type), effect.target.type)));
+        this.OnModifierTargetSet(this.modifierTypeValueDropdown);
 
         this.modifierTriggerDropdown.RefreshShownValue();
-        this.modifierTargetValueDropdown.RefreshShownValue();
+        this.modifierTypeValueDropdown.RefreshShownValue();
         this.PopulatePrimaryTargetValues(this.currentEffect.target);
 
 

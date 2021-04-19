@@ -19,7 +19,7 @@ public static class Summarizer
         switch (trigger.type) {
             case Effect.Trigger.Type.ALWAYS_ACTIVE:
                 return "";
-            case Effect.Trigger.Type.ON_INTERACTION:
+            case Effect.Trigger.Type.ON_INTERACTION_START:
                 return "When interacting  ";
         }
         return "";

@@ -14,7 +14,6 @@ public enum DropdownType
     TRAIT_TYPE,
     TRIGGERS,
     MODIFIER_TARGET,
-    RESTRICTION_TYPE,
     LOGIC_OPERATOR,
     CONDITION_INITIATOR,
     ATTRIBUTE_RANGE_SELECTOR,
@@ -82,11 +81,9 @@ public class DropdownCreator : MonoBehaviour
             case DropdownType.TRAIT_TYPE:
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Trait.Type>());
             case DropdownType.TRIGGERS:
-                return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Trigger.Type>());
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Trigger>());
             case DropdownType.MODIFIER_TARGET:
-                return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Target.Type>());
-            case DropdownType.RESTRICTION_TYPE:
-                return ConvertStringArrayToOptions(Utils.GetEnumValues<Effect.Restriction.Type>(this.revealAll));
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Modifier.Type>());
             case DropdownType.LOGIC_OPERATOR:
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Condition.LogicOperator>(this.revealAll));
             case DropdownType.CONDITION_INITIATOR:
