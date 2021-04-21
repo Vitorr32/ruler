@@ -469,7 +469,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -24.848022, y: 0.000015258789}
+  m_AnchoredPosition: {x: -24.848053, y: 0.000015258789}
   m_SizeDelta: {x: 359.75824, y: -353.47958}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &29623565
@@ -3014,8 +3014,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 4.6885, y: -142.42111}
-  m_SizeDelta: {x: 907.49, y: 409.8504}
+  m_AnchoredPosition: {x: 4.6885, y: -169.8971}
+  m_SizeDelta: {x: 907.49, y: 464.802}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &258300668
 GameObject:
@@ -14568,18 +14568,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 7643497445369889667}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &970277260 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7643497444435919375, guid: 6b8c894d133dd334389f6c41aa1bdcf3,
-    type: 3}
-  m_PrefabInstance: {fileID: 7643497445369889667}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8d44919804a8074194be3e198e72ab9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &971881171
 GameObject:
   m_ObjectHideFlags: 0
@@ -25380,15 +25368,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   modifierTriggerDropdown: {fileID: 441070760}
-  modifierTargetGameObject: {fileID: 1976472779}
-  modifierTargetValueDropdown: {fileID: 0}
-  primaryTargetSelectController: {fileID: 970277260}
-  secondaryTargetSelectController: {fileID: 0}
-  valueChangeGO: {fileID: 1137299613}
+  modifierTypeGameObject: {fileID: 0}
+  modifierTypeDropdown: {fileID: 0}
+  modifierTargetToogle: {fileID: 0}
+  modifierTargetMultiselectController: {fileID: 0}
   absoluteValueChangeGO: {fileID: 992233390}
   absoluteValueChangeText: {fileID: 608403817}
-  relativeValueChangeGO: {fileID: 84492454}
-  relativeValueChangeText: {fileID: 741760247}
   summaryText: {fileID: 1176713726}
 --- !u!222 &1727564497
 CanvasRenderer:
@@ -30069,7 +30054,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 530058294}
   m_HandleRect: {fileID: 530058293}
   m_Direction: 3
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

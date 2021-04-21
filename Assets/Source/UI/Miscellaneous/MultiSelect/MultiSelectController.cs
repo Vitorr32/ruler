@@ -35,11 +35,6 @@ public class MultiSelectController : MonoBehaviour
         this.multiselectLabel.text = label;
     }
 
-    // Update is called once per frame
-    void Update() {
-
-    }
-
     private void OnDisable() {
         this.multiselectOptionPrefabPool.ForEach(option => {
             if (option.gameObject.activeSelf) {

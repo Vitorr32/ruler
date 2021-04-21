@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System;
 using UnityEngine;
+using System.Runtime.CompilerServices;
 
 public static class Summarizer
 {
@@ -10,79 +11,53 @@ public static class Summarizer
         string summary = "";
 
         summary += SummarizeTrigger(effect.trigger);
-        summary += SummarizePrimaryTargetSelectors(effect, allowIncomplete);
+        summary += SummarizeModifierTargets(effect.modifier, allowIncomplete);
 
         return summary;
     }
 
     private static string SummarizeTrigger(Effect.Trigger trigger) {
-        switch (trigger.type) {
-            case Effect.Trigger.Type.ALWAYS_ACTIVE:
+        switch (trigger) {
+            case Effect.Trigger.ALWAYS_ACTIVE:
                 return "";
-            case Effect.Trigger.Type.ON_INTERACTION_START:
-                return "When interacting  ";
+            case Effect.Trigger.ON_INTERACTION_START:
+                return "When interaction starts:  ";
         }
         return "";
     }
-    private static string SummarizeTarget(Effect.Target target) {
-        switch (target.type) {
-            case Effect.Target.Type.TARGET_ATTRIBUTE:
+    private static string SummarizeTarget(Modifier modifier) {
+        switch (modifier.type) {
+            case Modifier.Type.MODIFY_SKILL_POTENTIAL_VALUE:
                 return "Modifies the attribute(s) ";
-            case Effect.Target.Type.TARGET_CHARACTER_BY_AGE:
+            case Modifier.Type.MODIFY_SKILL_VALUE:
                 return "When the character is of age " + "";
         }
         return "Swag";
     }
 
-    private static string SummarizePrimaryTargetSelectors(Effect effect, bool allowIncomplete = false) {
-        switch (effect.target.type) {
-            case Effect.Target.Type.TARGET_ATTRIBUTE:
-                if (effect.target.arguments == null || effect.target.arguments.Length == 0) {
-                    if (allowIncomplete) {
-                        return "";
-                    }
-                    else {
-                        throw new Exception("The effect of id " + effect.id + " has no arguments for type target attribute, please check the effect arguments");
-                    }
-                }
+    private static string SummarizeModifierTargets(Modifier modifier, bool allowIncomplete = false) {
+        if (modifier.modifierTargets.Count == 0) {
+            if (allowIncomplete) {
+                return "";
+            }
+            else {
+                throw new Exception("The modifier has no targets, please check the effect");
+            }
+        }
 
-                List<TargetAttributeArguments> targetArguments = effect.target.arguments.ToList().Select(argumentList => {
-                    return new TargetAttributeArguments() {
-                        name = Enum.GetName(typeof(Officer.Attribute), argumentList[0]),
-                        absoluteChange = argumentList[1],
-                        percentageChange = argumentList[2]
-                    };
-                }).ToList();
-
-                string initial = "Modify " + (targetArguments.Count > 1 ? "attributes" : "attribute") + ":\n";
+        switch (modifier.type) {
+            case Modifier.Type.MODIFY_SKILL_VALUE:
+                string initial = "Modify " + (modifier.modifierTargets.Count > 1 ? "attributes" : "attribute") + Environment.NewLine;
                 string finalString = "";
 
-                foreach (TargetAttributeArguments argumentStruct in targetArguments) {
-                    bool isAbsolute = argumentStruct.absoluteChange != 0 ? true : false;
-                    bool isRelative = argumentStruct.percentageChange != 0 ? true : false;
-
-                    if (!isAbsolute && !isRelative) {
-                        if (allowIncomplete) {
-                            finalString += argumentStruct.name + " by" + Environment.NewLine;
-                            continue;
-                        }
-                        else {
-                            throw new Exception("The effect of target attribute is neither absolute or relative, please check the effect of id " + effect.id);
-                        }
-                    }
-
-                    finalString += argumentStruct.name + " by " + (isAbsolute ? argumentStruct.absoluteChange.ToString() : argumentStruct.percentageChange.ToString() + "%") + Environment.NewLine;
+                foreach (int modifierTarget in modifier.modifierTargets) {
+                    Skill skill = StoreController.instance.skills.Find(skill => skill.id == modifierTarget);
+                    finalString += skill.name + " by" + Environment.NewLine;
                 }
 
-                if (finalString == "") {
-                    return "";
-                }
-                else {
-                    return initial + finalString;
-                }
-
+                return finalString;
             default:
-                return allowIncomplete ? "" : "TARGET TYPE " + effect.target.type + " NOT FOUND IN ENUMERATOR";
+                return allowIncomplete ? "" : "TARGET TYPE " + modifier.type + " NOT FOUND IN ENUMERATOR";
         }
     }
 

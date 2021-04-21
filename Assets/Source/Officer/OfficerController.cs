@@ -48,7 +48,7 @@ public class OfficerController
 
         traits.ForEach(trait => {
             trait.uEffects.ForEach(effect => {
-                if (ShouldEffectActivate(baseOfficer, trait, effect, Effect.Trigger.Type.ALWAYS_ACTIVE)) {
+                if (ShouldEffectActivate(baseOfficer, trait, effect, Effect.Trigger.ALWAYS_ACTIVE)) {
                     activeEffects.Add(effect);
                 }
             });
@@ -57,11 +57,11 @@ public class OfficerController
         return effects;
     }
     //Static method that verifies if the target should receive a effect deriving from source T during a certaing action
-    public static bool ShouldEffectActivate<T>(Officer target, T source, Effect effect, Effect.Trigger.Type triggerType) {
-        if (effect.trigger.type != triggerType) { return false; }
+    public static bool ShouldEffectActivate<T>(Officer target, T source, Effect effect, Effect.Trigger triggerType) {
+        if (effect.trigger != triggerType) { return false; }
 
         switch (triggerType) {
-            case Effect.Trigger.Type.ALWAYS_ACTIVE:
+            case Effect.Trigger.ALWAYS_ACTIVE:
                 return true;
             default:
                 Debug.Log("Unknown action of type " + triggerType);

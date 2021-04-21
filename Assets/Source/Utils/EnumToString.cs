@@ -6,9 +6,9 @@ public class EnumToString
         return Enum.GetName(enumType, value);
     }
 
-    public static string getStringOfModifiersEnum(Effect.Modifier.Type type = Effect.Modifier.Type.UNDEFINED) {
+    public static string getStringOfModifiersEnum(Modifier.Type type = Modifier.Type.UNDEFINED) {
         switch (type) {
-            case Effect.Modifier.Type.MODIFY_ATTRIBUTE_VALUE:
+            case Modifier.Type.MODIFY_SKILL_VALUE:
                 return "Modify Attribute by absolute value";
             default:
                 throw new System.Exception("Unknown modifier type: " + type);

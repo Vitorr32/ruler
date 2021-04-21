@@ -16,14 +16,10 @@ public class ModifierEditor : MonoBehaviour
 
     public Toggle modifierTargetToogle;
 
-    public MultiSelectController primaryTargetSelectController;
-    public MultiSelectController secondaryTargetSelectController;
+    public MultiSelectController modifierTargetMultiselectController;
 
-    public GameObject valueChangeGO;
     public GameObject absoluteValueChangeGO;
     public Text absoluteValueChangeText;
-    public GameObject relativeValueChangeGO;
-    public Text relativeValueChangeText;
 
     public Text summaryText;
 
@@ -32,8 +28,6 @@ public class ModifierEditor : MonoBehaviour
     // Start is called before the first frame update
     void Start() {
         MultiSelectController.onMultiselectChanged += OnMultiselectEventReceived;
-
-        this.CleanUpEditor();
     }
 
     void Destroy() {
@@ -48,8 +42,8 @@ public class ModifierEditor : MonoBehaviour
     public void StartUpEditor(Effect toEditEffect = null) {
         if (toEditEffect != null) {
             this.PopulateEffectValuesForEdit(toEditEffect);
-            this.gameObject.SetActive(true);
         }
+        this.gameObject.SetActive(true);
     }
     //The first dropdown, define the type of trigger that can activate this effect
     public void OnTriggerTypeChanged(Dropdown dropdown) {
@@ -71,20 +65,20 @@ public class ModifierEditor : MonoBehaviour
     }
 
     //Second dropdown, define what the possible selectable values to be modified in this effect
-    public void OnModifierTypeSet() {
-        this.currentEffect.modifier.type = (Modifier.Type)modifierTypeDropdown.value;
+    public void OnModifierTypeSet(Dropdown dropdown) {
+        this.currentEffect.modifier.type = (Modifier.Type)dropdown.value;
 
         switch (this.currentEffect.modifier.type) {
             case Modifier.Type.MODIFY_SKILL_VALUE:
-                PopulateSelectWithEnumValues<Officer.Attribute>(this.primaryTargetSelectController, (int)this.currentEffect.modifier.type);
-                ActivateAbsoluteChangeInput();
-                ActivateRelativeChangeInput();
-
+                this.PopulateSelectWithEnumValues<Officer.Attribute>(this.modifierTargetMultiselectController, (int)this.currentEffect.modifier.type);
                 break;
             default:
-                break;
+                Debug.LogError("Selected effect modifier type is not known: " + this.currentEffect.modifier.type);
+                this.currentEffect.modifier.type = Modifier.Type.UNDEFINED;
+                return;
         }
 
+        this.ActiveInputGameObject();
         this.RenderSummaryOfEffect(this.currentEffect);
     }
 
@@ -109,59 +103,33 @@ public class ModifierEditor : MonoBehaviour
             this.OnMultiselectOptionRemoved(value, identifier, controller);
         }
     }
-
+    //When the add option to the multiselect event is recevied, add it to the effect modifier targets
     private void OnMultiSelectOptionAdded(int value, int identifier, MultiSelectController controller) {
-        if (controller != primaryTargetSelectController && controller != secondaryTargetSelectController) {
+        if (controller != modifierTargetMultiselectController) {
             return;
         }
 
-        bool primaryTarget = controller == primaryTargetSelectController;
-        if (EffectHasTargetArguments(this.currentEffect)) {
-            int index = Array.FindIndex(this.currentEffect.modifier.arguments, argumentList => argumentList[0] == value);
-            //Only modify when the argument for that target don't exist yet
-            if (index == -1) {
-                this.currentEffect.target.arguments = this.currentEffect.target.arguments.Append(new int[] { value, 0, 0 }).ToArray();
-            }
-        }
-        //Initialize a new argument array
-        else {
-            this.currentEffect.target.arguments = new int[][] { new int[] { value, 0, 0 } };
-        }
+        int modifierTargetIndex = this.currentEffect.modifier.modifierTargets.FindIndex(target => target == value);
 
-        this.ActivateAbsoluteChangeInput();
-        this.ActivateRelativeChangeInput();
+        if (modifierTargetIndex != -1) {
+            this.currentEffect.modifier.modifierTargets.RemoveAt(modifierTargetIndex);
+        }
+        else {
+            Debug.LogError("Asked to delete modifier target that is not on the list! value = " + value);
+        }
 
         this.RenderSummaryOfEffect(this.currentEffect);
     }
 
     private void OnMultiselectOptionRemoved(int value, int identifier, MultiSelectController controller) {
-        if (controller != primaryTargetSelectController && controller != secondaryTargetSelectController) {
+        if (controller != modifierTargetMultiselectController) {
             return;
         }
 
-        bool primaryTarget = controller == primaryTargetSelectController;
-        switch ((Effect.Target.Type)identifier) {
-            case Effect.Target.Type.TARGET_ATTRIBUTE:
-                if (primaryTarget) {
-                    int index = Array.FindIndex(this.currentEffect.target.arguments, argumentList => argumentList[0] == value);
+        int modifierTargetIndex = this.currentEffect.modifier.modifierTargets.FindIndex(target => target == value);
 
-                    if (index != -1) {
-                        List<int[]> newArguments = this.currentEffect.target.arguments.ToList();
-                        newArguments.RemoveAt(index);
-
-                        this.currentEffect.target.arguments = newArguments.ToArray();
-                    }
-                    else {
-                        throw new Exception("Tried to remove a target attribute list with value " + value + " but there was none");
-                    }
-
-                    if (this.currentEffect.target.arguments.Length == 0) {
-                        this.DeactivateModifierValue();
-                    }
-                }
-                break;
-            default:
-                throw new Exception("Unknown identifier " + identifier + " found in the OnMultiselectOptionRemoved function");
+        if (modifierTargetIndex == -1) {
+            this.currentEffect.modifier.modifierTargets.Add(value);
         }
 
         this.RenderSummaryOfEffect(this.currentEffect);
@@ -169,7 +137,7 @@ public class ModifierEditor : MonoBehaviour
 
     public void OnSubmitEffectToTrait() {
 
-        if (CheckIfTargetArgumentsAreValid(this.currentEffect.target)) {
+        if (CheckIfModifierValuesAreValid(this.currentEffect)) {
             this.currentEffect.id = PlayerPrefs.GetInt("effectIdCounter") + 1;
             PlayerPrefs.SetInt("effectIdCounter", this.currentEffect.id);
             OnModifierEditorEnded?.Invoke(this.currentEffect);
@@ -179,128 +147,101 @@ public class ModifierEditor : MonoBehaviour
         }
     }
 
-    private bool CheckIfTargetArgumentsAreValid(Effect.Target target) {
-        switch (target.type) {
-            case Effect.Target.Type.TARGET_ATTRIBUTE:
-                foreach (int[] argumentList in target.arguments) {
-                    if (argumentList[1] != 0 && argumentList[2] != 0) {
-                        this.ShowErrorMessage("A attribute can't be modified by an absolute and relative value at the same time");
-                        return false;
-                    }
-                }
-
-                return true;
-        }
-
+    private bool CheckIfModifierValuesAreValid(Effect effect) {
         return false;
+        //switch (target.type) {
+        //    case Effect.Trigger.ON_INTERACTION_END:
+        //        foreach (int[] argumentList in target.arguments) {
+        //            if (argumentList[1] != 0 && argumentList[2] != 0) {
+        //                this.ShowErrorMessage("A attribute can't be modified by an absolute and relative value at the same time");
+        //                return false;
+        //            }
+        //        }
+
+        //        return true;
+        //}
+
+        //return false;
     }
 
-    public void OnInputValueChanged(string inputIdentifier) {
-        if ((this.absoluteValueChangeText.text == "" && this.relativeValueChangeText.text == "") ||
-            (this.currentEffect.target.arguments == null || this.currentEffect.target.arguments.Length == 0)) {
+    public void OnInputValueChanged() {
+        if (this.absoluteValueChangeText.text == "") {
             return;
         }
 
-        try {
-            switch (inputIdentifier) {
-                case "absoluteChange":
-                    this.AssignValueToTargetArguments(Int32.Parse(absoluteValueChangeText.text));
-                    break;
-                case "relativeChange":
-                    this.AssignValueToTargetArguments(0, Int32.Parse(relativeValueChangeText.text));
-                    break;
-            }
+        double effectiveChange;
+        if (Double.TryParse(this.absoluteValueChangeText.text, out effectiveChange)) {
+            this.currentEffect.modifier.effectiveChange = (float)effectiveChange;
+        }
+        else {
+            Debug.LogError("It was not possible to convert the user input into a double number!");
+        }
 
-            this.RenderSummaryOfEffect(this.currentEffect);
-        }
-        catch (FormatException e) {
-            Debug.Log(e);
-        }
-    }
-    private void AssignValueToTargetArguments(int absoluteValue = 0, int relativeValue = 0) {
-        for (int i = 0; i < this.currentEffect.target.arguments.Length; i++) {
-            this.currentEffect.target.arguments[i][1] = absoluteValue;
-            this.currentEffect.target.arguments[i][2] = relativeValue;
-        }
-    }
-    private bool EffectHasTargetArguments(Effect effect) {
-        return effect.target.arguments != null;
+        this.RenderSummaryOfEffect(this.currentEffect);
     }
 
     private void RenderSummaryOfEffect(Effect effect) {
         this.summaryText.text = Summarizer.SummarizeEffect(effect, true);
     }
 
-    private void ActivateRelativeChangeInput() {
-        this.valueChangeGO.SetActive(true);
-        this.relativeValueChangeGO.SetActive(true);
-        this.relativeValueChangeText.text = "";
-    }
-    private void ActivateAbsoluteChangeInput() {
-        this.valueChangeGO.SetActive(true);
+    private void ActiveInputGameObject() {
         this.absoluteValueChangeGO.SetActive(true);
         this.absoluteValueChangeText.text = "";
     }
+
     private void DeactivateModifierValue() {
-        valueChangeGO.SetActive(false);
-        this.relativeValueChangeGO.SetActive(false);
         this.absoluteValueChangeGO.SetActive(false);
+        this.absoluteValueChangeText.text = "";
     }
+
     private void CleanUpEditor() {
         this.DeactivateModifierValue();
 
         this.modifierTypeGameObject.SetActive(false);
-        this.primaryTargetSelectController.gameObject.SetActive(false);
-        this.secondaryTargetSelectController.gameObject.SetActive(false);
+        this.modifierTargetMultiselectController.gameObject.SetActive(false);
         this.summaryText.text = "";
-        this.absoluteValueChangeText.text = "";
-        this.relativeValueChangeText.text = "";
 
         this.modifierTriggerDropdown.GetComponent<DropdownCreator>().ResetDropdownState();
-        this.modifierTypeValueDropdown.GetComponent<DropdownCreator>().ResetDropdownState();
+        this.modifierTypeDropdown.GetComponent<DropdownCreator>().ResetDropdownState();
 
         this.currentEffect = new Effect();
     }
     private void PopulateEffectValuesForEdit(Effect effect) {
         this.currentEffect = effect;
 
-        this.modifierTriggerDropdown.SetValueWithoutNotify(this.modifierTriggerDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(Effect.Trigger.Type), effect.trigger.type)));
+        //Set the value of the dropdown manually so they can be shown on the Unity dropdown component
+        this.modifierTriggerDropdown.SetValueWithoutNotify(this.modifierTriggerDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(Effect.Trigger), effect.trigger)));
         this.OnTriggerTypeChanged(this.modifierTriggerDropdown);
-        this.modifierTypeValueDropdown.SetValueWithoutNotify(this.modifierTypeValueDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(Effect.Target.Type), effect.target.type)));
-        this.OnModifierTargetSet(this.modifierTypeValueDropdown);
+        this.modifierTypeDropdown.SetValueWithoutNotify(this.modifierTypeDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(Modifier.Type), effect.modifier.type)));
+        this.OnModifierTypeSet(this.modifierTypeDropdown);
 
         this.modifierTriggerDropdown.RefreshShownValue();
-        this.modifierTypeValueDropdown.RefreshShownValue();
-        this.PopulatePrimaryTargetValues(this.currentEffect.target);
+        this.modifierTypeDropdown.RefreshShownValue();
 
+        this.PopulateModifierTargetMultiselect(this.currentEffect.modifier);
+        this.PopulateInputValues(this.currentEffect.modifier);
 
         this.RenderSummaryOfEffect(this.currentEffect);
     }
 
-    private void PopulatePrimaryTargetValues(Effect.Target target) {
-        switch (target.type) {
-            case Effect.Target.Type.TARGET_ATTRIBUTE:
-                PopulateSelectWithEnumValues<Officer.Attribute>(
-                    this.primaryTargetSelectController,
-                    (int)Effect.Target.Type.TARGET_ATTRIBUTE,
-                    this.currentEffect.target.arguments.Select(argumentList => argumentList[0]).ToArray()
-                );
+    private void PopulateModifierTargetMultiselect(Modifier modifier) {
+        switch (modifier.type) {
+            case Modifier.Type.MODIFY_SKILL_VALUE:
+                //PopulateSelectWithEnumValues<Officer.Attribute>(
+                //    this.modifierTargetMultiselectController,
+                //    (int)Effect.Target.Type.TARGET_ATTRIBUTE,
+                //    this.currentEffect.target.arguments.Select(argumentList => argumentList[0]).ToArray()
+                //);
 
-                this.primaryTargetSelectController.gameObject.SetActive(true);
+                //this.modifierTargetMultiselectController.gameObject.SetActive(true);
                 break;
         }
     }
 
-    private void PopulateInputValues(Effect.Target target) {
-        switch (target.type) {
-            default:
-                this.absoluteValueChangeText.text = target.arguments[1].ToString();
-                this.relativeValueChangeText.text = target.arguments[2].ToString();
+    private void PopulateInputValues(Modifier modifier) {
+        ActiveInputGameObject();
 
-                this.ActivateAbsoluteChangeInput();
-                this.ActivateRelativeChangeInput();
-                break;
-        }
+        this.absoluteValueChangeText.text = modifier.effectiveChange.ToString();
     }
     private void ShowErrorMessage(string message) {
         Debug.Log("Error message: " + message);

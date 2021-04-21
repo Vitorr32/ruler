@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 [Serializable]
 public class Modifier
@@ -14,7 +15,15 @@ public class Modifier
 
         MAX_MODIFIERS
     }
+    public enum PassiveValue
+    {
+        MOOD_GAIN,
+        STRESS_GAIN,
+        ENERG_GAIN
+    }
 
     public Type type;
-    public int[] arguments;
+
+    public List<int> modifierTargets = new List<int>();
+    public float effectiveChange;
 }
