@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine.UIElements;
 
 [Serializable]
 public class Effect
@@ -59,5 +60,5 @@ public class Effect
     //After the effect was activatd, for how much time does it take effect?
     public Duration duration;
     //What is the modifier that this effect cause
-    public Modifier modifier;
+    public Modifier modifier = new Modifier();
 }

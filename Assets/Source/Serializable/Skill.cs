@@ -1,6 +1,7 @@
 ﻿
-using System.Collections.Generic;
+using System;
 
+[Serializable]
 public class Skill
 {
     public enum Category

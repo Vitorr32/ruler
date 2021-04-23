@@ -26,4 +26,5 @@ public class Modifier
 
     public List<int> modifierTargets = new List<int>();
     public float effectiveChange;
+    public bool targetSelf = true;
 }

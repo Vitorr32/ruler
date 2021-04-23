@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,8 +17,8 @@ public class ModifierEditor : MonoBehaviour
 
     public MultiSelectController modifierTargetMultiselectController;
 
-    public GameObject absoluteValueChangeGO;
-    public Text absoluteValueChangeText;
+    public GameObject valueInputGO;
+    public InputField valueInputField;
 
     public Text summaryText;
 
@@ -68,31 +67,15 @@ public class ModifierEditor : MonoBehaviour
     public void OnModifierTypeSet(Dropdown dropdown) {
         this.currentEffect.modifier.type = (Modifier.Type)dropdown.value;
 
-        switch (this.currentEffect.modifier.type) {
-            case Modifier.Type.MODIFY_SKILL_VALUE:
-                this.PopulateSelectWithEnumValues<Officer.Attribute>(this.modifierTargetMultiselectController, (int)this.currentEffect.modifier.type);
-                break;
-            default:
-                Debug.LogError("Selected effect modifier type is not known: " + this.currentEffect.modifier.type);
-                this.currentEffect.modifier.type = Modifier.Type.UNDEFINED;
-                return;
-        }
-
+        this.PopulateModifierTargetMultiselect(this.currentEffect.modifier);
         this.ActiveInputGameObject();
         this.RenderSummaryOfEffect(this.currentEffect);
     }
 
-    private void PopulateSelectWithEnumValues<T>(MultiSelectController controller, int identifier, int[] currentlySelected = null) {
-        List<MultiSelectController.Option> options = new List<MultiSelectController.Option>();
+    public void OnToogleTargetSelf() {
+        this.currentEffect.modifier.targetSelf = this.modifierTargetToogle.isOn;
 
-        List<T> attributes = Utils.GetEnumValues<T>();
-        attributes.ForEach(modifier => {
-            MultiSelectController.Option option = new MultiSelectController.Option((int)(object)modifier, modifier.ToString());
-
-            options.Add(option);
-        });
-
-        controller.OnStartupMultiselect(options, identifier, currentlySelected);
+        this.RenderSummaryOfEffect(this.currentEffect);
     }
 
     private void OnMultiselectEventReceived(bool isAdding, int value, int identifier, MultiSelectController controller) {
@@ -165,12 +148,12 @@ public class ModifierEditor : MonoBehaviour
     }
 
     public void OnInputValueChanged() {
-        if (this.absoluteValueChangeText.text == "") {
+        if (this.valueInputField.text == "") {
             return;
         }
 
         double effectiveChange;
-        if (Double.TryParse(this.absoluteValueChangeText.text, out effectiveChange)) {
+        if (Double.TryParse(this.valueInputField.text, out effectiveChange)) {
             this.currentEffect.modifier.effectiveChange = (float)effectiveChange;
         }
         else {
@@ -185,13 +168,13 @@ public class ModifierEditor : MonoBehaviour
     }
 
     private void ActiveInputGameObject() {
-        this.absoluteValueChangeGO.SetActive(true);
-        this.absoluteValueChangeText.text = "";
+        this.valueInputGO.SetActive(true);
+        this.valueInputField.text = "";
     }
 
     private void DeactivateModifierValue() {
-        this.absoluteValueChangeGO.SetActive(false);
-        this.absoluteValueChangeText.text = "";
+        this.valueInputGO.SetActive(false);
+        this.valueInputField.text = "";
     }
 
     private void CleanUpEditor() {
@@ -209,15 +192,7 @@ public class ModifierEditor : MonoBehaviour
     private void PopulateEffectValuesForEdit(Effect effect) {
         this.currentEffect = effect;
 
-        //Set the value of the dropdown manually so they can be shown on the Unity dropdown component
-        this.modifierTriggerDropdown.SetValueWithoutNotify(this.modifierTriggerDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(Effect.Trigger), effect.trigger)));
-        this.OnTriggerTypeChanged(this.modifierTriggerDropdown);
-        this.modifierTypeDropdown.SetValueWithoutNotify(this.modifierTypeDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(Modifier.Type), effect.modifier.type)));
-        this.OnModifierTypeSet(this.modifierTypeDropdown);
-
-        this.modifierTriggerDropdown.RefreshShownValue();
-        this.modifierTypeDropdown.RefreshShownValue();
-
+        this.PopulateDropdownValues(this.currentEffect);
         this.PopulateModifierTargetMultiselect(this.currentEffect.modifier);
         this.PopulateInputValues(this.currentEffect.modifier);
 
@@ -226,22 +201,82 @@ public class ModifierEditor : MonoBehaviour
 
     private void PopulateModifierTargetMultiselect(Modifier modifier) {
         switch (modifier.type) {
+            case Modifier.Type.MODIFY_SKILL_POTENTIAL_VALUE:
             case Modifier.Type.MODIFY_SKILL_VALUE:
-                //PopulateSelectWithEnumValues<Officer.Attribute>(
-                //    this.modifierTargetMultiselectController,
-                //    (int)Effect.Target.Type.TARGET_ATTRIBUTE,
-                //    this.currentEffect.target.arguments.Select(argumentList => argumentList[0]).ToArray()
-                //);
-
-                //this.modifierTargetMultiselectController.gameObject.SetActive(true);
+                this.PopulateMultiSelectWithObject<Skill>(
+                    this.modifierTargetMultiselectController,
+                    (int)this.currentEffect.modifier.type,
+                    StoreController.instance.skills,
+                    "name",
+                    "id",
+                    this.currentEffect.modifier.modifierTargets.ToArray()
+                );
                 break;
+            case Modifier.Type.MODIFY_PASSIVE_ABSOLUTE_VALUE:
+            case Modifier.Type.MODIFY_PASSIVE_RELATIVE_VALUE:
+                this.PopulateSelectWithEnumValues<Modifier.PassiveValue>(
+                    this.modifierTargetMultiselectController,
+                    (int)this.currentEffect.modifier.type,
+                    this.currentEffect.modifier.modifierTargets.ToArray()
+                );
+                this.modifierTargetMultiselectController.gameObject.SetActive(true);
+                break;
+            default:
+                Debug.LogError("Unknown Modifier Type " + modifier.type + " can't be used to populate multiselect");
+                this.modifierTargetMultiselectController.gameObject.SetActive(false);
+                return;
         }
+        this.modifierTargetMultiselectController.gameObject.SetActive(true);
+    }
+
+    private void PopulateSelectWithEnumValues<T>(MultiSelectController controller, int identifier, int[] currentlySelected = null) {
+        List<MultiSelectController.Option> options = new List<MultiSelectController.Option>();
+
+        List<T> attributes = Utils.GetEnumValues<T>();
+        attributes.ForEach(modifier => {
+            MultiSelectController.Option option = new MultiSelectController.Option((int)(object)modifier, modifier.ToString());
+
+            options.Add(option);
+        });
+
+        controller.OnStartupMultiselect(options, identifier, currentlySelected);
+    }
+
+    private void PopulateMultiSelectWithObject<T>(MultiSelectController controller, int identifier, List<T> objects, string labelKey, string valueKey, int[] currentlySelected = null) {
+        List<MultiSelectController.Option> options = new List<MultiSelectController.Option>();
+
+        try {
+            objects.ForEach(toPopulateObject => {
+                object label = toPopulateObject.GetType().GetField(labelKey).GetValue(toPopulateObject);
+                object value = toPopulateObject.GetType().GetField(valueKey).GetValue(toPopulateObject);
+
+                MultiSelectController.Option option = new MultiSelectController.Option((int)value, (string)label);
+                options.Add(option);
+            });
+
+            controller.OnStartupMultiselect(options, identifier, currentlySelected);
+        }
+        catch (InvalidCastException e) {
+            Debug.LogError(e);
+            return;
+        }
+    }
+
+    private void PopulateDropdownValues(Effect effect) {
+        //Set the value of the dropdown manually so they can be shown on the Unity dropdown component
+        this.modifierTriggerDropdown.SetValueWithoutNotify(this.modifierTriggerDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(Effect.Trigger), effect.trigger)));
+        this.OnTriggerTypeChanged(this.modifierTriggerDropdown);
+        this.modifierTypeDropdown.SetValueWithoutNotify(this.modifierTypeDropdown.options.FindIndex(option => option.text == Enum.GetName(typeof(Modifier.Type), effect.modifier.type)));
+        this.OnModifierTypeSet(this.modifierTypeDropdown);
+
+        this.modifierTriggerDropdown.RefreshShownValue();
+        this.modifierTypeDropdown.RefreshShownValue();
     }
 
     private void PopulateInputValues(Modifier modifier) {
         ActiveInputGameObject();
 
-        this.absoluteValueChangeText.text = modifier.effectiveChange.ToString();
+        this.valueInputField.text = modifier.effectiveChange.ToString();
     }
     private void ShowErrorMessage(string message) {
         Debug.Log("Error message: " + message);

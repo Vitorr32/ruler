@@ -1,27 +1,3 @@
-/*
-  Skill Variables:
-
-  category:   
-        BASIC: 1
-        SUNLIGHT: 2
-        STARLIGHT: 3
-        MOONLIGHT: 4
-
-  type:
-        ABSOLUTE_VALUE: 1
-        CATEGORY_VALUE: 2
-  growth:
-        TECHINAL: 1
-        MENTAL: 2
-        PHYSICAL: 3
-
-  valueOptions: string[] String array of categories that this skill can have( Like: Frail, Weak, Normal, Fit, Strong);
-
-  description: string
-  name: string
-  id: number
-*/
-
 [
   {
     "id": 0,
