@@ -16,8 +16,6 @@ public class ConditionTree
                 return false;
             }
 
-
-
             //Check if the OR and AND logic is nescessary, if not just do a simple check for all children conditions evalutation
             if (children.Exists(Node => Node.condition.logicOperator == Condition.LogicOperator.OR
                                      || Node.condition.logicOperator == Condition.LogicOperator.AND)) {
@@ -79,5 +77,4 @@ public class ConditionTree
     public bool EvaluateConditionTree() {
         return root.EvaluateNode();
     }
-
 }

@@ -22,4 +22,7 @@ public static class Constants
     public static readonly string[] TEEN = { "T", "TEEN" };
     public static readonly string[] YOUNG = { "Y", "YOUNG" };
     public static readonly string[] MIDDLE_AGE = { "M", "OLD", "MIDDLE-AGE" };
+
+    //Start at 0, so 2 would be 3 layers
+    public static readonly int MAX_CONDITION_LAYERS = 2;
 }

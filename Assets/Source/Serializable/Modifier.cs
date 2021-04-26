@@ -17,9 +17,15 @@ public class Modifier
     }
     public enum PassiveValue
     {
+        UNDEFINED,
+
         MOOD_GAIN,
         STRESS_GAIN,
-        ENERG_GAIN
+        ENERGY_GAIN,
+        FAVORABILITY_GAIN,
+
+
+        MAX_MODIFIERS
     }
 
     public Type type;

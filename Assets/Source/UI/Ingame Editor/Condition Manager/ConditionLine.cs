@@ -4,9 +4,23 @@ using UnityEngine.UI;
 
 public class ConditionLine : MonoBehaviour
 {
+    public delegate void OnConditionLineUpdate(Condition condition, int index);
+    public static event OnConditionLineUpdate OnConditionLineUpdated;
+
+    public delegate void OnLayerChange(Condition condition, int identifier, int layer);
+    public static event OnLayerChange OnLayerChanged;
+
     public bool active;
+    private bool isRoot;
+    private int layer;
+    private int identifier;
+    //Since it's a condition tree, the tree node should know it's parent
+    private Condition parent;
 
     private Condition conditionOfLine;
+
+    public Button deeperIndentButton;
+    public Button higherIndentButton;
 
     public Dropdown logicOperator;
     public Dropdown conditionInitiator;
@@ -34,11 +48,15 @@ public class ConditionLine : MonoBehaviour
     public InputField firstNumericInput;
     public InputField secondNumericInput;
 
-    private int layer;
+    private HorizontalLayoutGroup horizontalLayoutGroup;
 
     private void Start() {
         TraitSelectionTool.OnToolFinished += SelectedTrait;
         CharacterSelectionTool.OnToolFinished += SelectedCharacter;
+
+        this.horizontalLayoutGroup = this.GetComponent<HorizontalLayoutGroup>();
+        //SHOULD REMOVE NEXT LINE: TESTING
+        this.OnStartUpConditionLine(true, 0);
     }
 
     private void OnDestroy() {
@@ -46,11 +64,41 @@ public class ConditionLine : MonoBehaviour
         CharacterSelectionTool.OnToolFinished -= SelectedCharacter;
     }
 
-    public void OnStartUpConditionLine(ConditionLine previousLine = null, int layer = 0) {
-        this.layer = layer;
+    public void OnStartUpConditionNode() {
+
+    }
+
+    public void OnStartUpConditionLine(bool isRoot, int index, ConditionLine previousLine = null) {
+        this.isRoot = isRoot;
+        this.identifier = index;
         this.conditionOfLine = new Condition();
 
         this.RenderConditionLine(this.conditionOfLine);
+    }
+
+    public void OnUpdateParentNode(Condition parent) {
+        this.parent = parent;
+    }
+
+    public void OnIndentButtonClicked(bool deeperLayer) {
+        this.layer = this.layer + (deeperLayer ? 1 : -1);
+
+        if (this.layer == 0 || isRoot) {
+            this.higherIndentButton.gameObject.SetActive(false);
+        }
+        else {
+            this.higherIndentButton.gameObject.SetActive(true);
+        }
+
+        if (this.layer == Constants.MAX_CONDITION_LAYERS || isRoot) {
+            this.deeperIndentButton.gameObject.SetActive(false);
+        }
+        else {
+            this.deeperIndentButton.gameObject.SetActive(true);
+        }
+
+        this.RenderConditionLine(this.conditionOfLine);
+        ConditionLine.OnLayerChanged?.Invoke(this.conditionOfLine, this.identifier, this.layer);
     }
 
     public void OnLogicOperatorSelected() {
@@ -80,7 +128,7 @@ public class ConditionLine : MonoBehaviour
             case Condition.Initiator.LOCATION:
             case Condition.Initiator.TRAIT:
                 this.targetSpecificatorSelector.AddOptions(new List<Dropdown.OptionData>() {
-                    new Dropdown.OptionData(){text = ""},
+                    new Dropdown.OptionData(){text = "Specificator"},
                     new Dropdown.OptionData(){text = Condition.Specificator.SELF.ToString()},
                     new Dropdown.OptionData(){text = Condition.Specificator.TARGET.ToString()},
                     new Dropdown.OptionData(){text = Condition.Specificator.SPECIFIC.ToString()}
@@ -89,7 +137,7 @@ public class ConditionLine : MonoBehaviour
                 break;
             case Condition.Initiator.EVENT_FLAGGED:
                 this.targetSpecificatorSelector.AddOptions(new List<Dropdown.OptionData>() {
-                    new Dropdown.OptionData(){text = ""},
+                    new Dropdown.OptionData(){text = "Specificator"},
                     new Dropdown.OptionData(){text = Condition.Specificator.SELF.ToString()},
                     new Dropdown.OptionData(){text = Condition.Specificator.TARGET.ToString()},
                     new Dropdown.OptionData(){text = Condition.Specificator.GLOBAL.ToString()}
@@ -130,12 +178,19 @@ public class ConditionLine : MonoBehaviour
     }
 
     private void RenderConditionLine(Condition condition) {
-        if (this.conditionOfLine.logicOperator != Condition.LogicOperator.UNDEFINED) {
+        if (this.isRoot) {
+            this.deeperIndentButton.gameObject.SetActive(false);
+            this.higherIndentButton.gameObject.SetActive(false);
+        }
+
+        this.RenderIndentationSpace(this.layer);
+
+        if (condition.logicOperator != Condition.LogicOperator.UNDEFINED) {
             //this.RenderConditionOperator(condition);
             this.conditionInitiator.gameObject.SetActive(true);
         }
 
-        if (this.conditionOfLine.initiator != Condition.Initiator.UNDEFINED) {
+        if (condition.initiator != Condition.Initiator.UNDEFINED) {
             this.targetSpecificatorSelector.gameObject.SetActive(this.conditionOfLine.initiator != Condition.Initiator.TIME);
         }
         else {
@@ -147,19 +202,9 @@ public class ConditionLine : MonoBehaviour
         }
     }
 
-    private void RenderConditionOperator(Condition condition) {
+    private void RenderIndentationSpace(int layer) {
         //Give a little padding to the line to the left to better visualization of dependent lines of conditions
-        switch (condition.logicOperator) {
-            case Condition.LogicOperator.AND:
-                this.gameObject.GetComponent<HorizontalLayoutGroup>().padding.left = (this.layer * 20) + 20;
-                break;
-            case Condition.LogicOperator.OR:
-                this.gameObject.GetComponent<HorizontalLayoutGroup>().padding.left = this.layer * 20;
-                break;
-            case Condition.LogicOperator.IF:
-                this.gameObject.GetComponent<HorizontalLayoutGroup>().padding.left = 0;
-                break;
-        }
+        this.horizontalLayoutGroup.padding.left = layer * 20;
     }
 
     private void ShowConditionSetter(Condition condition) {

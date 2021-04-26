@@ -27,6 +27,8 @@ public class ModifierEditor : MonoBehaviour
     // Start is called before the first frame update
     void Start() {
         MultiSelectController.onMultiselectChanged += OnMultiselectEventReceived;
+
+        this.CleanUpEditor();
     }
 
     void Destroy() {
@@ -178,8 +180,6 @@ public class ModifierEditor : MonoBehaviour
     }
 
     private void CleanUpEditor() {
-        this.DeactivateModifierValue();
-
         this.modifierTypeGameObject.SetActive(false);
         this.modifierTargetMultiselectController.gameObject.SetActive(false);
         this.summaryText.text = "";
@@ -188,6 +188,7 @@ public class ModifierEditor : MonoBehaviour
         this.modifierTypeDropdown.GetComponent<DropdownCreator>().ResetDropdownState();
 
         this.currentEffect = new Effect();
+        this.DeactivateModifierValue();
     }
     private void PopulateEffectValuesForEdit(Effect effect) {
         this.currentEffect = effect;
