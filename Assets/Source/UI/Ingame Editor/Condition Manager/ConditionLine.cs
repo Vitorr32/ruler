@@ -19,10 +19,6 @@ public class ConditionLine : MonoBehaviour
 
     private Condition conditionOfLine;
 
-    public Button deeperIndentButton;
-    public Button higherIndentButton;
-
-    public Dropdown logicOperator;
     public Dropdown conditionInitiator;
     public Dropdown targetSpecificatorSelector;
 
@@ -80,6 +76,7 @@ public class ConditionLine : MonoBehaviour
         this.parent = parent;
     }
 
+    /*
     public void OnIndentButtonClicked(bool deeperLayer) {
         this.layer = this.layer + (deeperLayer ? 1 : -1);
 
@@ -117,6 +114,7 @@ public class ConditionLine : MonoBehaviour
 
         this.conditionInitiator.gameObject.SetActive(true);
     }
+    */
 
     public void OnConditionInitiatorSelected() {
         //Since the initiator is the start of everything, reset the  entire line while at it
@@ -178,11 +176,6 @@ public class ConditionLine : MonoBehaviour
     }
 
     private void RenderConditionLine(Condition condition) {
-        if (this.isRoot) {
-            this.deeperIndentButton.gameObject.SetActive(false);
-            this.higherIndentButton.gameObject.SetActive(false);
-        }
-
         this.RenderIndentationSpace(this.layer);
 
         if (condition.logicOperator != Condition.LogicOperator.UNDEFINED) {

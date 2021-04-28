@@ -1,14 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine.UI;
 
-public enum LogicOperator
-{
-    IF,
-    AND,
-    OR
-}
 public enum CharacterState
 {
     TALKING,

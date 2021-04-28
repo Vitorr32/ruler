@@ -1,15 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
+public enum LogicOperator
+{
+    IF,
+    AND,
+    OR
+}
 public class ConditionTree
 {
     public class Node
     {
-        public List<Node> children;
+        //The logic operator of this node, will define how the evaluation of the nodes conditions/children will be evaluated
+        public LogicOperator logicOperator;
+        //The child nodes of this node, for this node evaluation to be true the children also neeed to be true
+        public List<Node> children = new List<Node>();
+        //The list of conditions of this specific node, together with the logic operator, will define the evaluation of this node
+        public List<Condition> conditions = new List<Condition>();
 
-        public Condition condition;
-
+        /*
         public bool EvaluateNode() {
             //The children Values don't matter if the node condition is already a false
             if (!condition.EvaluateCondition(null, null)) {
@@ -70,11 +79,13 @@ public class ConditionTree
 
             return dependentConditions;
         }
+        */
 
     }
     public Node root;
 
     public bool EvaluateConditionTree() {
-        return root.EvaluateNode();
+        return true;
+        //return root.EvaluateNode();
     }
 }
