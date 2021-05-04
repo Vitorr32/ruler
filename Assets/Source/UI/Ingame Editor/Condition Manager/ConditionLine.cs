@@ -10,10 +10,9 @@ public class ConditionLine : MonoBehaviour
     public delegate void OnLayerChange(Condition condition, int identifier, int layer);
     public static event OnLayerChange OnLayerChanged;
 
+    private ConditionNodeWrapper parentNode;
+
     public bool active;
-    private bool isRoot;
-    private int layer;
-    private int identifier;
     //Since it's a condition tree, the tree node should know it's parent
     private Condition parent;
 
@@ -51,8 +50,6 @@ public class ConditionLine : MonoBehaviour
         CharacterSelectionTool.OnToolFinished += SelectedCharacter;
 
         this.horizontalLayoutGroup = this.GetComponent<HorizontalLayoutGroup>();
-        //SHOULD REMOVE NEXT LINE: TESTING
-        this.OnStartUpConditionLine(true, 0);
     }
 
     private void OnDestroy() {
@@ -60,14 +57,9 @@ public class ConditionLine : MonoBehaviour
         CharacterSelectionTool.OnToolFinished -= SelectedCharacter;
     }
 
-    public void OnStartUpConditionNode() {
-
-    }
-
-    public void OnStartUpConditionLine(bool isRoot, int index, ConditionLine previousLine = null) {
-        this.isRoot = isRoot;
-        this.identifier = index;
+    public void OnStartUpConditionNode(ConditionNodeWrapper parent) {
         this.conditionOfLine = new Condition();
+        this.parentNode = parent;
 
         this.RenderConditionLine(this.conditionOfLine);
     }
@@ -75,46 +67,6 @@ public class ConditionLine : MonoBehaviour
     public void OnUpdateParentNode(Condition parent) {
         this.parent = parent;
     }
-
-    /*
-    public void OnIndentButtonClicked(bool deeperLayer) {
-        this.layer = this.layer + (deeperLayer ? 1 : -1);
-
-        if (this.layer == 0 || isRoot) {
-            this.higherIndentButton.gameObject.SetActive(false);
-        }
-        else {
-            this.higherIndentButton.gameObject.SetActive(true);
-        }
-
-        if (this.layer == Constants.MAX_CONDITION_LAYERS || isRoot) {
-            this.deeperIndentButton.gameObject.SetActive(false);
-        }
-        else {
-            this.deeperIndentButton.gameObject.SetActive(true);
-        }
-
-        this.RenderConditionLine(this.conditionOfLine);
-        ConditionLine.OnLayerChanged?.Invoke(this.conditionOfLine, this.identifier, this.layer);
-    }
-
-    public void OnLogicOperatorSelected() {
-        if (this.logicOperator.value == 0) {
-            return;
-        }
-
-        if (this.conditionOfLine != null) {
-            this.conditionOfLine.logicOperator = (Condition.LogicOperator)this.logicOperator.value;
-        }
-        else {
-            this.conditionOfLine = new Condition() {
-                logicOperator = (Condition.LogicOperator)this.logicOperator.value
-            };
-        }
-
-        this.conditionInitiator.gameObject.SetActive(true);
-    }
-    */
 
     public void OnConditionInitiatorSelected() {
         //Since the initiator is the start of everything, reset the  entire line while at it
@@ -176,7 +128,6 @@ public class ConditionLine : MonoBehaviour
     }
 
     private void RenderConditionLine(Condition condition) {
-        this.RenderIndentationSpace(this.layer);
 
         if (condition.logicOperator != Condition.LogicOperator.UNDEFINED) {
             //this.RenderConditionOperator(condition);
@@ -193,11 +144,6 @@ public class ConditionLine : MonoBehaviour
         if (this.conditionOfLine.specificator != Condition.Specificator.UNDEFINED) {
             this.ShowConditionSetter(condition);
         }
-    }
-
-    private void RenderIndentationSpace(int layer) {
-        //Give a little padding to the line to the left to better visualization of dependent lines of conditions
-        this.horizontalLayoutGroup.padding.left = layer * 20;
     }
 
     private void ShowConditionSetter(Condition condition) {
