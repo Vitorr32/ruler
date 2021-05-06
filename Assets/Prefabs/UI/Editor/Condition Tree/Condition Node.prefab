@@ -52,8 +52,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27676c5f937a1284fa83a48b27247132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  conditionNodePrefab: {fileID: 6331621150753404315}
   conditionLinePrefab: {fileID: 8057098241001116809, guid: 0aabed773e4edb448a3100188a03ac84,
     type: 3}
+  conditionNodesWrapper: {fileID: 0}
   conditionLinesWrapper: {fileID: 6574836954416812572}
   nodeOptions: {fileID: 7784133247658116094}
   logicOperatorDropdown: {fileID: 7780462164887410893}
@@ -667,7 +669,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 612390581056833998}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6331621150753404315}
+        m_TargetAssemblyTypeName: ConditionNodeWrapper, Assembly-CSharp
+        m_MethodName: OnNodeRemoveButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7604148135917223574
 GameObject:
   m_ObjectHideFlags: 0
@@ -788,7 +802,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 6202858382679437951}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6331621150753404315}
+        m_TargetAssemblyTypeName: ConditionNodeWrapper, Assembly-CSharp
+        m_MethodName: OnAddChildNodeClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7780462163819785804
 GameObject:
   m_ObjectHideFlags: 0
@@ -1530,8 +1556,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 9
   revealAll: 0
-  hasPlaceholderOption: 1
-  placeholderMessage: Logic Operator
+  hasPlaceholderOption: 0
+  placeholderMessage: 
 --- !u!1 &7780462164899162294
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 public class ConditionLine : MonoBehaviour
 {
+    public delegate void OnConditionLineRemoveClick(ConditionLine conditionLine, ConditionNodeWrapper parentNode);
+    public static event OnConditionLineRemoveClick OnConditionLineRemoveClicked;
+
     public delegate void OnConditionLineUpdate(Condition condition, int index);
     public static event OnConditionLineUpdate OnConditionLineUpdated;
 
@@ -13,8 +16,6 @@ public class ConditionLine : MonoBehaviour
     private ConditionNodeWrapper parentNode;
 
     public bool active;
-    //Since it's a condition tree, the tree node should know it's parent
-    private Condition parent;
 
     private Condition conditionOfLine;
 
@@ -62,10 +63,6 @@ public class ConditionLine : MonoBehaviour
         this.parentNode = parent;
 
         this.RenderConditionLine(this.conditionOfLine);
-    }
-
-    public void OnUpdateParentNode(Condition parent) {
-        this.parent = parent;
     }
 
     public void OnConditionInitiatorSelected() {
@@ -232,6 +229,10 @@ public class ConditionLine : MonoBehaviour
         this.selectedCharacter = characterController;
         this.characterSelector.GetComponentInChildren<Text>().text = characterController.baseCharacter.name + " " + characterController.baseCharacter.surname;
         this.selectingTrait = false;
+    }
+
+    public void OnRemoveConditionClick() {
+        ConditionLine.OnConditionLineRemoveClicked?.Invoke(this, this.parentNode);
     }
 
     private void GetCustomSelectorTypeValues(ConditionMapper.StepsMapper customSelectorType) {
