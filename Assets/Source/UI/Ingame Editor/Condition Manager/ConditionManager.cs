@@ -5,37 +5,29 @@ public class ConditionManager : MonoBehaviour
 {
     public ConditionTree conditionTree;
 
-    private List<ConditionNodeWrapper> conditionNodeWrappers = new List<ConditionNodeWrapper>();
-    private ConditionNodeWrapper root;
+    private List<GameObject> conditionNodeWrappers = new List<GameObject>();
+    private GameObject root;
 
     public GameObject conditionNodesWrapper;
-    public ConditionNodeWrapper conditionNodePrefab;
+    public GameObject conditionNodePrefab;
 
     public void OnConditionAddClick() {
-        if (this.conditionTree == null || this.conditionTree.root == null) {
+        if (this.root == null) {
             this.OnConditionConfirmation();
             return;
         }
 
-        this.OnNodeAddition();
+        Debug.LogError("The tree already has a root configured!");
     }
 
     private void OnConditionConfirmation() {
         this.conditionTree = new ConditionTree();
 
+
         //Initiante a new conditions node on the wrapper
-        ConditionNodeWrapper nodeWrapper = Instantiate<ConditionNodeWrapper>(conditionNodePrefab, conditionNodesWrapper.transform);
-        nodeWrapper.OnNodeCreation(null);
+        GameObject nodeWrapper = Instantiate(conditionNodePrefab, conditionNodesWrapper.transform);
+        nodeWrapper.GetComponent<ConditionNodeWrapper>().OnNodeCreation(null);
 
         this.root = nodeWrapper;
     }
-
-    private void OnNodeAddition() {
-        ConditionNodeWrapper nodeWrapper = Instantiate<ConditionNodeWrapper>(conditionNodePrefab, conditionNodesWrapper.transform);
-        nodeWrapper.OnNodeCreation(this.root);
-
-        this.conditionNodeWrappers.Add(nodeWrapper);
-    }
-
-
 }

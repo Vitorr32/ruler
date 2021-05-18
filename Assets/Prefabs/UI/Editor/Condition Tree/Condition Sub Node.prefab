@@ -51,8 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27676c5f937a1284fa83a48b27247132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  conditionNodePrefab: {fileID: 19897123414909358, guid: bb9d534b8b9e2e5408f984899992f983,
-    type: 3}
+  conditionNodePrefab: {fileID: 19897123414909358}
   conditionLinePrefab: {fileID: 8057098241001116822, guid: 0aabed773e4edb448a3100188a03ac84,
     type: 3}
   nodeConditionsWrapper: {fileID: 6574836954416812572}

@@ -5,20 +5,19 @@ using UnityEngine.UI;
 
 public class ConditionNodeWrapper : MonoBehaviour
 {
-    public delegate void OnNodeRemoveClick(ConditionNodeWrapper nodeWrapper, ConditionNodeWrapper parentNode);
+    public delegate void OnNodeRemoveClick(GameObject nodeWrapper, GameObject parentNode);
     public static event OnNodeRemoveClick OnNodeRemoveClicked;
 
     private ConditionTree.Node conditionNode;
-    private ConditionNodeWrapper parentNode;
+    private GameObject parentNode;
     //All of this condition node individual condition lines
-    private List<ConditionLine> conditionLines = new List<ConditionLine>();
-    private List<ConditionNodeWrapper> childNodesWrappers = new List<ConditionNodeWrapper>();
+    private List<GameObject> conditionLines = new List<GameObject>();
+    private List<GameObject> childNodesWrappers = new List<GameObject>();
 
     //Gameobjects to make the instantiation operations
-    public ConditionNodeWrapper conditionNodePrefab;
-    public ConditionLine conditionLinePrefab;
-    public GameObject conditionNodesWrapper;
-    public GameObject conditionLinesWrapper;
+    public GameObject conditionNodePrefab;
+    public GameObject conditionLinePrefab;
+    public GameObject nodeConditionsWrapper;
     public GameObject nodeOptions;
 
     //References to the elements of the UI Element
@@ -38,7 +37,7 @@ public class ConditionNodeWrapper : MonoBehaviour
         ConditionLine.OnConditionLineRemoveClicked -= this.OnRemoveConditionLine;
     }
 
-    public void OnNodeCreation(ConditionNodeWrapper parent) {
+    public void OnNodeCreation(GameObject parent) {
         this.conditionNode = new ConditionTree.Node();
         this.parentNode = parent;
     }
@@ -49,8 +48,8 @@ public class ConditionNodeWrapper : MonoBehaviour
             return;
         }
 
-        ConditionLine conditionLine = Instantiate<ConditionLine>(conditionLinePrefab, conditionLinesWrapper.transform);
-        conditionLine.OnStartUpConditionNode(this);
+        GameObject conditionLine = Instantiate(this.conditionLinePrefab, this.nodeConditionsWrapper.transform);
+        conditionLine.GetComponent<ConditionLine>().OnStartUpConditionNode(this);
 
         this.conditionLines.Add(conditionLine);
     }
@@ -61,13 +60,13 @@ public class ConditionNodeWrapper : MonoBehaviour
             return;
         }
 
-        ConditionNodeWrapper nodeWrapper = Instantiate<ConditionNodeWrapper>(conditionNodePrefab, conditionNodesWrapper.transform);
-        nodeWrapper.OnNodeCreation(this);
+        GameObject nodeWrapper = Instantiate(this.conditionNodePrefab, this.nodeConditionsWrapper.transform);
+        nodeWrapper.GetComponent<ConditionNodeWrapper>().OnNodeCreation(this.gameObject);
 
         this.childNodesWrappers.Add(nodeWrapper);
     }
 
-    private void OnRemoveChildNodeClick(ConditionNodeWrapper nodeWrapper, ConditionNodeWrapper parentNode) {
+    private void OnRemoveChildNodeClick(GameObject nodeWrapper, GameObject parentNode) {
         if (parentNode != this) {
             return;
         }
@@ -90,7 +89,7 @@ public class ConditionNodeWrapper : MonoBehaviour
     }
 
     public void OnNodeRemoveButtonClick() {
-        ConditionNodeWrapper.OnNodeRemoveClicked?.Invoke(this, this.parentNode);
+        ConditionNodeWrapper.OnNodeRemoveClicked?.Invoke(this.gameObject, this.parentNode);
     }
 
     public void OnLogicOperatorChange() {
