@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 public class ConditionLine : MonoBehaviour
 {
-    public delegate void OnConditionLineRemoveClick(ConditionLine conditionLine, ConditionNodeWrapper parentNode);
+    public delegate void OnConditionLineRemoveClick(GameObject conditionLine, GameObject parentNode);
     public static event OnConditionLineRemoveClick OnConditionLineRemoveClicked;
 
     public delegate void OnConditionLineUpdate(Condition condition, int index);
@@ -13,7 +13,7 @@ public class ConditionLine : MonoBehaviour
     public delegate void OnLayerChange(Condition condition, int identifier, int layer);
     public static event OnLayerChange OnLayerChanged;
 
-    private ConditionNodeWrapper parentNode;
+    private GameObject parentNode;
 
     public bool active;
 
@@ -58,7 +58,7 @@ public class ConditionLine : MonoBehaviour
         CharacterSelectionTool.OnToolFinished -= SelectedCharacter;
     }
 
-    public void OnStartUpConditionNode(ConditionNodeWrapper parent) {
+    public void OnStartUpConditionNode(GameObject parent) {
         this.conditionOfLine = new Condition();
         this.parentNode = parent;
 
@@ -232,10 +232,15 @@ public class ConditionLine : MonoBehaviour
     }
 
     public void OnRemoveConditionClick() {
-        ConditionLine.OnConditionLineRemoveClicked?.Invoke(this, this.parentNode);
+        ConditionLine.OnConditionLineRemoveClicked?.Invoke(this.gameObject, this.parentNode);
     }
 
     private void GetCustomSelectorTypeValues(ConditionMapper.StepsMapper customSelectorType) {
 
+    }
+
+    public NodeFeedback CheckValidityOfLine() {
+        //TODO: Logic to check if the line is valid before submit
+        return new NodeFeedback();
     }
 }

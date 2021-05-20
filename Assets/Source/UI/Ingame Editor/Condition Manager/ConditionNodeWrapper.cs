@@ -3,6 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public struct NodeFeedback
+{
+    public bool valid;
+    public string message;
+    public List<NodeFeedback> childrenFeedback;
+}
+
 public class ConditionNodeWrapper : MonoBehaviour
 {
     public delegate void OnNodeRemoveClick(GameObject nodeWrapper, GameObject parentNode);
@@ -43,19 +50,19 @@ public class ConditionNodeWrapper : MonoBehaviour
     }
 
     public void OnAddConditionClick() {
-        if (this.conditionNode.logicOperator == LogicOperator.IF && this.conditionLines.Count == 1) {
+        if (this.conditionNode.logicOperator == LogicOperator.IF && (this.conditionLines.Count == 1 || this.childNodesWrappers.Count == 1)) {
             Debug.LogError("Cant add more than one condition/child node to a if logic operator!");
             return;
         }
 
         GameObject conditionLine = Instantiate(this.conditionLinePrefab, this.nodeConditionsWrapper.transform);
-        conditionLine.GetComponent<ConditionLine>().OnStartUpConditionNode(this);
+        conditionLine.GetComponent<ConditionLine>().OnStartUpConditionNode(this.gameObject);
 
         this.conditionLines.Add(conditionLine);
     }
 
     public void OnAddChildNodeClick() {
-        if (this.conditionNode.logicOperator == LogicOperator.IF && this.conditionLines.Count == 1) {
+        if (this.conditionNode.logicOperator == LogicOperator.IF && (this.conditionLines.Count == 1 || this.childNodesWrappers.Count == 1)) {
             Debug.LogError("Cant add more than one condition/child node to a if logic operator!");
             return;
         }
@@ -67,25 +74,25 @@ public class ConditionNodeWrapper : MonoBehaviour
     }
 
     private void OnRemoveChildNodeClick(GameObject nodeWrapper, GameObject parentNode) {
-        if (parentNode != this) {
+        if (parentNode != this.gameObject) {
             return;
         }
 
         int indexOnList = this.childNodesWrappers.FindIndex(childNodeWrapper => childNodeWrapper == nodeWrapper);
         this.childNodesWrappers.RemoveAt(indexOnList);
 
-        Destroy(nodeWrapper.gameObject);
+        Destroy(nodeWrapper);
     }
 
-    private void OnRemoveConditionLine(ConditionLine conditionLine, ConditionNodeWrapper parentNode) {
-        if (parentNode != this) {
+    private void OnRemoveConditionLine(GameObject conditionLine, GameObject parentNode) {
+        if (parentNode != this.gameObject) {
             return;
         }
 
         int indexOnList = this.conditionLines.FindIndex(conditionLineWrapper => conditionLineWrapper == conditionLine);
         this.conditionLines.RemoveAt(indexOnList);
 
-        Destroy(conditionLine.gameObject);
+        Destroy(conditionLine);
     }
 
     public void OnNodeRemoveButtonClick() {
@@ -96,6 +103,16 @@ public class ConditionNodeWrapper : MonoBehaviour
         LogicOperator logicOperator = (LogicOperator)this.logicOperatorDropdown.value;
 
         this.conditionNode.logicOperator = logicOperator;
+    }
+
+    public NodeFeedback OnCheckNode() {
+        NodeFeedback feedback = new NodeFeedback();
+
+        this.conditionLines.ForEach(conditionLine => {
+            conditionLine.GetComponent<ConditionLine>().CheckValidityOfLine();
+        });
+
+        return feedback;
     }
 
 }
