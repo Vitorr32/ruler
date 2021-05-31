@@ -39,6 +39,13 @@ public class Character
         MAX_ETHINICITIES
     }
 
+    public enum Status
+    {
+        MOOD,
+        STRESS,
+        ENERGY
+    }
+
     //Absolute Basic values of the character, these will never change
     public int id;
     public string[] sprites;

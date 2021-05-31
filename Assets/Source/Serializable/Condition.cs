@@ -23,6 +23,7 @@ public class Condition
         UNDEFINED,
 
         ATTRIBUTE_RANGE,
+        SKILL_RANGE,
         TRAIT,
         EVENT_FLAGGED,
         LOCATION,
@@ -34,7 +35,7 @@ public class Condition
 
     public Initiator initiator = Initiator.UNDEFINED;
 
-    public enum Specificator
+    public enum Agent
     {
         UNDEFINED,
 
@@ -49,39 +50,39 @@ public class Condition
         MAX_SPECIFICATORS
     }
 
-    public Specificator specificator = Specificator.UNDEFINED;
+    public enum NumericSelector
+    {
+        UNDEFINED,
+
+        BIGGER_THAN,
+        SMALLER_THAN,
+        BETWEEN,
+        EXACTLY,
+
+        MAX_NUMERIC_SELECTORS
+    }
+
+    public Agent agent = Agent.UNDEFINED;
 
     public struct AttributeRange
     {
-        public enum Selector
-        {
-            UNDEFINED,
+        public NumericSelector selector;
 
-            BIGGER_THAN,
-            SMALLER_THAN,
-            BETWEEN,
-            EXACTLY,
-
-            MAX_SELECTORS
-        }
-        public enum SelectableAttribute
-        {
-            ATTRIBUTES,
-            SKILL,
-            TITLE,
-            STATUS
-        }
-
-        public Selector selector;
-        public SelectableAttribute selectableAttribute;
-
-        //Which Attribute/Skill/Title/Status enum/id was selected, should be converted to an int for easy storage on JSON
-        public int selectedAttributeValue;
-        // Selector BETWEEN has 2 parameters (min and max), the others have only one
+        // Up to 3 parameters [Status Enumerator, First Input, Second Input]
         public int[] attrRangeParameters;
     }
 
     public AttributeRange attributeRange;
+
+    public struct SkillRange
+    {
+        public NumericSelector selector;
+
+        // Up to 3 parameters [Skill ID, First Input, Second Input]
+        public int[] attrRangeParameters;
+    }
+
+    public SkillRange skillRange;
 
     public struct Trait
     {
@@ -183,6 +184,7 @@ public class Condition
         public SelectableStatus status;
     }
 
+    public Relationship relationship;
 
     public bool EvaluateCondition(Character self, List<Character> targets, int? world = null) {
         return true;
