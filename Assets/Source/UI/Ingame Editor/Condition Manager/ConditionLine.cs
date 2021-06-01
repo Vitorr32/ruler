@@ -30,7 +30,13 @@ public class ConditionLine : MonoBehaviour
     private CharacterStateController selectedCharacter;
     public CharacterSelectionTool characterSelectionTool;
 
+    public Button attributeSelector;
+    public Text attributeText;
+    private bool selectingSkill;
+    private Attribute selectedSkill;
+
     // Dropdowns which every selector for every possible type of initiator:
+    public Dropdown statusRangeDropdown;
     public Dropdown numericSelectorDropdown;
     public Dropdown traitDropdown;
     public Dropdown eventFlaggedDropdown;
@@ -49,6 +55,7 @@ public class ConditionLine : MonoBehaviour
         CharacterSelectionTool.OnToolFinished += SelectedCharacter;
 
         this.horizontalLayoutGroup = this.GetComponent<HorizontalLayoutGroup>();
+        this.attributeText = attributeSelector.GetComponentInChildren<Text>();
     }
 
     private void OnDestroy() {
@@ -69,8 +76,8 @@ public class ConditionLine : MonoBehaviour
         this.agentSpecificatorSelector.options = new List<Dropdown.OptionData>();
 
         switch (this.conditionOfLine.initiator) {
+            case Condition.Initiator.STATUS_RANGE:
             case Condition.Initiator.ATTRIBUTE_RANGE:
-            case Condition.Initiator.SKILL_RANGE:
             case Condition.Initiator.LOCATION:
             case Condition.Initiator.TRAIT:
                 this.agentSpecificatorSelector.AddOptions(new List<Dropdown.OptionData>() {
@@ -111,7 +118,7 @@ public class ConditionLine : MonoBehaviour
             case Condition.Agent.SPECIFIC:
                 //TODO: Allow selection of specifc id/flag on this choice.
                 switch (this.conditionOfLine.initiator) {
-                    case Condition.Initiator.ATTRIBUTE_RANGE:
+                    case Condition.Initiator.STATUS_RANGE:
                     case Condition.Initiator.TRAIT:
                     case Condition.Initiator.LOCATION:
                         //TODO: Specific specificator for each iniator;
@@ -144,8 +151,12 @@ public class ConditionLine : MonoBehaviour
 
     private void ShowConditionSetter(Condition condition) {
         switch (condition.initiator) {
+            case Condition.Initiator.STATUS_RANGE:
+                this.statusRangeDropdown.gameObject.SetActive(true);
+                this.numericSelectorDropdown.gameObject.SetActive(true);
+                break;
             case Condition.Initiator.ATTRIBUTE_RANGE:
-            case Condition.Initiator.SKILL_RANGE:
+                this.attributeSelector.gameObject.SetActive(true);
                 this.numericSelectorDropdown.gameObject.SetActive(true);
                 break;
             case Condition.Initiator.TRAIT:
@@ -167,14 +178,16 @@ public class ConditionLine : MonoBehaviour
     }
 
     private void ResetConditionSettersOfCondition() {
-        this.conditionOfLine.attributeRange.selector = Condition.NumericSelector.UNDEFINED;
-        this.conditionOfLine.skillRange.selector = Condition.NumericSelector.UNDEFINED;
+        this.conditionOfLine.statusRange.selector = Condition.NumericSelector.UNDEFINED;
+        this.conditionOfLine.attrRange.selector = Condition.NumericSelector.UNDEFINED;
         this.conditionOfLine.trait.selector = Condition.Trait.Selector.UNDEFINED;
         this.conditionOfLine.eventFlagged.selector = Condition.EventFlagged.Selector.UNDEFINED;
         this.conditionOfLine.location.selector = Condition.Location.Selector.UNDEFINED;
         this.conditionOfLine.time.selector = Condition.Time.Selector.UNDEFINED;
         this.conditionOfLine.relationship.selector = Condition.Relationship.Selector.UNDEFINED;
 
+        this.statusRangeDropdown.gameObject.SetActive(false);
+        this.attributeText.text = "Select Attribute";
         this.numericSelectorDropdown.gameObject.SetActive(false);
         this.traitDropdown.gameObject.SetActive(false);
         //this.eventFlaggedDropdown.gameObject.SetActive(false);
@@ -197,6 +210,9 @@ public class ConditionLine : MonoBehaviour
                 break;
         }
     }
+    public void OnAttributeSelectorClick() {
+        this.selectingSkill = true;
+    }
 
     public void OnTraitSelectorClick() {
         this.selectingTrait = true;
@@ -206,11 +222,11 @@ public class ConditionLine : MonoBehaviour
     public void OnNumericSelector() {
         Condition.NumericSelector numericSelector = (Condition.NumericSelector)this.numericSelectorDropdown.value;
 
-        if (this.conditionOfLine.initiator == Condition.Initiator.ATTRIBUTE_RANGE) {
-            this.conditionOfLine.attributeRange.selector = numericSelector;
+        if (this.conditionOfLine.initiator == Condition.Initiator.STATUS_RANGE) {
+            this.conditionOfLine.statusRange.selector = numericSelector;
         }
         else {
-            this.conditionOfLine.skillRange.selector = numericSelector;
+            this.conditionOfLine.attrRange.selector = numericSelector;
         }
 
         switch (numericSelector) {

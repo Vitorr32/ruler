@@ -51,7 +51,7 @@ public static class Summarizer
                 string finalString = "";
 
                 foreach (int modifierTarget in modifier.modifierTargets) {
-                    Skill skill = StoreController.instance.skills.Find(skill => skill.id == modifierTarget);
+                    Attribute skill = StoreController.instance.skills.Find(skill => skill.id == modifierTarget);
                     finalString += skill.name + " by" + Environment.NewLine;
                 }
 

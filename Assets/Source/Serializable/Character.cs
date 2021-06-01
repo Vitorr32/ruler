@@ -64,7 +64,7 @@ public class Character
     public KinshipStruct[] family;
     public Trait[] traits;
     public Event.Flag[] flags;
-    public Skill[] skills;
+    public Attribute[] skills;
     public List<string> spriteNames = new List<string>() { "default_child", "default_teen", "default_adult" };
 
     public void BuildBasicSkillTree() {

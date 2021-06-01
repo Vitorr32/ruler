@@ -225,7 +225,7 @@ GameObject:
   - component: {fileID: 7507837847423752297}
   - component: {fileID: 687232098642161890}
   m_Layer: 5
-  m_Name: Select Skill
+  m_Name: Select Attribute
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -335,7 +335,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8057098241001116809}
         m_TargetAssemblyTypeName: ConditionLine, Assembly-CSharp
-        m_MethodName: OnTraitSelectorClick
+        m_MethodName: OnAttributeSelectorClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5119,6 +5119,9 @@ MonoBehaviour:
   traitSelectionTool: {fileID: 0}
   characterSelector: {fileID: 8057098240450906857}
   characterSelectionTool: {fileID: 0}
+  attributeSelector: {fileID: 0}
+  attributeText: {fileID: 0}
+  statusRangeDropdown: {fileID: 0}
   numericSelectorDropdown: {fileID: 8057098239566478863}
   traitDropdown: {fileID: 8057098239415376064}
   eventFlaggedDropdown: {fileID: 0}

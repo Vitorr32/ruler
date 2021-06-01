@@ -12,7 +12,7 @@ public class StoreController : MonoBehaviour
     public List<OfficerController> officers = new List<OfficerController>();
     public List<Trait> traits = new List<Trait>();
     public List<Dialogue> dialogues = new List<Dialogue>();
-    public List<Skill> skills = new List<Skill>();
+    public List<Attribute> skills = new List<Attribute>();
     public List<CharacterStateController> characterControllers = new List<CharacterStateController>();
 
     public List<OfficerSprite> officerSprites = new List<OfficerSprite>();

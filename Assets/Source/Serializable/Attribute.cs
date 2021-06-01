@@ -2,7 +2,7 @@
 using System;
 
 [Serializable]
-public class Skill
+public class Attribute
 {
     public enum Category
     {
@@ -33,11 +33,11 @@ public class Skill
     public Category category = Category.BASIC;
     public Growth growth = Growth.TECHINAL;
 
-    //Description that will appear when the player hover over the skill
+    //Description that will appear when the player hover over the attribute
     public string description;
-    //Encoding used to show skill name in interface
+    //Encoding used to show attribute name in interface
     public string name;
-    //Identifier to find the skill on search or serialization of JSON
+    //Identifier to find the attribute on search or serialization of JSON
     public int id;
 
 }

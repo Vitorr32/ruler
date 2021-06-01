@@ -204,7 +204,7 @@ public class ModifierEditor : MonoBehaviour
         switch (modifier.type) {
             case Modifier.Type.MODIFY_SKILL_POTENTIAL_VALUE:
             case Modifier.Type.MODIFY_SKILL_VALUE:
-                this.PopulateMultiSelectWithObject<Skill>(
+                this.PopulateMultiSelectWithObject<Attribute>(
                     this.modifierTargetMultiselectController,
                     (int)this.currentEffect.modifier.type,
                     StoreController.instance.skills,

@@ -22,8 +22,8 @@ public class Condition
     {
         UNDEFINED,
 
+        STATUS_RANGE,
         ATTRIBUTE_RANGE,
-        SKILL_RANGE,
         TRAIT,
         EVENT_FLAGGED,
         LOCATION,
@@ -64,17 +64,17 @@ public class Condition
 
     public Agent agent = Agent.UNDEFINED;
 
-    public struct AttributeRange
+    public struct StatusRange
     {
         public NumericSelector selector;
 
         // Up to 3 parameters [Status Enumerator, First Input, Second Input]
-        public int[] attrRangeParameters;
+        public int[] statusRangeParameters;
     }
 
-    public AttributeRange attributeRange;
+    public StatusRange statusRange;
 
-    public struct SkillRange
+    public struct AttributeRange
     {
         public NumericSelector selector;
 
@@ -82,7 +82,7 @@ public class Condition
         public int[] attrRangeParameters;
     }
 
-    public SkillRange skillRange;
+    public AttributeRange attrRange;
 
     public struct Trait
     {
