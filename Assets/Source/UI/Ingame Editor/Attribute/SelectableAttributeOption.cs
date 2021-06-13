@@ -22,6 +22,7 @@ public class SelectableAttributeOption : SelectableOption<Attribute>
             this.category.text = "";
             this.id.text = "";
 
+            this.background.color = new Color(0, 0, 0);
             this.gameObject.SetActive(false);
         }
         else {
@@ -32,6 +33,7 @@ public class SelectableAttributeOption : SelectableOption<Attribute>
             this.category.text = attr.category.ToString();
             this.id.text = attr.id.ToString();
 
+            this.background.color = isSelected ? new Color(0, 255, 0) : new Color(255, 255, 255);
             this.gameObject.SetActive(true);
         }
     }

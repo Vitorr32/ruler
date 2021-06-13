@@ -27,7 +27,7 @@ public abstract class SelectableOption<T> : MonoBehaviour where T : class
     }
 
     public void HighlightSelectableOption(bool shouldHighlight) {
-
+        Debug.Log(shouldHighlight);
     }
 
     public void OnSelectableClick() {

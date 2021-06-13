@@ -17,6 +17,7 @@ public enum DropdownType
     LOGIC_OPERATOR,
     CONDITION_INITIATOR,
     NUMERIC_SELECTOR,
+    STATUS_SELECTOR,
     TRAIT_SELECTOR,
     EVENT_FLAGGED_SELECTOR,
     LOCATION_SELECTOR,
@@ -92,6 +93,8 @@ public class DropdownCreator : MonoBehaviour
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Condition.NumericSelector>(this.revealAll));
             case DropdownType.TRAIT_SELECTOR:
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Condition.Trait.Selector>(this.revealAll));
+            case DropdownType.STATUS_SELECTOR:
+                return ConvertStringArrayToOptions(Utils.GetEnumValues<Character.Status>(this.revealAll));
             case DropdownType.EVENT_FLAGGED_SELECTOR:
                 return ConvertStringArrayToOptions(Utils.GetEnumValues<Condition.EventFlagged.Selector>(this.revealAll));
             case DropdownType.LOCATION_SELECTOR:

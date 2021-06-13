@@ -60,13 +60,12 @@ public abstract class ListSelectionTool<T> : MonoBehaviour where T : class
     }
 
     protected void OnSelection(T selected) {
-        if (this.selectedObject == null) {
-            this.selectedObject = selected;
-        }
-        else if (this.selectedObject == selected) {
+        if (this.selectedObject == selected) {
             this.selectedObject = null;
+            return;
         }
 
+        this.selectedObject = selected;
         RenderSelectionableOptions();
     }
 

@@ -27,6 +27,11 @@ public class ConditionNodeWrapper : MonoBehaviour
     public GameObject nodeConditionsWrapper;
     public GameObject nodeOptions;
 
+    //Tools for selection of more specific condition aspects
+    public CharacterSelectionTool characterSelectionTool;
+    public TraitSelectionTool traitSelectionTool;
+    public AttributeSelectionTool attributeSelectionTool;
+
     //References to the elements of the UI Element
     public Dropdown logicOperatorDropdown;
     public Button addChildNodeButton;
@@ -56,7 +61,7 @@ public class ConditionNodeWrapper : MonoBehaviour
         }
 
         GameObject conditionLine = Instantiate(this.conditionLinePrefab, this.nodeConditionsWrapper.transform);
-        conditionLine.GetComponent<ConditionLine>().OnStartUpConditionNode(this.gameObject);
+        conditionLine.GetComponent<ConditionLine>().OnStartUpConditionNode(this.gameObject, this.characterSelectionTool, this.traitSelectionTool, this.attributeSelectionTool);
 
         this.conditionLines.Add(conditionLine);
     }

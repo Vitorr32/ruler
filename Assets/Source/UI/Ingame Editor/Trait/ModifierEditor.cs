@@ -207,7 +207,7 @@ public class ModifierEditor : MonoBehaviour
                 this.PopulateMultiSelectWithObject<Attribute>(
                     this.modifierTargetMultiselectController,
                     (int)this.currentEffect.modifier.type,
-                    StoreController.instance.skills,
+                    StoreController.instance.attributes,
                     "name",
                     "id",
                     this.currentEffect.modifier.modifierTargets.ToArray()

@@ -10,11 +10,7 @@ public class ConditionLine : MonoBehaviour
     public delegate void OnConditionLineUpdate(Condition condition, int index);
     public static event OnConditionLineUpdate OnConditionLineUpdated;
 
-    public delegate void OnLayerChange(Condition condition, int identifier, int layer);
-    public static event OnLayerChange OnLayerChanged;
-
     private GameObject parentNode;
-
     private Condition conditionOfLine;
 
     public Dropdown conditionInitiator;
@@ -23,17 +19,18 @@ public class ConditionLine : MonoBehaviour
     public Button traitSelector;
     private bool selectingTrait;
     private Trait selectedTrait;
-    public TraitSelectionTool traitSelectionTool;
+    private TraitSelectionTool traitSelectionTool;
 
     public Button characterSelector;
     private bool selectingCharacter;
     private CharacterStateController selectedCharacter;
-    public CharacterSelectionTool characterSelectionTool;
+    private CharacterSelectionTool characterSelectionTool;
 
     public Button attributeSelector;
     public Text attributeText;
-    private bool selectingSkill;
-    private Attribute selectedSkill;
+    private bool selectingAttribute;
+    private Attribute selectedAttribute;
+    private AttributeSelectionTool attributeSelectionTool;
 
     // Dropdowns which every selector for every possible type of initiator:
     public Dropdown statusRangeDropdown;
@@ -48,14 +45,11 @@ public class ConditionLine : MonoBehaviour
     public InputField firstNumericInput;
     public InputField secondNumericInput;
 
-    private HorizontalLayoutGroup horizontalLayoutGroup;
+    public HorizontalLayoutGroup horizontalLayoutGroup;
 
     private void Start() {
         TraitSelectionTool.OnToolFinished += SelectedTrait;
         CharacterSelectionTool.OnToolFinished += SelectedCharacter;
-
-        this.horizontalLayoutGroup = this.GetComponent<HorizontalLayoutGroup>();
-        this.attributeText = attributeSelector.GetComponentInChildren<Text>();
     }
 
     private void OnDestroy() {
@@ -63,9 +57,13 @@ public class ConditionLine : MonoBehaviour
         CharacterSelectionTool.OnToolFinished -= SelectedCharacter;
     }
 
-    public void OnStartUpConditionNode(GameObject parent) {
+    public void OnStartUpConditionNode(GameObject parent, CharacterSelectionTool characterSelectionTool, TraitSelectionTool traitSelectionTool, AttributeSelectionTool attributeSelectionTool ) {
         this.conditionOfLine = new Condition();
         this.parentNode = parent;
+
+        this.characterSelectionTool = characterSelectionTool;
+        this.attributeSelectionTool = attributeSelectionTool;
+        this.traitSelectionTool = traitSelectionTool;
 
         this.RenderConditionLine();
     }
@@ -211,7 +209,7 @@ public class ConditionLine : MonoBehaviour
         }
     }
     public void OnAttributeSelectorClick() {
-        this.selectingSkill = true;
+        this.selectingAttribute = true;
     }
 
     public void OnTraitSelectorClick() {

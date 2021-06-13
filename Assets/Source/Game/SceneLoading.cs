@@ -51,8 +51,8 @@ public class SceneLoading : MonoBehaviour
         feedback.text = "Importing Skill Tree from JSON";
 
         JSONController<Attribute> skillReader = new JSONController<Attribute>();
-        yield return skillReader.ParseFileListIntoType(GameManager.instance.skillTreeFiles);
-        StoreController.instance.skills = skillReader.resultList;
+        yield return skillReader.ParseFileListIntoType(GameManager.instance.attributesFiles);
+        StoreController.instance.attributes = skillReader.resultList;
 
         feedback.text = "Importing officers from JSON";
 

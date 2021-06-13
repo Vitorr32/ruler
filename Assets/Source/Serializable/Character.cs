@@ -41,9 +41,13 @@ public class Character
 
     public enum Status
     {
+        UNDEFINED,
+
         MOOD,
         STRESS,
-        ENERGY
+        ENERGY,
+
+        MAX_STATUS
     }
 
     //Absolute Basic values of the character, these will never change

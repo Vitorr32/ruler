@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
     public List<TextAsset> traitFiles;
     public List<TextAsset> dialogueFiles;
     public List<TextAsset> characterFiles;
-    public List<TextAsset> skillTreeFiles;
+    public List<TextAsset> attributesFiles;
 
     // Start is called before the first frame update
     void Start() {
