@@ -11485,6 +11485,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 797819082}
   m_CullTransparentMesh: 0
+--- !u!114 &798615597 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6403042904088328707, guid: 2babe0d625574584a91e7e0b98120a22,
+    type: 3}
+  m_PrefabInstance: {fileID: 1633398508}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01ed97c31ad66b44c92d5a108b1468b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &799394316
 GameObject:
   m_ObjectHideFlags: 0
@@ -33129,6 +33141,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5857932597655702973, guid: f49faf93bace99e48bdd1fce79d96fc7,
         type: 3}
+      propertyPath: traitSelectionTool
+      value: 
+      objectReference: {fileID: 1867822850459327037}
+    - target: {fileID: 5857932597655702973, guid: f49faf93bace99e48bdd1fce79d96fc7,
+        type: 3}
       propertyPath: conditionNodePrefab
       value: 
       objectReference: {fileID: 19897123414909358, guid: ec92157ead63909458c02f387c86bf36,
@@ -33138,6 +33155,16 @@ PrefabInstance:
       propertyPath: conditionNodesWrapper
       value: 
       objectReference: {fileID: 5857932597427090113}
+    - target: {fileID: 5857932597655702973, guid: f49faf93bace99e48bdd1fce79d96fc7,
+        type: 3}
+      propertyPath: attributeSelectionTool
+      value: 
+      objectReference: {fileID: 798615597}
+    - target: {fileID: 5857932597655702973, guid: f49faf93bace99e48bdd1fce79d96fc7,
+        type: 3}
+      propertyPath: characterSelectionTool
+      value: 
+      objectReference: {fileID: 5352890009284911670}
     - target: {fileID: 5857932597672223925, guid: f49faf93bace99e48bdd1fce79d96fc7,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target

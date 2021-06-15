@@ -6,8 +6,10 @@ using UnityEngine.UI;
 
 public abstract class ListSelectionTool<T> : MonoBehaviour where T : class
 {
-    public delegate void OnToolFinish(T selection = null);
+    public delegate void OnToolFinish(string callerId, T selection = null);
     public static event OnToolFinish OnToolFinished;
+    private string callerId;
+    private bool closedTroughEvents = false;
 
     public List<SelectableOption<T>> selectableOptions;
     public List<T> queriedSelection;
@@ -41,9 +43,17 @@ public abstract class ListSelectionTool<T> : MonoBehaviour where T : class
     }
 
     private void OnDisable() {
-        if (this.selectedObject != null) {
+        if (!this.closedTroughEvents) {
             this.OnCloseToolWithoutSelection();
         }
+        else {
+            this.closedTroughEvents = false;
+        }
+    }
+
+    public void OnEnableTool(string callerId) {
+        this.callerId = callerId;
+        this.gameObject.SetActive(true);
     }
 
     abstract protected void SetInitiateToolValues();
@@ -113,15 +123,18 @@ public abstract class ListSelectionTool<T> : MonoBehaviour where T : class
             this.message.text = "You need to select a trait before Submitting";
             return;
         }
-
-        OnToolFinished?.Invoke(this.selectedObject);
+        this.closedTroughEvents = true;
         this.gameObject.SetActive(false);
+
+        OnToolFinished?.Invoke(this.callerId, this.selectedObject);
+        this.selectedObject = null;
     }
 
     public void OnCloseToolWithoutSelection() {
         this.selectedObject = null;
-
-        OnToolFinished?.Invoke();
+        this.closedTroughEvents = true;
         this.gameObject.SetActive(false);
+
+        OnToolFinished?.Invoke(this.callerId);
     }
 }

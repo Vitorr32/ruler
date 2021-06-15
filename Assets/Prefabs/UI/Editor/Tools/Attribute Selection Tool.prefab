@@ -1153,8 +1153,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: ListSelectionTool`1[[Trait, Assembly-CSharp
+      - m_Target: {fileID: 6403042904088328707}
+        m_TargetAssemblyTypeName: ListSelectionTool`1[[Attribute, Assembly-CSharp
         m_MethodName: SubmitSelected
         m_Mode: 1
         m_Arguments:

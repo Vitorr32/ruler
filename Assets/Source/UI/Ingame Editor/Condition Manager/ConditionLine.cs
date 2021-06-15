@@ -10,6 +10,7 @@ public class ConditionLine : MonoBehaviour
     public delegate void OnConditionLineUpdate(Condition condition, int index);
     public static event OnConditionLineUpdate OnConditionLineUpdated;
 
+    private string lineId;
     private GameObject parentNode;
     private Condition conditionOfLine;
 
@@ -50,20 +51,23 @@ public class ConditionLine : MonoBehaviour
     private void Start() {
         TraitSelectionTool.OnToolFinished += SelectedTrait;
         CharacterSelectionTool.OnToolFinished += SelectedCharacter;
+        AttributeSelectionTool.OnToolFinished += SelectedAttribute;
     }
 
     private void OnDestroy() {
         TraitSelectionTool.OnToolFinished -= SelectedTrait;
         CharacterSelectionTool.OnToolFinished -= SelectedCharacter;
+        AttributeSelectionTool.OnToolFinished -= SelectedAttribute;
     }
 
-    public void OnStartUpConditionNode(GameObject parent, CharacterSelectionTool characterSelectionTool, TraitSelectionTool traitSelectionTool, AttributeSelectionTool attributeSelectionTool ) {
+    public void OnStartUpConditionNode(GameObject parent, CharacterSelectionTool characterSelectionTool, TraitSelectionTool traitSelectionTool, AttributeSelectionTool attributeSelectionTool) {
         this.conditionOfLine = new Condition();
         this.parentNode = parent;
 
         this.characterSelectionTool = characterSelectionTool;
         this.attributeSelectionTool = attributeSelectionTool;
         this.traitSelectionTool = traitSelectionTool;
+        this.lineId = System.DateTime.Now.Ticks.ToString();
 
         this.RenderConditionLine();
     }
@@ -210,11 +214,47 @@ public class ConditionLine : MonoBehaviour
     }
     public void OnAttributeSelectorClick() {
         this.selectingAttribute = true;
+        this.attributeSelectionTool.OnEnableTool(this.lineId);
+    }
+
+    private void SelectedAttribute(string callerId, Attribute attribute) {
+        if (this.lineId != callerId) {
+            return;
+        }
+
+        this.selectedAttribute = (attribute == null && this.selectedAttribute != null) ? this.selectedAttribute : attribute;
+        this.attributeText.text = this.selectedAttribute != null ? this.selectedAttribute.name : "No Selection";
+
+        this.selectingAttribute = false;
     }
 
     public void OnTraitSelectorClick() {
         this.selectingTrait = true;
         this.traitSelectionTool.gameObject.SetActive(true);
+    }
+    private void SelectedTrait(string callerId, Trait trait) {
+        if (this.lineId != callerId) {
+            return;
+        }
+
+        this.selectedTrait = trait;
+        this.traitSelector.GetComponentInChildren<Text>().text = trait.name;
+        this.selectingTrait = false;
+    }
+
+    public void OnCharacterSelectorClick() {
+        this.selectingCharacter = true;
+        this.characterSelectionTool.gameObject.SetActive(true);
+    }
+
+    private void SelectedCharacter(string callerId, CharacterStateController characterController) {
+        if (this.lineId != callerId) {
+            return;
+        }
+
+        this.selectedCharacter = characterController;
+        this.characterSelector.GetComponentInChildren<Text>().text = characterController.baseCharacter.name + " " + characterController.baseCharacter.surname;
+        this.selectingTrait = false;
     }
 
     public void OnNumericSelector() {
@@ -243,30 +283,6 @@ public class ConditionLine : MonoBehaviour
                 this.secondNumericInput.gameObject.SetActive(false);
                 break;
         }
-    }
-
-    public void OnCharacterSelectorClick() {
-        this.selectingCharacter = true;
-        this.characterSelectionTool.gameObject.SetActive(true);
-    }
-    private void SelectedTrait(Trait trait) {
-        if (!this.selectingTrait) {
-            return;
-        }
-
-        this.selectedTrait = trait;
-        this.traitSelector.GetComponentInChildren<Text>().text = trait.name;
-        this.selectingTrait = false;
-    }
-
-    private void SelectedCharacter(CharacterStateController characterController) {
-        if (!this.selectingCharacter) {
-            return;
-        }
-
-        this.selectedCharacter = characterController;
-        this.characterSelector.GetComponentInChildren<Text>().text = characterController.baseCharacter.name + " " + characterController.baseCharacter.surname;
-        this.selectingTrait = false;
     }
 
     public void OnRemoveConditionClick() {
