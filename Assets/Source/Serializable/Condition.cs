@@ -56,6 +56,8 @@ public class Condition
 
         BIGGER_THAN,
         SMALLER_THAN,
+        BIGGER_THAN_SELF,
+        BIGGER_THAN_TARGET,
         BETWEEN,
         EXACTLY,
 

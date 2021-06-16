@@ -18,11 +18,13 @@ public class ConditionLine : MonoBehaviour
     public Dropdown agentSpecificatorSelector;
 
     public Button traitSelector;
+    public Text traitText;
     private bool selectingTrait;
     private Trait selectedTrait;
     private TraitSelectionTool traitSelectionTool;
 
     public Button characterSelector;
+    public Text characterText;
     private bool selectingCharacter;
     private CharacterStateController selectedCharacter;
     private CharacterSelectionTool characterSelectionTool;
@@ -222,29 +224,28 @@ public class ConditionLine : MonoBehaviour
             return;
         }
 
-        this.selectedAttribute = (attribute == null && this.selectedAttribute != null) ? this.selectedAttribute : attribute;
+        this.selectedAttribute = attribute == null && this.selectedAttribute != null ? this.selectedAttribute : attribute;
         this.attributeText.text = this.selectedAttribute != null ? this.selectedAttribute.name : "No Selection";
-
         this.selectingAttribute = false;
     }
 
     public void OnTraitSelectorClick() {
         this.selectingTrait = true;
-        this.traitSelectionTool.gameObject.SetActive(true);
+        this.traitSelectionTool.OnEnableTool(this.lineId);
     }
     private void SelectedTrait(string callerId, Trait trait) {
         if (this.lineId != callerId) {
             return;
         }
 
-        this.selectedTrait = trait;
-        this.traitSelector.GetComponentInChildren<Text>().text = trait.name;
+        this.selectedTrait = trait == null && this.selectedTrait != null ? this.selectedTrait : trait;
+        this.traitText.text = this.selectedTrait != null ? this.selectedTrait.name : "No Selection";
         this.selectingTrait = false;
     }
 
     public void OnCharacterSelectorClick() {
         this.selectingCharacter = true;
-        this.characterSelectionTool.gameObject.SetActive(true);
+        this.characterSelectionTool.OnEnableTool(this.lineId);
     }
 
     private void SelectedCharacter(string callerId, CharacterStateController characterController) {
@@ -252,8 +253,8 @@ public class ConditionLine : MonoBehaviour
             return;
         }
 
-        this.selectedCharacter = characterController;
-        this.characterSelector.GetComponentInChildren<Text>().text = characterController.baseCharacter.name + " " + characterController.baseCharacter.surname;
+        this.selectedCharacter = characterController == null && this.selectedCharacter != null ? this.selectedCharacter : characterController;
+        this.characterText.text = this.selectedCharacter != null ? this.selectedCharacter.baseCharacter.name : "No Selection";
         this.selectingTrait = false;
     }
 
@@ -278,7 +279,12 @@ public class ConditionLine : MonoBehaviour
                 this.firstNumericInput.gameObject.SetActive(true);
                 this.secondNumericInput.gameObject.SetActive(false);
                 break;
-            default:
+            case Condition.NumericSelector.BIGGER_THAN_SELF:
+            case Condition.NumericSelector.BIGGER_THAN_TARGET:
+                this.firstNumericInput.gameObject.SetActive(false);
+                this.secondNumericInput.gameObject.SetActive(false);
+                break;
+            default :
                 this.firstNumericInput.gameObject.SetActive(false);
                 this.secondNumericInput.gameObject.SetActive(false);
                 break;

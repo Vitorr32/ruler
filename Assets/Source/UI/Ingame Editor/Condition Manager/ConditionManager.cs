@@ -28,7 +28,6 @@ public class ConditionManager : MonoBehaviour
     private void OnConditionConfirmation() {
         this.conditionTree = new ConditionTree();
 
-
         //Initiante a new conditions node on the wrapper
         GameObject nodeWrapper = Instantiate(conditionNodePrefab, conditionNodesWrapper.transform);
         nodeWrapper.GetComponent<ConditionNodeWrapper>().OnNodeCreation(null, this.characterSelectionTool, this.traitSelectionTool, this.attributeSelectionTool);

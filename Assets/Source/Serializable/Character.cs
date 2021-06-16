@@ -67,7 +67,7 @@ public class Character
     public Gender gender;
     public KinshipStruct[] family;
     public Trait[] traits;
-    public Event.Flag[] flags;
+    public EventBase.Flag[] flags;
     public Attribute[] skills;
     public List<string> spriteNames = new List<string>() { "default_child", "default_teen", "default_adult" };
 
