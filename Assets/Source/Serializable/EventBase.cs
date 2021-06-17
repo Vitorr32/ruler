@@ -9,7 +9,10 @@ public class EventBase
 
     public struct Trigger
     {
-
+        //Check if the event should activate
+        Condition condition;
+        //Get all the actors to participate in the event
+        List<Condition> queryActorsConditions;
     }
 
     public struct Flag
@@ -23,11 +26,14 @@ public class EventBase
 
         //How many minutes after the trigger the flag will last
         public int? minutesToExpire;
-
     }
 
     public Trigger trigger;
     public List<Flag> flags;
+    //Flag that determine if event has visual scenes or should be an background event
+    public bool isVisualEvent;
+    //Time in minutes that takes to an event wich trigger is positive to happen
+    public int meanTimeToHappen;
     public List<Scene> scenes;
     public List<Condition> conditions;
 }

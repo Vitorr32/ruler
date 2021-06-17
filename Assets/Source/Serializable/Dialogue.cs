@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 [Serializable]
@@ -56,9 +55,9 @@ public class Dialogue
     }
 
     public List<TraitPush> traitPushes;
-    public List<Restriction> restrictions;
     public DialogueType type;
-    //Modifier that this dialogue suffers when taking into account the officer mood from Happy (100) to Unhappy(0)
+    public List<Restriction> restrictions;
+    //Modifier that this dialogue suffers when taking into account the idol mood from Happy (100) to Unhappy(0)
     public float moodModifier = 1;
     public int weight = 1; //How strong is the tendecy for this dialogue be choosen over the rest, the default is 1
     public List<string> text;
