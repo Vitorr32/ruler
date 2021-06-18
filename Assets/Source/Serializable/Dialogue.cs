@@ -1,47 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-[Serializable]
-public struct Restriction
+public enum LinePooling
 {
-    public enum Type
-    {
-        HAS_TRAIT,
-        ATTRIBUTE_HIGHER_THAN,
-        ATTRIBUTE_LOWER_THAN,
-        MOOD_HIGHER_THAN,
-        MOOD_LOWER_THAN,
-        SKILL_HIGHER_THAN,
-        HAS_RELATIONSHIP_TYPE
-    }
+    UNDEFINED,
 
-    public Type type;
-    public int[] arguments;
-}
-//Emotion that this dialogue will be representing
-public enum Emotion
-{
-    NEUTRAL,
-    HAPPY,
-    SAD,
-    ANGRY,
-    FURIOUS,
-    SUSPICIOUS,
-    SCARED
-}
-public enum DialogueType
-{
-    INTRODUCTION,
-    SMALL_TALK,
-    LONG_TALK,
-    DEEP_TALK,
-    KNOW_MORE,
-    DISCUSS_HOOBIES,
-    DISCUSS_CHARACTER,
-    DISCUSS_SKILLS,
-    DISCUSS_HOBBIES,
-    DISCUSS_RELIGION,
-    DISCUSS_RACE
+    RANDOM_POOLING,
+    FIRST_POOLING,
+
+    MAX_LINE_POOLING
 }
 [Serializable]
 public class Dialogue
@@ -54,12 +21,23 @@ public class Dialogue
         public float weight;
     }
 
-    public List<TraitPush> traitPushes;
-    public DialogueType type;
-    public List<Restriction> restrictions;
-    //Modifier that this dialogue suffers when taking into account the idol mood from Happy (100) to Unhappy(0)
-    public float moodModifier = 1;
-    public int weight = 1; //How strong is the tendecy for this dialogue be choosen over the rest, the default is 1
-    public List<string> text;
-    public Emotion emotion;
+    public struct ChoiceOption
+    {
+        //What is the dialogue that this option will trigger
+        public string nextDialogueID;
+        //What is the condition for this option to be active, if null it will always be active
+        public ConditionTree condition;
+        //What is the label that will appear in the option button
+        public string label;
+    }
+
+    public List<Scene> lines;
+    public LinePooling linePoolingMethod;
+
+    //If the dialogue will need the player to input something such as an value or select an character
+    public bool hasInput;
+
+    public List<string> nextDialogueID;
+
+    public Condition condition;
 }

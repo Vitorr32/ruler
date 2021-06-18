@@ -6,16 +6,17 @@ using UnityEngine;
 
 public static class DialoguePooler
 {
+    /*
     public static Dialogue ObtainDialogueTypeFromSpeaker(DialogueType type, OfficerController speaker) {
         switch (type) {
-            case DialogueType.INTRODUCTION:
-                return GetDialogueFromPool(GetPollOfDialogues(type), speaker);
+            //case DialogueType.INTRODUCTION:
+            //    return GetDialogueFromPool(GetPollOfDialogues(type), speaker);
             default:
                 Debug.LogError("Unknown type" + type);
                 return null;
         }
     }
-
+    
     private static List<Dialogue> GetPollOfDialogues(DialogueType type) {
         return StoreController.instance.dialogues.Where(dialogue => dialogue.type == type).ToList();
     }
@@ -57,6 +58,7 @@ public static class DialoguePooler
         return weigth;
     }
 
+    
     private static bool IsDialogueRestrictedForSpeaker(List<Restriction> restrictions, OfficerController speaker) {
         foreach (Restriction restriction in restrictions) {
             switch (restriction.type) {
@@ -70,4 +72,5 @@ public static class DialoguePooler
 
         return false;
     }
+    */
 }

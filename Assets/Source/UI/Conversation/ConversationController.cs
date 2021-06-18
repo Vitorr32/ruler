@@ -40,8 +40,9 @@ public struct ScriptLine
     public LineType type;
     public List<ScriptAnimation> animations;
 }
-public class ConversationController : MonoBehaviour, IPointerClickHandler
+public class ConversationController : MonoBehaviour
 {
+    /*
     private StageController stageController;
     private List<ConversationActor> actorsInConversation;
 
@@ -175,4 +176,5 @@ public class ConversationController : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData) {
     }
+    */
 }
