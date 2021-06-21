@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 public class CharacterSelectionTool : ListSelectionTool<CharacterStateController>
 {
@@ -24,7 +26,13 @@ public class CharacterSelectionTool : ListSelectionTool<CharacterStateController
         });
     }
 
-    protected override int GetIndexOfSelectionInList(CharacterStateController selected) {
-        return this.queriedSelection.FindIndex((CharacterStateController character) => character.baseCharacter.id == selected.baseCharacter.id);
+    protected override List<int> GetIndexesOfSelectionInList(List<CharacterStateController> selectedCharacters) {
+        return selectedCharacters.Select(selected => this.queriedSelection.FindIndex(
+            (CharacterStateController character) => character.baseCharacter.id == selected.baseCharacter.id)
+        ).ToList();
+    }
+
+    protected override int GetIndexOfElementOnArray(CharacterStateController element, List<CharacterStateController> array) {
+        return array.FindIndex(character => character.baseCharacter.id == element.baseCharacter.id);
     }
 }

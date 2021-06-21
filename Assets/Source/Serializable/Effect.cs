@@ -13,7 +13,6 @@ public class Effect
         ON_INTERACTION_END,
         ON_INTERACTION_TALK_ABOUT,
 
-
         MAX_TRIGGERS
     }
 

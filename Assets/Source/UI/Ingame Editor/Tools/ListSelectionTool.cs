@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public abstract class ListSelectionTool<T> : MonoBehaviour where T : class
 {
-    public delegate void OnToolFinish(string callerId, T selection = null);
+    public delegate void OnToolFinish(string callerId, List<T> selection = null);
     public static event OnToolFinish OnToolFinished;
     private string callerId;
     private bool closedTroughEvents = false;
@@ -15,7 +15,8 @@ public abstract class ListSelectionTool<T> : MonoBehaviour where T : class
     public List<T> queriedSelection;
 
     public InputField inputField;
-    private T selectedObject;
+    private List<T> selectedObjects;
+    private bool isMultiSelect = false;
 
     protected int currentPage;
     protected int maxPages;
@@ -51,8 +52,10 @@ public abstract class ListSelectionTool<T> : MonoBehaviour where T : class
         }
     }
 
-    public void OnEnableTool(string callerId) {
+    public void OnEnableTool(string callerId, bool isMultiSelect = false) {
         this.callerId = callerId;
+        this.isMultiSelect = isMultiSelect;
+        this.selectedObjects = new List<T>();
         this.gameObject.SetActive(true);
     }
 
@@ -60,7 +63,8 @@ public abstract class ListSelectionTool<T> : MonoBehaviour where T : class
 
     abstract protected List<T> GetAllSelectableMembers();
     abstract protected List<T> FilterSelectableMembersByQuery(string query);
-    abstract protected int GetIndexOfSelectionInList(T selected);
+    abstract protected List<int> GetIndexesOfSelectionInList(List<T> selected);
+    abstract protected int GetIndexOfElementOnArray(T element, List<T> array);
 
     public void OnSearchInputChanged() {
         string query = this.inputField.text;
@@ -70,13 +74,21 @@ public abstract class ListSelectionTool<T> : MonoBehaviour where T : class
     }
 
     protected void OnSelection(T selected) {
-        if (this.selectedObject == selected) {
-            this.selectedObject = null;
+        int indexOnList = this.GetIndexOfElementOnArray(selected, this.selectedObjects);
+        if (indexOnList != -1) {
+            this.selectedObjects.RemoveAt(indexOnList);
+            this.RenderSelectionableOptions();
             return;
         }
 
-        this.selectedObject = selected;
-        RenderSelectionableOptions();
+        if (this.isMultiSelect) {
+            this.selectedObjects.Add(selected);
+        }
+        else {
+            this.selectedObjects = new List<T>() { selected };
+        }
+
+        this.RenderSelectionableOptions();
     }
 
     public void OnPagination(bool forward) {
@@ -104,10 +116,10 @@ public abstract class ListSelectionTool<T> : MonoBehaviour where T : class
 
     private void RenderSelectionableOptions(bool repaginate = false) {
         List<T> toShowSelectable = this.queriedSelection.Skip(this.pageSize * this.currentPage).Take(this.pageSize).ToList();
-        int indexOfSelected = this.selectedObject == null ? -1 : this.GetIndexOfSelectionInList(this.selectedObject);
+        List<int> indexesOfSelected = this.selectedObjects == null || this.selectedObjects.Count == 0 ? null : this.GetIndexesOfSelectionInList(this.selectedObjects);
 
-        for (int i = 0; i < pageSize; i++) {
-            this.selectableOptions[i].InitiateSelectableOption(toShowSelectable.Count > i ? toShowSelectable[i] : null, i == indexOfSelected);
+        for (int i = 0; i < pageSize; i++) {            
+            this.selectableOptions[i].InitiateSelectableOption(toShowSelectable.Count > i ? toShowSelectable[i] : null, indexesOfSelected != null ? indexesOfSelected.Contains(i) : false);
         }
 
         if (repaginate) {
@@ -119,19 +131,19 @@ public abstract class ListSelectionTool<T> : MonoBehaviour where T : class
     }
 
     public void SubmitSelected() {
-        if (this.selectedObject == null) {
+        if (this.selectedObjects == null) {
             this.message.text = "You need to select a trait before Submitting";
             return;
         }
         this.closedTroughEvents = true;
         this.gameObject.SetActive(false);
 
-        OnToolFinished?.Invoke(this.callerId, this.selectedObject);
-        this.selectedObject = null;
+        OnToolFinished?.Invoke(this.callerId, this.isMultiSelect && this.selectedObjects.Count == 0 ? null : this.selectedObjects);
+        this.selectedObjects = null;
     }
 
     public void OnCloseToolWithoutSelection() {
-        this.selectedObject = null;
+        this.selectedObjects = null;
         this.closedTroughEvents = true;
         this.gameObject.SetActive(false);
 

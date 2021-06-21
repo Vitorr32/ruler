@@ -219,12 +219,12 @@ public class ConditionLine : MonoBehaviour
         this.attributeSelectionTool.OnEnableTool(this.lineId);
     }
 
-    private void SelectedAttribute(string callerId, Attribute attribute) {
+    private void SelectedAttribute(string callerId, List<Attribute> attributes) {
         if (this.lineId != callerId) {
             return;
         }
 
-        this.selectedAttribute = attribute == null && this.selectedAttribute != null ? this.selectedAttribute : attribute;
+        this.selectedAttribute = attributes == null && this.selectedAttribute != null ? this.selectedAttribute : attributes == null ? null : attributes[0];
         this.attributeText.text = this.selectedAttribute != null ? this.selectedAttribute.name : "No Selection";
         this.selectingAttribute = false;
     }
@@ -233,12 +233,12 @@ public class ConditionLine : MonoBehaviour
         this.selectingTrait = true;
         this.traitSelectionTool.OnEnableTool(this.lineId);
     }
-    private void SelectedTrait(string callerId, Trait trait) {
+    private void SelectedTrait(string callerId, List<Trait> traits) {
         if (this.lineId != callerId) {
             return;
         }
 
-        this.selectedTrait = trait == null && this.selectedTrait != null ? this.selectedTrait : trait;
+        this.selectedTrait = traits == null && this.selectedTrait != null ? this.selectedTrait : traits == null ? null : traits[0];
         this.traitText.text = this.selectedTrait != null ? this.selectedTrait.name : "No Selection";
         this.selectingTrait = false;
     }
@@ -248,12 +248,12 @@ public class ConditionLine : MonoBehaviour
         this.characterSelectionTool.OnEnableTool(this.lineId);
     }
 
-    private void SelectedCharacter(string callerId, CharacterStateController characterController) {
+    private void SelectedCharacter(string callerId, List<CharacterStateController> characterControllers) {
         if (this.lineId != callerId) {
             return;
         }
 
-        this.selectedCharacter = characterController == null && this.selectedCharacter != null ? this.selectedCharacter : characterController;
+        this.selectedCharacter = characterControllers == null && this.selectedCharacter != null ? this.selectedCharacter : characterControllers == null ? null : characterControllers[0];
         this.characterText.text = this.selectedCharacter != null ? this.selectedCharacter.baseCharacter.name : "No Selection";
         this.selectingTrait = false;
     }
@@ -284,7 +284,7 @@ public class ConditionLine : MonoBehaviour
                 this.firstNumericInput.gameObject.SetActive(false);
                 this.secondNumericInput.gameObject.SetActive(false);
                 break;
-            default :
+            default:
                 this.firstNumericInput.gameObject.SetActive(false);
                 this.secondNumericInput.gameObject.SetActive(false);
                 break;

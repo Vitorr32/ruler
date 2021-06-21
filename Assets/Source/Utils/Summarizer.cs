@@ -27,9 +27,9 @@ public static class Summarizer
     }
     private static string SummarizeTarget(Modifier modifier) {
         switch (modifier.type) {
-            case Modifier.Type.MODIFY_SKILL_POTENTIAL_VALUE:
+            case Modifier.Type.MODIFY_ATTRIBUTE_VALUE:
                 return "Modifies the attribute(s) ";
-            case Modifier.Type.MODIFY_SKILL_VALUE:
+            case Modifier.Type.MODIFY_PASSIVE_ABSOLUTE_VALUE:
                 return "When the character is of age " + "";
         }
         return "Swag";
@@ -46,7 +46,7 @@ public static class Summarizer
         }
 
         switch (modifier.type) {
-            case Modifier.Type.MODIFY_SKILL_VALUE:
+            case Modifier.Type.MODIFY_ATTRIBUTE_VALUE:
                 string initial = "Modify " + (modifier.modifierTargets.Count > 1 ? "attributes" : "attribute") + Environment.NewLine;
                 string finalString = "";
 

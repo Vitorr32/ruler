@@ -8,7 +8,7 @@ public class EnumToString
 
     public static string getStringOfModifiersEnum(Modifier.Type type = Modifier.Type.UNDEFINED) {
         switch (type) {
-            case Modifier.Type.MODIFY_SKILL_VALUE:
+            case Modifier.Type.MODIFY_ATTRIBUTE_VALUE:
                 return "Modify Attribute by absolute value";
             default:
                 throw new System.Exception("Unknown modifier type: " + type);

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 public class AttributeSelectionTool : ListSelectionTool<Attribute>
 {
@@ -22,8 +23,13 @@ public class AttributeSelectionTool : ListSelectionTool<Attribute>
         });
     }
 
-    protected override int GetIndexOfSelectionInList(Attribute selected) {
-        return this.queriedSelection.FindIndex((Attribute attr) => attr.id == selected.id);
+    protected override List<int> GetIndexesOfSelectionInList(List<Attribute> selectedAttributes) {
+        return selectedAttributes.Select(selected => this.queriedSelection.FindIndex(
+            (Attribute attr) => attr.id == selected.id)
+        ).ToList();
+    }
+    protected override int GetIndexOfElementOnArray(Attribute element, List<Attribute> array) {
+        return array.FindIndex(attribute => attribute.id == element.id);
     }
 
 }

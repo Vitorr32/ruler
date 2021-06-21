@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
+using System.Linq;
 
 public class TraitSelectionTool : ListSelectionTool<Trait>
 {
@@ -23,8 +23,14 @@ public class TraitSelectionTool : ListSelectionTool<Trait>
         });
     }
 
-    protected override int GetIndexOfSelectionInList(Trait selected) {
-        return this.queriedSelection.FindIndex((Trait trait) => trait.id == selected.id);
+    protected override List<int> GetIndexesOfSelectionInList(List<Trait> selectedTraits) {
+        return selectedTraits.Select(selected => this.queriedSelection.FindIndex(
+            (Trait trait) => trait.id == selected.id)
+        ).ToList();
+    }
+
+    protected override int GetIndexOfElementOnArray(Trait element, List<Trait> array) {
+        return array.FindIndex(trait => trait.id == element.id);
     }
 
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,22 +17,32 @@ public class ModifierEditor : MonoBehaviour
     public Toggle modifierTargetToogle;
 
     public MultiSelectController modifierTargetMultiselectController;
+    //Button that is able to activate tools such as the character selector controller, trait selector or the attribute selector
+    public Button toolCallButton;
+    public Text toolCallButtonText;
+    private bool selectingAttribute;
+    private List<Attribute> selectedAttributes;
+    public AttributeSelectionTool attributeSelectionTool;
 
     public GameObject valueInputGO;
     public InputField valueInputField;
 
     public Text summaryText;
 
+    private string editorId;
     private Effect currentEffect = new Effect();
 
     // Start is called before the first frame update
     void Start() {
+        AttributeSelectionTool.OnToolFinished += SelectedAttribute;
         MultiSelectController.onMultiselectChanged += OnMultiselectEventReceived;
+        this.editorId = System.DateTime.Now.Ticks.ToString();
 
         this.CleanUpEditor();
     }
 
     void Destroy() {
+        AttributeSelectionTool.OnToolFinished -= SelectedAttribute;
         MultiSelectController.onMultiselectChanged -= OnMultiselectEventReceived;
     }
 
@@ -100,7 +111,7 @@ public class ModifierEditor : MonoBehaviour
             this.currentEffect.modifier.modifierTargets.RemoveAt(modifierTargetIndex);
         }
         else {
-            Debug.LogError("Asked to delete modifier target that is not on the list! value = " + value);
+            Debug.LogError("Asked to add modifier that is already on the list! value = " + value);
         }
 
         this.RenderSummaryOfEffect(this.currentEffect);
@@ -130,6 +141,24 @@ public class ModifierEditor : MonoBehaviour
 
             this.gameObject.GetComponent<PopupWrapper>().HidePopup();
         }
+    }
+
+    public void OnToolSelectionInvoked() {
+        switch(this.currentEffect.modifier.type){
+            case Modifier.Type.MODIFY_ATTRIBUTE_VALUE:
+                this.selectingAttribute = true;
+                this.attributeSelectionTool.OnEnableTool(this.editorId, true);
+                break;
+        }
+    }
+    private void SelectedAttribute(string callerId, List<Attribute> attributes) {
+        if (this.editorId != callerId || !this.selectingAttribute) {
+            return;
+        }
+
+        this.selectedAttributes = attributes == null && this.selectedAttributes != null ? this.selectedAttributes : attributes == null ? null : attributes;
+        this.toolCallButtonText.text = this.selectedAttributes != null ?  String.Join(",", this.selectedAttributes.Select( attr => attr.name)) : "No Selection";
+        this.selectingAttribute = false;
     }
 
     private bool CheckIfModifierValuesAreValid(Effect effect) {
@@ -187,6 +216,9 @@ public class ModifierEditor : MonoBehaviour
         this.modifierTriggerDropdown.GetComponent<DropdownCreator>().ResetDropdownState();
         this.modifierTypeDropdown.GetComponent<DropdownCreator>().ResetDropdownState();
 
+        this.selectedAttributes = null;
+        this.toolCallButton.gameObject.SetActive(false);
+
         this.currentEffect = new Effect();
         this.DeactivateModifierValue();
     }
@@ -202,16 +234,10 @@ public class ModifierEditor : MonoBehaviour
 
     private void PopulateModifierTargetMultiselect(Modifier modifier) {
         switch (modifier.type) {
-            case Modifier.Type.MODIFY_SKILL_POTENTIAL_VALUE:
-            case Modifier.Type.MODIFY_SKILL_VALUE:
-                this.PopulateMultiSelectWithObject<Attribute>(
-                    this.modifierTargetMultiselectController,
-                    (int)this.currentEffect.modifier.type,
-                    StoreController.instance.attributes,
-                    "name",
-                    "id",
-                    this.currentEffect.modifier.modifierTargets.ToArray()
-                );
+            case Modifier.Type.MODIFY_ATTRIBUTE_VALUE:
+                this.toolCallButton.gameObject.SetActive(true);
+                this.toolCallButtonText.text = "SELECT ATTRIBUTES";
+                this.modifierTargetMultiselectController.gameObject.SetActive(false);
                 break;
             case Modifier.Type.MODIFY_PASSIVE_ABSOLUTE_VALUE:
             case Modifier.Type.MODIFY_PASSIVE_RELATIVE_VALUE:
@@ -227,7 +253,6 @@ public class ModifierEditor : MonoBehaviour
                 this.modifierTargetMultiselectController.gameObject.SetActive(false);
                 return;
         }
-        this.modifierTargetMultiselectController.gameObject.SetActive(true);
     }
 
     private void PopulateSelectWithEnumValues<T>(MultiSelectController controller, int identifier, int[] currentlySelected = null) {
