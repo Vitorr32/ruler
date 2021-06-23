@@ -11,6 +11,7 @@ public static class Summarizer
         string summary = "";
 
         summary += SummarizeTrigger(effect.trigger);
+        summary += SummarizeConditionTree(effect.ConditionTree);
         summary += SummarizeModifierTargets(effect.modifier, allowIncomplete);
 
         return summary;
@@ -19,11 +20,49 @@ public static class Summarizer
     private static string SummarizeTrigger(Effect.Trigger trigger) {
         switch (trigger) {
             case Effect.Trigger.ALWAYS_ACTIVE:
-                return "";
+                return "Always: " + Environment.NewLine;
             case Effect.Trigger.ON_INTERACTION_START:
-                return "When interaction starts:  ";
+                return "When interaction starts:  " + Environment.NewLine;
+            case Effect.Trigger.ON_INTERACTION_END:
+                return "When interaction ends:" + Environment.NewLine;
+            default:
+                return "";
         }
+    }
+
+    private static string SummarizeConditionTree(ConditionTree conditionTree) {
+        string finalString = "";
+
+        if(conditionTree.root != null) {
+            finalString += SummarizeConditionNode(conditionTree.root);
+        }
+
+        
         return "";
+    }
+
+    private static string SummarizeConditionNode(ConditionTree.Node conditionNode, int layer = 0) {
+        string conditionString = "";
+
+        switch (conditionNode.logicOperator) {
+            case LogicOperator.IF:
+                conditionString += "If the following is true:" + Environment.NewLine;
+                break;
+            case LogicOperator.AND:
+                conditionString += "If all of the following is true: " + Environment.NewLine;
+                break;
+            case LogicOperator.OR:
+                conditionString += "If any of the following is true: " + Environment.NewLine;
+                break;
+            default:
+                conditionString += "LOGIC_OPERATOR";
+                break;
+        }
+
+        conditionNode.conditions.ForEach(condition => {
+            //TODO: Condition renderization
+        });
+        return conditionString;
     }
     private static string SummarizeTarget(Modifier modifier) {
         switch (modifier.type) {
