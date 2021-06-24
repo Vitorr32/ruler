@@ -12,18 +12,18 @@ public struct NodeFeedback
 
 public class ConditionNodeWrapper : MonoBehaviour
 {
-    public delegate void OnNodeRemoveClick(GameObject nodeWrapper, GameObject parentNode);
+    public delegate void OnNodeRemoveClick(ConditionNodeWrapper nodeWrapper, ConditionNodeWrapper parentNode);
     public static event OnNodeRemoveClick OnNodeRemoveClicked;
 
     private ConditionTree.Node conditionNode;
-    private GameObject parentNode;
+    private ConditionNodeWrapper parentNode;
     //All of this condition node individual condition lines
-    private List<GameObject> conditionLines = new List<GameObject>();
-    private List<GameObject> childNodesWrappers = new List<GameObject>();
+    private List<ConditionLine> conditionLines = new List<ConditionLine>();
+    private List<ConditionNodeWrapper> childNodesWrappers = new List<ConditionNodeWrapper>();
 
     //Gameobjects to make the instantiation operations
-    public GameObject conditionNodePrefab;
-    public GameObject conditionLinePrefab;
+    public ConditionNodeWrapper conditionNodePrefab;
+    public ConditionLine conditionLinePrefab;
     public GameObject nodeConditionsWrapper;
     public GameObject nodeOptions;
 
@@ -49,7 +49,7 @@ public class ConditionNodeWrapper : MonoBehaviour
         ConditionLine.OnConditionLineRemoveClicked -= this.OnRemoveConditionLine;
     }
 
-    public void OnNodeCreation(GameObject parent, CharacterSelectionTool characterSelectionTool, TraitSelectionTool traitSelectionTool, AttributeSelectionTool attributeSelectionTool) {
+    public void OnNodeCreation(ConditionNodeWrapper parent, CharacterSelectionTool characterSelectionTool, TraitSelectionTool traitSelectionTool, AttributeSelectionTool attributeSelectionTool) {
         this.conditionNode = new ConditionTree.Node();
         this.parentNode = parent;
         this.characterSelectionTool = characterSelectionTool;
@@ -63,8 +63,8 @@ public class ConditionNodeWrapper : MonoBehaviour
             return;
         }
 
-        GameObject conditionLine = Instantiate(this.conditionLinePrefab, this.nodeConditionsWrapper.transform);
-        conditionLine.GetComponent<ConditionLine>().OnStartUpConditionNode(this.gameObject, this.characterSelectionTool, this.traitSelectionTool, this.attributeSelectionTool);
+        ConditionLine conditionLine = Instantiate(this.conditionLinePrefab, this.nodeConditionsWrapper.transform);
+        conditionLine.OnStartUpConditionNode(this, this.characterSelectionTool, this.traitSelectionTool, this.attributeSelectionTool);
 
         this.conditionLines.Add(conditionLine);
     }
@@ -75,36 +75,36 @@ public class ConditionNodeWrapper : MonoBehaviour
             return;
         }
 
-        GameObject nodeWrapper = Instantiate(this.conditionNodePrefab, this.nodeConditionsWrapper.transform);
-        nodeWrapper.GetComponent<ConditionNodeWrapper>().OnNodeCreation(this.gameObject, this.characterSelectionTool, this.traitSelectionTool, this.attributeSelectionTool);
+        ConditionNodeWrapper nodeWrapper = Instantiate(this.conditionNodePrefab, this.nodeConditionsWrapper.transform);
+        nodeWrapper.OnNodeCreation(this, this.characterSelectionTool, this.traitSelectionTool, this.attributeSelectionTool);
 
         this.childNodesWrappers.Add(nodeWrapper);
     }
 
-    private void OnRemoveChildNodeClick(GameObject nodeWrapper, GameObject parentNode) {
-        if (parentNode != this.gameObject) {
+    private void OnRemoveChildNodeClick(ConditionNodeWrapper nodeWrapper, ConditionNodeWrapper parentNode) {
+        if (parentNode != this) {
             return;
         }
 
         int indexOnList = this.childNodesWrappers.FindIndex(childNodeWrapper => childNodeWrapper == nodeWrapper);
         this.childNodesWrappers.RemoveAt(indexOnList);
 
-        Destroy(nodeWrapper);
+        Destroy(nodeWrapper.gameObject);
     }
 
-    private void OnRemoveConditionLine(GameObject conditionLine, GameObject parentNode) {
-        if (parentNode != this.gameObject) {
+    private void OnRemoveConditionLine(ConditionLine conditionLine, ConditionNodeWrapper parentNode) {
+        if (parentNode != this) {
             return;
         }
 
         int indexOnList = this.conditionLines.FindIndex(conditionLineWrapper => conditionLineWrapper == conditionLine);
         this.conditionLines.RemoveAt(indexOnList);
 
-        Destroy(conditionLine);
+        Destroy(conditionLine.gameObject);
     }
 
     public void OnNodeRemoveButtonClick() {
-        ConditionNodeWrapper.OnNodeRemoveClicked?.Invoke(this.gameObject, this.parentNode);
+        ConditionNodeWrapper.OnNodeRemoveClicked?.Invoke(this, this.parentNode);
     }
 
     public void OnLogicOperatorChange() {
@@ -121,6 +121,12 @@ public class ConditionNodeWrapper : MonoBehaviour
         });
 
         return feedback;
+    }
+
+    public ConditionTree.Node StrutctureNodeTreeLeaf() {
+        //TODO return the structured tree
+        return null;
+        //return conditionNode.children
     }
 
 }

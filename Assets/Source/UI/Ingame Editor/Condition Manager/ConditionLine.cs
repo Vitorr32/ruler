@@ -4,14 +4,14 @@ using UnityEngine.UI;
 
 public class ConditionLine : MonoBehaviour
 {
-    public delegate void OnConditionLineRemoveClick(GameObject conditionLine, GameObject parentNode);
+    public delegate void OnConditionLineRemoveClick(ConditionLine conditionLine, ConditionNodeWrapper parentNode);
     public static event OnConditionLineRemoveClick OnConditionLineRemoveClicked;
 
     public delegate void OnConditionLineUpdate(Condition condition, int index);
     public static event OnConditionLineUpdate OnConditionLineUpdated;
 
     private string lineId;
-    private GameObject parentNode;
+    private ConditionNodeWrapper parentNode;
     private Condition conditionOfLine;
 
     public Dropdown conditionInitiator;
@@ -62,7 +62,7 @@ public class ConditionLine : MonoBehaviour
         AttributeSelectionTool.OnToolFinished -= SelectedAttribute;
     }
 
-    public void OnStartUpConditionNode(GameObject parent, CharacterSelectionTool characterSelectionTool, TraitSelectionTool traitSelectionTool, AttributeSelectionTool attributeSelectionTool) {
+    public void OnStartUpConditionNode(ConditionNodeWrapper parent, CharacterSelectionTool characterSelectionTool, TraitSelectionTool traitSelectionTool, AttributeSelectionTool attributeSelectionTool) {
         this.conditionOfLine = new Condition();
         this.parentNode = parent;
 
@@ -292,7 +292,7 @@ public class ConditionLine : MonoBehaviour
     }
 
     public void OnRemoveConditionClick() {
-        ConditionLine.OnConditionLineRemoveClicked?.Invoke(this.gameObject, this.parentNode);
+        ConditionLine.OnConditionLineRemoveClicked?.Invoke(this, this.parentNode);
     }
 
     private void GetCustomSelectorTypeValues(ConditionMapper.StepsMapper customSelectorType) {

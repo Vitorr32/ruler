@@ -51,9 +51,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27676c5f937a1284fa83a48b27247132, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  conditionNodePrefab: {fileID: 19897123414909358, guid: d47679107ec4f6a4f92320f4f4d480cc,
+  conditionNodePrefab: {fileID: 6331621150753404315, guid: d47679107ec4f6a4f92320f4f4d480cc,
     type: 3}
-  conditionLinePrefab: {fileID: 8057098241001116822, guid: 0aabed773e4edb448a3100188a03ac84,
+  conditionLinePrefab: {fileID: 8057098241001116809, guid: 0aabed773e4edb448a3100188a03ac84,
     type: 3}
   nodeConditionsWrapper: {fileID: 6574836954416812572}
   nodeOptions: {fileID: 7784133247658116094}

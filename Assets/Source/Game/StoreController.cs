@@ -41,6 +41,10 @@ public class StoreController : MonoBehaviour
         });
     }
 
+    public Attribute FindAttribute(int id) {
+        return this.attributes.Find(attr => attr.id == id);
+    }
+
     // Start is called before the first frame update
     void Start() {
     }

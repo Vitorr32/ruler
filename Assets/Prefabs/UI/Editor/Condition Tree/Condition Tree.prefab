@@ -154,8 +154,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   conditionNodesWrapper: {fileID: 5857932597439642594}
-  conditionNodePrefab: {fileID: 19897123414909358, guid: ec92157ead63909458c02f387c86bf36,
+  conditionNodePrefab: {fileID: 6331621150753404315, guid: ec92157ead63909458c02f387c86bf36,
     type: 3}
+  characterSelectionTool: {fileID: 0}
+  traitSelectionTool: {fileID: 0}
+  attributeSelectionTool: {fileID: 0}
 --- !u!1 &5857932597672223923
 GameObject:
   m_ObjectHideFlags: 0

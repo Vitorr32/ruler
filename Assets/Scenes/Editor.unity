@@ -33364,7 +33364,7 @@ PrefabInstance:
         type: 3}
       propertyPath: conditionNodePrefab
       value: 
-      objectReference: {fileID: 19897123414909358, guid: ec92157ead63909458c02f387c86bf36,
+      objectReference: {fileID: 6331621150753404315, guid: ec92157ead63909458c02f387c86bf36,
         type: 3}
     - target: {fileID: 5857932597655702973, guid: f49faf93bace99e48bdd1fce79d96fc7,
         type: 3}

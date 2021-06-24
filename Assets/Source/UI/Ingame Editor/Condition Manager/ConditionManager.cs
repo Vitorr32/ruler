@@ -5,11 +5,11 @@ public class ConditionManager : MonoBehaviour
 {
     public ConditionTree conditionTree;
 
-    private List<GameObject> conditionNodeWrappers = new List<GameObject>();
-    private GameObject root;
+    private List<ConditionNodeWrapper> conditionNodeWrappers = new List<ConditionNodeWrapper>();
+    private ConditionNodeWrapper root;
 
     public GameObject conditionNodesWrapper;
-    public GameObject conditionNodePrefab;
+    public ConditionNodeWrapper conditionNodePrefab;
 
     //Tools for selection of more specific condition aspects
     public CharacterSelectionTool characterSelectionTool;
@@ -29,9 +29,13 @@ public class ConditionManager : MonoBehaviour
         this.conditionTree = new ConditionTree();
 
         //Initiante a new conditions node on the wrapper
-        GameObject nodeWrapper = Instantiate(conditionNodePrefab, conditionNodesWrapper.transform);
-        nodeWrapper.GetComponent<ConditionNodeWrapper>().OnNodeCreation(null, this.characterSelectionTool, this.traitSelectionTool, this.attributeSelectionTool);
+        ConditionNodeWrapper nodeWrapper = Instantiate(conditionNodePrefab, conditionNodesWrapper.transform);
+        nodeWrapper.OnNodeCreation(null, this.characterSelectionTool, this.traitSelectionTool, this.attributeSelectionTool);
 
         this.root = nodeWrapper;
+    }
+
+    private void OnConditionUpdated() {
+
     }
 }

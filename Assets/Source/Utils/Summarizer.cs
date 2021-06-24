@@ -33,11 +33,11 @@ public static class Summarizer
     private static string SummarizeConditionTree(ConditionTree conditionTree) {
         string finalString = "";
 
-        if(conditionTree.root != null) {
+        if (conditionTree != null &&  conditionTree.root != null) {
             finalString += SummarizeConditionNode(conditionTree.root);
         }
 
-        
+
         return "";
     }
 
@@ -60,7 +60,47 @@ public static class Summarizer
         }
 
         conditionNode.conditions.ForEach(condition => {
-            //TODO: Condition renderization
+            switch (condition.initiator) {
+                case Condition.Initiator.ATTRIBUTE_RANGE:
+                    conditionString += "Attribute ";
+                    if (condition.attrRange.attrRangeParameters == null || condition.attrRange.attrRangeParameters.Count() == 0) {
+                        return;
+                    }
+                    int[] attrParams = condition.attrRange.attrRangeParameters;
+
+                    Attribute attribute = StoreController.instance.FindAttribute(condition.attrRange.attrRangeParameters[0]);
+                    conditionString += attribute.name;
+
+                    conditionString += " of " + condition.agent.ToString();
+
+                    int firstNumberAttr = attrParams.Count() > 1 ? attrParams[1] : -1;
+                    int secondNumberAttr = attrParams.Count() > 2 ? attrParams[2] : -1;
+
+                    conditionString += EnumToString.GetStringOfConditionNumericSelectorValues(
+                        condition.attrRange.selector,
+                        firstNumberAttr, secondNumberAttr
+                    );
+
+                    break;
+                case Condition.Initiator.STATUS_RANGE:
+                    conditionString += condition.statusRange.statusRangeParameters;
+                    int[] statusParams = condition.attrRange.attrRangeParameters;
+
+                    if (statusParams == null || statusParams.Count() == 0) {
+                        return;
+                    }                    
+
+                    conditionString += (Character.Status)statusParams[0];
+                    int firstNumberStatus = statusParams.Count() > 1 ? statusParams[1] : -1;
+                    int secondNumberStatus = statusParams.Count() > 2 ? statusParams[2] : -1;
+
+                    conditionString += EnumToString.GetStringOfConditionNumericSelectorValues(
+                        condition.statusRange.selector,
+                        firstNumberStatus, secondNumberStatus
+                    );
+
+                    break;
+            }
         });
         return conditionString;
     }
