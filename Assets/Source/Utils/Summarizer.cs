@@ -30,15 +30,14 @@ public static class Summarizer
         }
     }
 
-    private static string SummarizeConditionTree(ConditionTree conditionTree) {
+    public static string SummarizeConditionTree(ConditionTree conditionTree) {
         string finalString = "";
 
         if (conditionTree != null &&  conditionTree.root != null) {
             finalString += SummarizeConditionNode(conditionTree.root);
         }
 
-
-        return "";
+        return finalString;
     }
 
     private static string SummarizeConditionNode(ConditionTree.Node conditionNode, int layer = 0) {

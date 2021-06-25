@@ -7,7 +7,7 @@ public class ConditionLine : MonoBehaviour
     public delegate void OnConditionLineRemoveClick(ConditionLine conditionLine, ConditionNodeWrapper parentNode);
     public static event OnConditionLineRemoveClick OnConditionLineRemoveClicked;
 
-    public delegate void OnConditionLineUpdate(Condition condition, int index);
+    public delegate void OnConditionLineUpdate();
     public static event OnConditionLineUpdate OnConditionLineUpdated;
 
     private string lineId;
@@ -151,6 +151,8 @@ public class ConditionLine : MonoBehaviour
         else {
             this.ResetConditionSettersOfCondition();
         }
+
+        ConditionLine.OnConditionLineUpdated?.Invoke();
     }
 
     private void ShowConditionSetter(Condition condition) {
@@ -297,6 +299,10 @@ public class ConditionLine : MonoBehaviour
 
     private void GetCustomSelectorTypeValues(ConditionMapper.StepsMapper customSelectorType) {
 
+    }
+
+    public Condition GetLineCondition() {
+        return this.conditionOfLine;
     }
 
     public NodeFeedback CheckValidityOfLine() {

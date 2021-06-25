@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -123,10 +124,11 @@ public class ConditionNodeWrapper : MonoBehaviour
         return feedback;
     }
 
-    public ConditionTree.Node StrutctureNodeTreeLeaf() {
-        //TODO return the structured tree
-        return null;
-        //return conditionNode.children
+    public ConditionTree.Node GetStrutctureNodeTreeLeaf() {
+        this.conditionNode.conditions = this.conditionLines.Select(line => line.GetLineCondition()).ToList();
+        this.conditionNode.children = this.childNodesWrappers.Select(node => node.GetStrutctureNodeTreeLeaf()).ToList();
+
+        return this.conditionNode;
     }
 
 }

@@ -31,11 +31,13 @@ public class ModifierEditor : MonoBehaviour
 
     private string editorId;
     private Effect currentEffect = new Effect();
+    private ConditionTree conditionTree;
 
     // Start is called before the first frame update
     void Start() {
         AttributeSelectionTool.OnToolFinished += SelectedAttribute;
         MultiSelectController.onMultiselectChanged += OnMultiselectEventReceived;
+        ConditionManager.OnTreeUpdated += OnConditionUpdated;
         this.editorId = System.DateTime.Now.Ticks.ToString();
 
         this.CleanUpEditor();
@@ -44,6 +46,7 @@ public class ModifierEditor : MonoBehaviour
     void Destroy() {
         AttributeSelectionTool.OnToolFinished -= SelectedAttribute;
         MultiSelectController.onMultiselectChanged -= OnMultiselectEventReceived;
+        ConditionManager.OnTreeUpdated -= OnConditionUpdated;
     }
 
     private void OnDisable() {
@@ -303,6 +306,11 @@ public class ModifierEditor : MonoBehaviour
         ActiveInputGameObject();
 
         this.valueInputField.text = modifier.effectiveChange.ToString();
+    }
+    private void OnConditionUpdated(ConditionTree conditionTree) {
+        this.conditionTree = conditionTree;
+
+        this.summaryText.text = Summarizer.SummarizeConditionTree(this.conditionTree);
     }
     private void ShowErrorMessage(string message) {
         Debug.Log("Error message: " + message);

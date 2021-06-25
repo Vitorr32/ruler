@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class ConditionManager : MonoBehaviour
 {
+    public delegate void OnTreeUpdate(ConditionTree tree);
+    public static event OnTreeUpdate OnTreeUpdated;
+
     public ConditionTree conditionTree;
 
     private List<ConditionNodeWrapper> conditionNodeWrappers = new List<ConditionNodeWrapper>();
@@ -15,6 +18,10 @@ public class ConditionManager : MonoBehaviour
     public CharacterSelectionTool characterSelectionTool;
     public TraitSelectionTool traitSelectionTool;
     public AttributeSelectionTool attributeSelectionTool;
+
+    private void Start() {
+        ConditionLine.OnConditionLineUpdated += OnConditionUpdated;
+    }
 
     public void OnConditionAddClick() {
         if (this.root == null) {
@@ -36,6 +43,8 @@ public class ConditionManager : MonoBehaviour
     }
 
     private void OnConditionUpdated() {
+        this.conditionTree.root =  this.root.GetStrutctureNodeTreeLeaf();
 
+        OnTreeUpdated?.Invoke(this.conditionTree);
     }
 }
