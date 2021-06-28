@@ -310,7 +310,11 @@ public class ModifierEditor : MonoBehaviour
     private void OnConditionUpdated(ConditionTree conditionTree) {
         this.conditionTree = conditionTree;
 
+        Debug.Log("YOLO");
+
         this.summaryText.text = Summarizer.SummarizeConditionTree(this.conditionTree);
+
+        this.conditionTree.EvaluateConditionTreeHealth();
     }
     private void ShowErrorMessage(string message) {
         Debug.Log("Error message: " + message);

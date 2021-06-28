@@ -4,13 +4,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
-public struct NodeFeedback
-{
-    public bool valid;
-    public string message;
-    public List<NodeFeedback> childrenFeedback;
-}
-
 public class ConditionNodeWrapper : MonoBehaviour
 {
     public delegate void OnNodeRemoveClick(ConditionNodeWrapper nodeWrapper, ConditionNodeWrapper parentNode);

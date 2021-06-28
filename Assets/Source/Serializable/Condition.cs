@@ -1,6 +1,7 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 [Serializable]
 public class Condition
@@ -190,5 +191,69 @@ public class Condition
 
     public bool EvaluateCondition(Character self, List<Character> targets, int? world = null) {
         return true;
+    }
+
+    public ConditionFeedback EvalueConditionHealth() {
+        ConditionFeedback conditionFeedback = new ConditionFeedback();
+
+        switch (this.initiator) {
+            case Initiator.ATTRIBUTE_RANGE:
+
+                if (this.agent == Agent.UNDEFINED) {
+                    conditionFeedback.message = "The attribute range initiator demands the selection of a agent for comparation";
+                    conditionFeedback.valid = false;
+                    return conditionFeedback;
+                }
+
+                ConditionFeedback? attrSelectorFeedback = CheckIfNumericSelectorIsValid(this.attrRange.attrRangeParameters, this.attrRange.selector);
+                if (attrSelectorFeedback != null) {
+                    return (ConditionFeedback)attrSelectorFeedback;
+                }
+                else {
+                    conditionFeedback.valid = true;
+                    return conditionFeedback;
+                }
+            default:
+                conditionFeedback.valid = false;
+                conditionFeedback.message = "The condition needs to have an initiator";
+                Debug.Log("Unknown initiator" + this.initiator);
+                return conditionFeedback;
+        }
+    }
+
+    public ConditionFeedback? CheckIfNumericSelectorIsValid(int[] parameters, NumericSelector numericSelector) {
+        int parametersLenght = parameters != null ? parameters.Length : 0;
+
+        switch (numericSelector) {
+            case NumericSelector.BETWEEN:
+                //The first parameters is always an id, the second and third should be the range
+                if (parametersLenght > 3) {
+                    return null;
+                }
+                else {
+                    return new ConditionFeedback() {
+                        message = "The selector between needs to have the lower and upper range limit declared on the inputs",
+                        valid = false
+                    };
+                }
+            case NumericSelector.BIGGER_THAN_SELF:
+            case NumericSelector.SMALLER_THAN:
+            case NumericSelector.EXACTLY:
+                if (parametersLenght > 1) {
+                    return null;
+                }
+                else {
+                    return new ConditionFeedback() {
+                        message = "The selector between needs to have the lower and upper range limit declared on the inputs",
+                        valid = false
+                    };
+                }
+            default:
+                return new ConditionFeedback() {
+                    message = "The numeric selector needs to be selected to allow the condition to be valid",
+                    valid = false
+                };
+
+        }
     }
 }

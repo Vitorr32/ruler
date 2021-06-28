@@ -307,6 +307,11 @@ public class ConditionLine : MonoBehaviour
 
     public NodeFeedback CheckValidityOfLine() {
         //TODO: Logic to check if the line is valid before submit
+        Debug.Log(this.conditionOfLine.initiator);
+        if (this.conditionOfLine.initiator == Condition.Initiator.UNDEFINED) {
+            Debug.Log("Undefined Identificator");
+        }
+
         return new NodeFeedback();
     }
 }
