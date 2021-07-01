@@ -193,21 +193,20 @@ public class Condition
         return true;
     }
 
-    public ConditionFeedback EvalueConditionHealth() {
-        ConditionFeedback conditionFeedback = new ConditionFeedback();
+    public Feedback EvalueConditionHealth() {
+        Feedback conditionFeedback = new Feedback();
 
         switch (this.initiator) {
             case Initiator.ATTRIBUTE_RANGE:
-
                 if (this.agent == Agent.UNDEFINED) {
                     conditionFeedback.message = "The attribute range initiator demands the selection of a agent for comparation";
                     conditionFeedback.valid = false;
                     return conditionFeedback;
                 }
 
-                ConditionFeedback? attrSelectorFeedback = CheckIfNumericSelectorIsValid(this.attrRange.attrRangeParameters, this.attrRange.selector);
+                Feedback attrSelectorFeedback = CheckIfNumericSelectorIsValid(this.attrRange.attrRangeParameters, this.attrRange.selector);
                 if (attrSelectorFeedback != null) {
-                    return (ConditionFeedback)attrSelectorFeedback;
+                    return (Feedback)attrSelectorFeedback;
                 }
                 else {
                     conditionFeedback.valid = true;
@@ -221,7 +220,7 @@ public class Condition
         }
     }
 
-    public ConditionFeedback? CheckIfNumericSelectorIsValid(int[] parameters, NumericSelector numericSelector) {
+    public Feedback CheckIfNumericSelectorIsValid(int[] parameters, NumericSelector numericSelector) {
         int parametersLenght = parameters != null ? parameters.Length : 0;
 
         switch (numericSelector) {
@@ -231,7 +230,7 @@ public class Condition
                     return null;
                 }
                 else {
-                    return new ConditionFeedback() {
+                    return new Feedback() {
                         message = "The selector between needs to have the lower and upper range limit declared on the inputs",
                         valid = false
                     };
@@ -243,13 +242,13 @@ public class Condition
                     return null;
                 }
                 else {
-                    return new ConditionFeedback() {
+                    return new Feedback() {
                         message = "The selector between needs to have the lower and upper range limit declared on the inputs",
                         valid = false
                     };
                 }
             default:
-                return new ConditionFeedback() {
+                return new Feedback() {
                     message = "The numeric selector needs to be selected to allow the condition to be valid",
                     valid = false
                 };

@@ -40,6 +40,8 @@ public class ConditionManager : MonoBehaviour
         nodeWrapper.OnNodeCreation(null, this.characterSelectionTool, this.traitSelectionTool, this.attributeSelectionTool);
 
         this.root = nodeWrapper;
+
+        OnTreeUpdated?.Invoke(this.conditionTree);
     }
 
     private void OnConditionUpdated() {

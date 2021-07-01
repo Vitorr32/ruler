@@ -7,15 +7,13 @@ public enum LogicOperator
     AND,
     OR
 }
-public struct NodeFeedback
+public class NodeFeedback : Feedback
 {
-    public bool valid;
-    public string message;
     public List<NodeFeedback> childrenFeedback;
-    public List<ConditionFeedback> conditionFeedbacks;
+    public List<Feedback> conditionFeedbacks;
 }
 
-public struct ConditionFeedback
+public class Feedback 
 {
     public bool valid;
     public string message;
@@ -149,4 +147,5 @@ public class ConditionTree
     public NodeFeedback EvaluateConditionTreeHealth() {
         return root.CheckIfNodeIsValid();
     }
+
 }

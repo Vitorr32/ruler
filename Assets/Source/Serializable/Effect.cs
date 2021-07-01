@@ -10,8 +10,8 @@ public class Effect
 
         ALWAYS_ACTIVE,
         ON_INTERACTION_START,
-        ON_INTERACTION_END,
-        ON_INTERACTION_TALK_ABOUT,
+        INTERACTION_END,
+        DURING_INTERACTION,
 
         MAX_TRIGGERS
     }
@@ -46,12 +46,13 @@ public class Effect
     }
 
     //ID of the effect on the list of ids
-    public int id;
+    public string id;
     //Whetever this effect affect the holder of the effect or the target, if applicable, of the trigger
     public bool targetSelf = true;
     //Source is with item/trait/race is the source of the effect, used to associate the effect to parent
     public Source sourceType;
-    public int sourceID;
+    //Source ID, used to get the source of the effect
+    public string sourceID;
     //What trigger the check for this effect
     public Trigger trigger = Trigger.UNDEFINED;
     //What is the condition for the activation of this effect when the trigger is triggered.

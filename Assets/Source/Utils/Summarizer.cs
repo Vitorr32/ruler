@@ -23,7 +23,7 @@ public static class Summarizer
                 return "Always: " + Environment.NewLine;
             case Effect.Trigger.ON_INTERACTION_START:
                 return "When interaction starts:  " + Environment.NewLine;
-            case Effect.Trigger.ON_INTERACTION_END:
+            case Effect.Trigger.INTERACTION_END:
                 return "When interaction ends:" + Environment.NewLine;
             default:
                 return "";

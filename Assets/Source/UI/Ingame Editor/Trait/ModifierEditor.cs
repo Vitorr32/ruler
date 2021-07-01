@@ -9,6 +9,9 @@ public class ModifierEditor : MonoBehaviour
     public delegate void OnModiferEditorEnd(Effect effect);
     public static event OnModiferEditorEnd OnModifierEditorEnded;
 
+    private string effectHolderID;
+    private Effect.Source sourceType;
+
     public Dropdown modifierTriggerDropdown;
 
     public GameObject modifierTypeGameObject;
@@ -54,10 +57,13 @@ public class ModifierEditor : MonoBehaviour
         this.GetComponent<PopupWrapper>().HidePopup();
     }
 
-    public void StartUpEditor(Effect toEditEffect = null) {
+    public void StartUpEditor(string sourceID, Effect.Source sourceType, Effect toEditEffect = null) {
         if (toEditEffect != null) {
             this.PopulateEffectValuesForEdit(toEditEffect);
         }
+
+        this.sourceType = sourceType;
+        this.effectHolderID = sourceID;
         this.gameObject.SetActive(true);
     }
     //The first dropdown, define the type of trigger that can activate this effect
@@ -65,9 +71,9 @@ public class ModifierEditor : MonoBehaviour
         this.currentEffect.trigger = (Effect.Trigger)dropdown.value;
 
         switch (this.currentEffect.trigger) {
-            case Effect.Trigger.ON_INTERACTION_END:
+            case Effect.Trigger.INTERACTION_END:
             case Effect.Trigger.ON_INTERACTION_START:
-            case Effect.Trigger.ON_INTERACTION_TALK_ABOUT:
+            case Effect.Trigger.DURING_INTERACTION:
                 this.modifierTargetToogle.gameObject.SetActive(true);
                 break;
             default:
@@ -134,20 +140,8 @@ public class ModifierEditor : MonoBehaviour
         this.RenderSummaryOfEffect(this.currentEffect);
     }
 
-    public void OnSubmitEffectToTrait() {
-
-        if (CheckIfModifierValuesAreValid(this.currentEffect)) {
-            this.currentEffect.id = PlayerPrefs.GetInt("effectIdCounter") + 1;
-            PlayerPrefs.SetInt("effectIdCounter", this.currentEffect.id);
-            OnModifierEditorEnded?.Invoke(this.currentEffect);
-            this.CleanUpEditor();
-
-            this.gameObject.GetComponent<PopupWrapper>().HidePopup();
-        }
-    }
-
     public void OnToolSelectionInvoked() {
-        switch(this.currentEffect.modifier.type){
+        switch (this.currentEffect.modifier.type) {
             case Modifier.Type.MODIFY_ATTRIBUTE_VALUE:
                 this.selectingAttribute = true;
                 this.attributeSelectionTool.OnEnableTool(this.editorId, true);
@@ -160,25 +154,8 @@ public class ModifierEditor : MonoBehaviour
         }
 
         this.selectedAttributes = attributes == null && this.selectedAttributes != null ? this.selectedAttributes : attributes == null ? null : attributes;
-        this.toolCallButtonText.text = this.selectedAttributes != null ?  String.Join(",", this.selectedAttributes.Select( attr => attr.name)) : "No Selection";
+        this.toolCallButtonText.text = this.selectedAttributes != null ? String.Join(",", this.selectedAttributes.Select(attr => attr.name)) : "No Selection";
         this.selectingAttribute = false;
-    }
-
-    private bool CheckIfModifierValuesAreValid(Effect effect) {
-        return false;
-        //switch (target.type) {
-        //    case Effect.Trigger.ON_INTERACTION_END:
-        //        foreach (int[] argumentList in target.arguments) {
-        //            if (argumentList[1] != 0 && argumentList[2] != 0) {
-        //                this.ShowErrorMessage("A attribute can't be modified by an absolute and relative value at the same time");
-        //                return false;
-        //            }
-        //        }
-
-        //        return true;
-        //}
-
-        //return false;
     }
 
     public void OnInputValueChanged() {
@@ -198,7 +175,8 @@ public class ModifierEditor : MonoBehaviour
     }
 
     private void RenderSummaryOfEffect(Effect effect) {
-        this.summaryText.text = Summarizer.SummarizeEffect(effect, true);
+        this.summaryText.text = Summarizer.SummarizeConditionTree(this.conditionTree);
+        this.summaryText.text += Summarizer.SummarizeEffect(this.currentEffect);
     }
 
     private void ActiveInputGameObject() {
@@ -309,14 +287,65 @@ public class ModifierEditor : MonoBehaviour
     }
     private void OnConditionUpdated(ConditionTree conditionTree) {
         this.conditionTree = conditionTree;
-
-        Debug.Log("YOLO");
-
-        this.summaryText.text = Summarizer.SummarizeConditionTree(this.conditionTree);
-
         this.conditionTree.EvaluateConditionTreeHealth();
     }
     private void ShowErrorMessage(string message) {
         Debug.Log("Error message: " + message);
+    }
+    public void OnSubmitEffectToSource() {
+        Feedback effectFeedback = CheckIfModifierValuesAreValid(this.currentEffect);
+        if (!effectFeedback.valid) {
+            Debug.LogError(effectFeedback.message);
+            return;
+        }
+
+        if (this.conditionTree != null) {
+            NodeFeedback nodeFeedback = this.conditionTree.EvaluateConditionTreeHealth();
+
+            //TODO: GET ERROR TO DEFINE IF THE CONDITION TREE IS OKAY
+        }
+
+        this.currentEffect.id = "effect_" + DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+        this.currentEffect.sourceID = this.effectHolderID;
+        this.currentEffect.sourceType = this.sourceType;
+        this.currentEffect.ConditionTree = this.conditionTree;
+
+        this.CleanUpEditor();
+        this.gameObject.GetComponent<PopupWrapper>().HidePopup();
+        OnModifierEditorEnded?.Invoke(this.currentEffect);
+        //PlayerPrefs.SetInt("effectIdCounter", this.currentEffect.id);
+    }
+    private Feedback CheckIfModifierValuesAreValid(Effect effect) {
+        switch (effect.trigger) {
+            case Effect.Trigger.ALWAYS_ACTIVE:
+                return new Feedback() {
+                    valid = true
+                };
+            default:
+                return new Feedback() {
+                    message = "You need to set an Trigger for when should the effect happen",
+                    valid = false
+                };
+        }
+    }
+
+    private Feedback GetFirstInvalidFeedback(NodeFeedback treeFeedback) {
+        if(treeFeedback.conditionFeedbacks != null && treeFeedback.conditionFeedbacks.Count != 0) {
+            Feedback conditionFeedback = treeFeedback.conditionFeedbacks.Find(feedback => !feedback.valid);
+
+            if(conditionFeedback != null) {
+                return conditionFeedback;
+            }
+        }
+
+        if(treeFeedback.childrenFeedback != null && treeFeedback.childrenFeedback.Count != 0) {
+            Feedback childrenFeedback = treeFeedback.childrenFeedback.Find(feedback => !GetFirstInvalidFeedback(feedback).valid);
+
+            if(childrenFeedback != null) {
+                return childrenFeedback;
+            }
+        }
+
+        return treeFeedback;
     }
 }
