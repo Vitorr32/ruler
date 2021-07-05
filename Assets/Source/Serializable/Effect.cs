@@ -56,7 +56,7 @@ public class Effect
     //What trigger the check for this effect
     public Trigger trigger = Trigger.UNDEFINED;
     //What is the condition for the activation of this effect when the trigger is triggered.
-    public ConditionTree ConditionTree;
+    public ConditionTree conditionTree;
     //After the effect was activatd, for how much time does it take effect?
     public Duration duration;
     //What is the modifier that this effect cause

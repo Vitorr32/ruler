@@ -9,9 +9,6 @@ public class ModifierEditor : MonoBehaviour
     public delegate void OnModiferEditorEnd(Effect effect);
     public static event OnModiferEditorEnd OnModifierEditorEnded;
 
-    private string effectHolderID;
-    private Effect.Source sourceType;
-
     public Dropdown modifierTriggerDropdown;
 
     public GameObject modifierTypeGameObject;
@@ -34,7 +31,6 @@ public class ModifierEditor : MonoBehaviour
 
     private string editorId;
     private Effect currentEffect = new Effect();
-    private ConditionTree conditionTree;
 
     // Start is called before the first frame update
     void Start() {
@@ -62,8 +58,12 @@ public class ModifierEditor : MonoBehaviour
             this.PopulateEffectValuesForEdit(toEditEffect);
         }
 
-        this.sourceType = sourceType;
-        this.effectHolderID = sourceID;
+        this.currentEffect = new Effect();
+        this.currentEffect.id = "effect_" + DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
+        this.currentEffect.modifier = new Modifier();
+        this.currentEffect.sourceID = sourceID;
+        this.currentEffect.sourceType = sourceType;
+
         this.gameObject.SetActive(true);
     }
     //The first dropdown, define the type of trigger that can activate this effect
@@ -91,6 +91,7 @@ public class ModifierEditor : MonoBehaviour
 
         this.PopulateModifierTargetMultiselect(this.currentEffect.modifier);
         this.ActiveInputGameObject();
+
         this.RenderSummaryOfEffect(this.currentEffect);
     }
 
@@ -155,7 +156,10 @@ public class ModifierEditor : MonoBehaviour
 
         this.selectedAttributes = attributes == null && this.selectedAttributes != null ? this.selectedAttributes : attributes == null ? null : attributes;
         this.toolCallButtonText.text = this.selectedAttributes != null ? String.Join(",", this.selectedAttributes.Select(attr => attr.name)) : "No Selection";
+        this.currentEffect.modifier.modifierTargets = this.selectedAttributes.Select(attr => attr.id).ToList();
         this.selectingAttribute = false;
+
+        this.RenderSummaryOfEffect(this.currentEffect);
     }
 
     public void OnInputValueChanged() {
@@ -175,8 +179,8 @@ public class ModifierEditor : MonoBehaviour
     }
 
     private void RenderSummaryOfEffect(Effect effect) {
-        this.summaryText.text = Summarizer.SummarizeConditionTree(this.conditionTree);
-        this.summaryText.text += Summarizer.SummarizeEffect(this.currentEffect);
+        this.summaryText.text = Summarizer.SummarizeConditionTree(effect.conditionTree);
+        this.summaryText.text += Summarizer.SummarizeEffect(effect);
     }
 
     private void ActiveInputGameObject() {
@@ -286,12 +290,10 @@ public class ModifierEditor : MonoBehaviour
         this.valueInputField.text = modifier.effectiveChange.ToString();
     }
     private void OnConditionUpdated(ConditionTree conditionTree) {
-        this.conditionTree = conditionTree;
-        this.conditionTree.EvaluateConditionTreeHealth();
+        this.currentEffect.conditionTree = conditionTree;
+        this.currentEffect.conditionTree.EvaluateConditionTreeHealth();
     }
-    private void ShowErrorMessage(string message) {
-        Debug.Log("Error message: " + message);
-    }
+
     public void OnSubmitEffectToSource() {
         Feedback effectFeedback = CheckIfModifierValuesAreValid(this.currentEffect);
         if (!effectFeedback.valid) {
@@ -299,16 +301,15 @@ public class ModifierEditor : MonoBehaviour
             return;
         }
 
-        if (this.conditionTree != null) {
-            NodeFeedback nodeFeedback = this.conditionTree.EvaluateConditionTreeHealth();
+        if (this.currentEffect.conditionTree != null) {
+            NodeFeedback nodeFeedback = this.currentEffect.conditionTree.EvaluateConditionTreeHealth();
 
             //TODO: GET ERROR TO DEFINE IF THE CONDITION TREE IS OKAY
-        }
+            NodeFeedback error = (NodeFeedback)this.GetFirstInvalidFeedback(nodeFeedback);
 
-        this.currentEffect.id = "effect_" + DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
-        this.currentEffect.sourceID = this.effectHolderID;
-        this.currentEffect.sourceType = this.sourceType;
-        this.currentEffect.ConditionTree = this.conditionTree;
+            Debug.Log("Valid?" + error.valid);
+            Debug.Log("Message: " + error.message);
+        }
 
         this.CleanUpEditor();
         this.gameObject.GetComponent<PopupWrapper>().HidePopup();
@@ -328,20 +329,19 @@ public class ModifierEditor : MonoBehaviour
                 };
         }
     }
-
     private Feedback GetFirstInvalidFeedback(NodeFeedback treeFeedback) {
-        if(treeFeedback.conditionFeedbacks != null && treeFeedback.conditionFeedbacks.Count != 0) {
+        if (treeFeedback.conditionFeedbacks != null && treeFeedback.conditionFeedbacks.Count != 0) {
             Feedback conditionFeedback = treeFeedback.conditionFeedbacks.Find(feedback => !feedback.valid);
 
-            if(conditionFeedback != null) {
+            if (conditionFeedback != null) {
                 return conditionFeedback;
             }
         }
 
-        if(treeFeedback.childrenFeedback != null && treeFeedback.childrenFeedback.Count != 0) {
+        if (treeFeedback.childrenFeedback != null && treeFeedback.childrenFeedback.Count != 0) {
             Feedback childrenFeedback = treeFeedback.childrenFeedback.Find(feedback => !GetFirstInvalidFeedback(feedback).valid);
 
-            if(childrenFeedback != null) {
+            if (childrenFeedback != null) {
                 return childrenFeedback;
             }
         }

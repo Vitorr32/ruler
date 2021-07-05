@@ -40,7 +40,7 @@ public class SceneLoading : MonoBehaviour
             Trait trait = traitReader.resultList[i];
 
             for (int j = 0; j < trait.effects.Length; j++) {
-                trait.uEffects.Add(StoreController.instance.effects.First(effect => effect.id == trait.effects[j]));
+                trait.uEffects.Add(StoreController.instance.effects.First(effect => effect.id == trait.effects[j].ToString()));
             }
 
             trait.sprite = StoreController.instance.miscellaneousSprites.Find(sprite => sprite.name == trait.spriteName);

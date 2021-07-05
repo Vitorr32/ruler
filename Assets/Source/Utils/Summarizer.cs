@@ -7,12 +7,12 @@ using System.Runtime.CompilerServices;
 
 public static class Summarizer
 {
-    public static string SummarizeEffect(Effect effect, bool allowIncomplete = false) {
+    public static string SummarizeEffect(Effect effect) {
         string summary = "";
 
         summary += SummarizeTrigger(effect.trigger);
-        summary += SummarizeConditionTree(effect.ConditionTree);
-        summary += SummarizeModifierTargets(effect.modifier, allowIncomplete);
+        summary += SummarizeConditionTree(effect.conditionTree);
+        summary += SummarizeModifierTargets(effect.modifier);
 
         return summary;
     }
@@ -33,7 +33,7 @@ public static class Summarizer
     public static string SummarizeConditionTree(ConditionTree conditionTree) {
         string finalString = "";
 
-        if (conditionTree != null &&  conditionTree.root != null) {
+        if (conditionTree != null && conditionTree.root != null) {
             finalString += SummarizeConditionNode(conditionTree.root);
         }
 
@@ -87,7 +87,7 @@ public static class Summarizer
 
                     if (statusParams == null || statusParams.Count() == 0) {
                         return;
-                    }                    
+                    }
 
                     conditionString += (Character.Status)statusParams[0];
                     int firstNumberStatus = statusParams.Count() > 1 ? statusParams[1] : -1;
@@ -103,24 +103,11 @@ public static class Summarizer
         });
         return conditionString;
     }
-    private static string SummarizeTarget(Modifier modifier) {
-        switch (modifier.type) {
-            case Modifier.Type.MODIFY_ATTRIBUTE_VALUE:
-                return "Modifies the attribute(s) ";
-            case Modifier.Type.MODIFY_PASSIVE_ABSOLUTE_VALUE:
-                return "When the character is of age " + "";
-        }
-        return "Swag";
-    }
 
-    private static string SummarizeModifierTargets(Modifier modifier, bool allowIncomplete = false) {
-        if (modifier.modifierTargets.Count == 0) {
-            if (allowIncomplete) {
-                return "";
-            }
-            else {
-                throw new Exception("The modifier has no targets, please check the effect");
-            }
+    private static string SummarizeModifierTargets(Modifier modifier) {
+        if (modifier.type == Modifier.Type.UNDEFINED) {
+            Debug.LogError("The modifier has no targets, please check the effect");
+            return "";
         }
 
         switch (modifier.type) {
@@ -130,12 +117,16 @@ public static class Summarizer
 
                 foreach (int modifierTarget in modifier.modifierTargets) {
                     Attribute skill = StoreController.instance.attributes.Find(skill => skill.id == modifierTarget);
-                    finalString += skill.name + " by" + Environment.NewLine;
+                    finalString += "    " + skill.name + " by ";
+                    finalString += modifier.effectiveChange == 0
+                        ? "X"
+                        : modifier.effectiveChange.ToString();
+                    finalString += Environment.NewLine;
                 }
 
-                return finalString;
+                return initial + finalString;
             default:
-                return allowIncomplete ? "" : "TARGET TYPE " + modifier.type + " NOT FOUND IN ENUMERATOR";
+                return "TARGET TYPE " + modifier.type + " NOT FOUND IN ENUMERATOR";
         }
     }
 

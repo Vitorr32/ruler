@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EffectEditor : MonoBehaviour
@@ -8,6 +9,7 @@ public class EffectEditor : MonoBehaviour
     public GameObject effectListGO;
 
     public ModifierEditor modifierEditor;
+    private string effectID;
 
     public List<ActionableSelector> effectListItemPrefabPool = new List<ActionableSelector>();
 
@@ -17,6 +19,7 @@ public class EffectEditor : MonoBehaviour
         effectListItemPrefabPool.ForEach(prefab => prefab.gameObject.SetActive(false));
 
         ModifierEditor.OnModifierEditorEnded += OnEffectHasSucessfullySubmited;
+        this.effectID = "effect" + DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
     }
 
     // Update is called once per frame
@@ -29,7 +32,7 @@ public class EffectEditor : MonoBehaviour
     }
 
     public void OnEffectEditorCalled(int effectToEdit = -1) {
-        modifierEditor.StartUpEditor(effectToEdit == -1 ? null : this.effects[effectToEdit]);
+        modifierEditor.StartUpEditor(this.effectID, Effect.Source.TRAIT, effectToEdit == -1 ? null : this.effects[effectToEdit]);
     }
     public void OnRemoveEffect(int index) {
         this.effects.RemoveAt(index);
