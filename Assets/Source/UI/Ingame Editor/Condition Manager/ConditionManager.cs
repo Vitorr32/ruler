@@ -37,8 +37,8 @@ public class ConditionManager : MonoBehaviour
 
         //Initiante a new conditions node on the wrapper
         ConditionNodeWrapper nodeWrapper = Instantiate(conditionNodePrefab, conditionNodesWrapper.transform);
-        nodeWrapper.OnNodeCreation(null, this.characterSelectionTool, this.traitSelectionTool, this.attributeSelectionTool);
 
+        this.conditionTree.root = nodeWrapper.OnNodeCreation(null, this.characterSelectionTool, this.traitSelectionTool, this.attributeSelectionTool);
         this.root = nodeWrapper;
 
         OnTreeUpdated?.Invoke(this.conditionTree);

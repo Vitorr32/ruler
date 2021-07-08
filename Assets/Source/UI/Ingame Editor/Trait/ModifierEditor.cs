@@ -179,8 +179,7 @@ public class ModifierEditor : MonoBehaviour
     }
 
     private void RenderSummaryOfEffect(Effect effect) {
-        this.summaryText.text = Summarizer.SummarizeConditionTree(effect.conditionTree);
-        this.summaryText.text += Summarizer.SummarizeEffect(effect);
+        this.summaryText.text = Summarizer.SummarizeEffect(effect);
     }
 
     private void ActiveInputGameObject() {
@@ -291,7 +290,9 @@ public class ModifierEditor : MonoBehaviour
     }
     private void OnConditionUpdated(ConditionTree conditionTree) {
         this.currentEffect.conditionTree = conditionTree;
-        this.currentEffect.conditionTree.EvaluateConditionTreeHealth();
+        //this.currentEffect.conditionTree.EvaluateConditionTreeHealth();
+
+        this.RenderSummaryOfEffect(this.currentEffect);
     }
 
     public void OnSubmitEffectToSource() {

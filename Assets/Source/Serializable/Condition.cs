@@ -46,6 +46,7 @@ public class Condition
         SELF_TARGET,
         SELF_SPECIFIC,
         SPECIFIC_SPECIFIC,
+        PLAYER,
         GLOBAL,
 
         MAX_SPECIFICATORS

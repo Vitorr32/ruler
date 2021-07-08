@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -215,6 +216,8 @@ public class ConditionLine : MonoBehaviour
                 this.traitSelector.gameObject.SetActive(false);
                 break;
         }
+
+        this.RenderConditionLine();
     }
     public void OnAttributeSelectorClick() {
         this.selectingAttribute = true;
@@ -229,6 +232,8 @@ public class ConditionLine : MonoBehaviour
         this.selectedAttribute = attributes == null && this.selectedAttribute != null ? this.selectedAttribute : attributes == null ? null : attributes[0];
         this.attributeText.text = this.selectedAttribute != null ? this.selectedAttribute.name : "No Selection";
         this.selectingAttribute = false;
+
+        this.RenderConditionLine();
     }
 
     public void OnTraitSelectorClick() {
@@ -243,6 +248,8 @@ public class ConditionLine : MonoBehaviour
         this.selectedTrait = traits == null && this.selectedTrait != null ? this.selectedTrait : traits == null ? null : traits[0];
         this.traitText.text = this.selectedTrait != null ? this.selectedTrait.name : "No Selection";
         this.selectingTrait = false;
+
+        this.RenderConditionLine();
     }
 
     public void OnCharacterSelectorClick() {
@@ -258,6 +265,8 @@ public class ConditionLine : MonoBehaviour
         this.selectedCharacter = characterControllers == null && this.selectedCharacter != null ? this.selectedCharacter : characterControllers == null ? null : characterControllers[0];
         this.characterText.text = this.selectedCharacter != null ? this.selectedCharacter.baseCharacter.name : "No Selection";
         this.selectingTrait = false;
+
+        this.RenderConditionLine();
     }
 
     public void OnNumericSelector() {
@@ -265,9 +274,11 @@ public class ConditionLine : MonoBehaviour
 
         if (this.conditionOfLine.initiator == Condition.Initiator.STATUS_RANGE) {
             this.conditionOfLine.statusRange.selector = numericSelector;
+            this.conditionOfLine.statusRange.statusRangeParameters = new int[3];
         }
         else {
             this.conditionOfLine.attrRange.selector = numericSelector;
+            this.conditionOfLine.attrRange.attrRangeParameters = new int[3];
         }
 
         switch (numericSelector) {
@@ -289,6 +300,31 @@ public class ConditionLine : MonoBehaviour
             default:
                 this.firstNumericInput.gameObject.SetActive(false);
                 this.secondNumericInput.gameObject.SetActive(false);
+                break;
+        }
+
+        this.RenderConditionLine();
+    }
+
+    public void NumericInputChanged(bool firstInput) {
+        int inputValue;
+        try {
+            inputValue = Int32.Parse(this.firstNumericInput.text);
+        }
+        catch (FormatException) {
+            Debug.LogError("User inputted not valid number : " + this.firstNumericInput.text);
+            return;
+        }
+
+        switch (this.conditionOfLine.initiator) {
+            case Condition.Initiator.ATTRIBUTE_RANGE:
+                this.conditionOfLine.attrRange.attrRangeParameters[firstInput ? 1 : 2] = inputValue;
+                break;
+            case Condition.Initiator.STATUS_RANGE:
+                this.conditionOfLine.statusRange.statusRangeParameters[firstInput ? 1 : 2] = inputValue;
+                break;
+            default:
+                Debug.LogError("Unknown iniator has numeric input");
                 break;
         }
     }

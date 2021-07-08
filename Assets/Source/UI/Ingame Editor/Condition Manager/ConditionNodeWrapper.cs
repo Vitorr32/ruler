@@ -43,12 +43,14 @@ public class ConditionNodeWrapper : MonoBehaviour
         ConditionLine.OnConditionLineRemoveClicked -= this.OnRemoveConditionLine;
     }
 
-    public void OnNodeCreation(ConditionNodeWrapper parent, CharacterSelectionTool characterSelectionTool, TraitSelectionTool traitSelectionTool, AttributeSelectionTool attributeSelectionTool) {
+    public ConditionTree.Node OnNodeCreation(ConditionNodeWrapper parent, CharacterSelectionTool characterSelectionTool, TraitSelectionTool traitSelectionTool, AttributeSelectionTool attributeSelectionTool) {
         this.conditionNode = new ConditionTree.Node();
         this.parentNode = parent;
         this.characterSelectionTool = characterSelectionTool;
         this.attributeSelectionTool = attributeSelectionTool;
         this.traitSelectionTool = traitSelectionTool;
+
+        return this.conditionNode;
     }
 
     public void OnAddConditionClick() {
